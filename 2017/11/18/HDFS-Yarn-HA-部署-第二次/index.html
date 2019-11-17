@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>HDFS&amp;Yarn HA 部署 第二次 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="1.部署前提注意1.部署cdh的时候 命名空间要注意 默认是nameservice12.三台机器创建hadoop用户 没有密码的3.创建常用的文件夹 上传jar包4.配置三台机器的hostname（内网的ip） + ssh等5.部署的时候是hadoop用户 没有密码的 如何配置三台机器的ssh呢？ssh-keygen去hadoop官网找 配公钥第一台为主节点 先做第一台 注意known_hosts">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HDFS&amp;Yarn HA 部署 第二次">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2017&#x2F;11&#x2F;18&#x2F;HDFS-Yarn-HA-%E9%83%A8%E7%BD%B2-%E7%AC%AC%E4%BA%8C%E6%AC%A1&#x2F;index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="1.部署前提注意1.部署cdh的时候 命名空间要注意 默认是nameservice12.三台机器创建hadoop用户 没有密码的3.创建常用的文件夹 上传jar包4.配置三台机器的hostname（内网的ip） + ssh等5.部署的时候是hadoop用户 没有密码的 如何配置三台机器的ssh呢？ssh-keygen去hadoop官网找 配公钥第一台为主节点 先做第一台 注意known_hosts">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20190819231514890.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20190820233915106.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20190821003503698.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20190821004032963.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20190821004617486.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20190821004657105.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20190821004943576.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20190821005107475.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20190821005354827.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20190821005540689.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20190821010246716.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20190821010457174.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70">
+<meta property="og:updated_time" content="2019-11-17T11:38:24.923Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20190819231514890.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/default-avatar.jpg">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/highlight.css">
+</head>
+
+<body>
+  <div id="fullpage" class="mobile-nav-right">
+    
+      <div id="wrapper" title="图片来自网络">
+    
+    
+      <header id="header">
+  <div id="nav-toggle" class="nav-toggle"></div>
+  <div class="head-box global-width">
+    <nav class="nav-box nav-right">
+      
+        <a class="nav-item" href="/" title
+        
+        >首页</a>
+      
+        <a class="nav-item" href="/archives" title
+        
+        >归档</a>
+      
+    </nav>
+  </div>
+</header>
+      <div id="middlecontent" title class="global-width sidebar-right">
+        <section id="main"><article id="post-HDFS-Yarn-HA-部署-第二次" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 class="article-title" itemprop="name">
+      HDFS&amp;Yarn HA 部署 第二次
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2017/11/18/HDFS-Yarn-HA-%E9%83%A8%E7%BD%B2-%E7%AC%AC%E4%BA%8C%E6%AC%A1/" class="article-date">
+  <time datetime="2017-11-18T11:37:53.000Z" itemprop="datePublished">2017-11-18</time>
+</a>
+    
+    
+  </div>
+  
+    <span id="busuanzi_container_page_pv">
+      本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+    </span>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-cloud" itemprop="articleBody">
+      
+        <h1 id="1-部署前提注意"><a href="#1-部署前提注意" class="headerlink" title="1.部署前提注意"></a>1.部署前提注意</h1><p>1.部署cdh的时候 命名空间要注意 默认是nameservice1<br>2.三台机器创建hadoop用户 没有密码的<br>3.创建常用的文件夹 上传jar包<br>4.配置三台机器的hostname（内网的ip） + ssh等<br>5.部署的时候是hadoop用户 没有密码的 如何配置三台机器的ssh呢？<br>ssh-keygen<br>去hadoop官网找 配公钥<br>第一台为主节点 先做第一台 注意known_hosts (如果你的1号机器.ssh变动了 这个文件里会存历史记录 当2号机访问1号机就会出问题 ，删掉这个文件就可以解决)</p>
+<h1 id="2-ssh三台机器互通"><a href="#2-ssh三台机器互通" class="headerlink" title="2.ssh三台机器互通"></a>2.ssh三台机器互通</h1><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">1.ssh-keygen</span><br><span class="line">2.参考hadoop.apache.org官网ssh配置  (这个是参考 主要是注意 authorized_keys 和权限)</span><br><span class="line">http://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/SingleCluster.html</span><br><span class="line">  $ ssh-keygen -t rsa -P &apos;&apos; -f ~/.ssh/id_rsa    这里我们不用</span><br><span class="line">  $ cat ~/.ssh/id_rsa.pub &gt;&gt; ~/.ssh/authorized_keys</span><br><span class="line">  $ chmod 0600 ~/.ssh/authorized_keys</span><br><span class="line"> 3.以第一台为主节点配置authorized_keys 然后再分发给各个节点，由于没有密码个机器的台数比较少</span><br><span class="line"> 我们这里不能用scp ，所以我们采用把 各个节点的公钥id_rsa.pub下载到本地eg：id_rsa.pub001 ，id_rsa.pub002 来标识 最后都上传到主节点</span><br><span class="line"> 上追加到authorized_keys，再把authorized_keys下载上传给各个节点。</span><br></pre></td></tr></table></figure></div>
+<p>authorized_keys 配置图片：<br><img src="https://img-blog.csdnimg.cn/20190819231514890.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">4.</span><br><span class="line">ssh ruozedata001 date</span><br><span class="line">ssh ruozedata002  date </span><br><span class="line">ssh ruozedata003 date</span><br><span class="line">每台机器都要执行一遍 （每一个命令第一遍要输入yes，如果提示输入密码代表 你的authorized_keys 权限没有变成600）</span><br></pre></td></tr></table></figure></div>
+<h1 id="3-HDFS-amp-Yarn-HA-部署"><a href="#3-HDFS-amp-Yarn-HA-部署" class="headerlink" title="3.HDFS&amp;Yarn HA 部署"></a>3.HDFS&amp;Yarn HA 部署</h1><p>配置文件获取：<a href="https://pan.baidu.com/s/1PGbLbqMOQfc_iF_n7m5a8A" target="_blank" rel="noopener">https://pan.baidu.com/s/1PGbLbqMOQfc_iF_n7m5a8A</a>     提取码：jdec</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1.上传jar包到主节点，scp到从节点（上面配置完互信了）</span><br><span class="line">2.配置jave是注意 路径必须是 /usr/java （cdh决定的）</span><br><span class="line">部署jdk本文就不讲了 注意用户和用户组 这点很重要 chown -R root:root /usr/java/*</span><br></pre></td></tr></table></figure></div>
+<p>(1)zk部署</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">1.解压</span><br><span class="line">2.软连接 （好处是 软件版本升级的时候 个人配置文件的home的路径不用变动 方便版本管理）ls -s zookeep   zookeeper4</span><br><span class="line">3.安装</span><br><span class="line">[hadoop@ruozedata001 conf]$ ll</span><br><span class="line">total 16</span><br><span class="line">-rw-rw-r-- 1 hadoop hadoop  535 Feb 20  2014 configuration.xsl</span><br><span class="line">-rw-rw-r-- 1 hadoop hadoop 2161 Feb 20  2014 log4j.properties</span><br><span class="line">-rw-rw-r-- 1 hadoop hadoop 1032 Aug 20 00:11 zoo.cfg</span><br><span class="line">-rw-rw-r-- 1 hadoop hadoop  922 Feb 20  2014 zoo_sample.cfg</span><br><span class="line">[hadoop@ruozedata001 conf]$ cp zoo_sample.cfg zoo.cfg</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"># The number of milliseconds of each tick</span><br><span class="line">tickTime=2000</span><br><span class="line"># The number of ticks that the initial </span><br><span class="line"># synchronization phase can take</span><br><span class="line">initLimit=10</span><br><span class="line"># The number of ticks that can pass between </span><br><span class="line"># sending a request and getting an acknowledgement</span><br><span class="line">syncLimit=5</span><br><span class="line"># the directory where the snapshot is stored.</span><br><span class="line"># do not use /tmp for storage, /tmp here is just </span><br><span class="line"># example sakes.</span><br><span class="line">dataDir=/home/hadoop/data/zookeeper           ****这块要改一下 统一放到 data下</span><br><span class="line"></span><br><span class="line">server.1=ruozedata001:2888:3888               *****zookeeper内部通讯端口要配置一下</span><br><span class="line">server.2=ruozedata002:2888:3888</span><br><span class="line">server.3=ruozedata003:2888:3888</span><br><span class="line"># the port at which the clients will connect</span><br><span class="line">clientPort=2181</span><br><span class="line"># the maximum number of client connections.</span><br><span class="line"># increase this if you need to handle more clients</span><br><span class="line">#maxClientCnxns=60</span><br><span class="line">#</span><br><span class="line"># Be sure to read the maintenance section of the </span><br><span class="line"># administrator guide before turning on autopurge.</span><br><span class="line">#</span><br><span class="line"># http://zookeeper.apache.org/doc/current/zookeeperAdmin.html#sc_maintenance</span><br><span class="line">#</span><br><span class="line"># The number of snapshots to retain in dataDir</span><br><span class="line">#autopurge.snapRetainCount=3</span><br><span class="line"># Purge task interval in hours</span><br><span class="line"># Set to &quot;0&quot; to disable auto purge feature</span><br><span class="line">#autopurge.purgeInterval=1</span><br></pre></td></tr></table></figure></div>
+<p>mkdir /home/hadoop/data/zookeeper 目录 接着去这个目录下 配置myid (zk集群的机器号)</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">[hadoop@ruozedata001 zookeeper]$ echo 1 &gt; ~/data/zookeeper/myid</span><br><span class="line">[hadoop@ruozedata002 zookeeper]$ echo 2 &gt; ~/data/zookeeper/myid</span><br><span class="line">[hadoop@ruozedata003 zookeeper]$ echo 3 &gt; ~/data/zookeeper/myid</span><br><span class="line">注意： &gt; 前后是有空格的 不然机器号写不进去myid的</span><br><span class="line"></span><br><span class="line">接着在把zookeeper添加到个人环境变量中(三台机器一起操作)</span><br><span class="line">[hadoop@ruozedata001 zookeeper]$ vim ~/.bash_profile</span><br><span class="line"></span><br><span class="line"># .bash_profile</span><br><span class="line"></span><br><span class="line"># Get the aliases and functions</span><br><span class="line">if [ -f ~/.bashrc ]; then</span><br><span class="line">        . ~/.bashrc</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"># User specific environment and startup programs</span><br><span class="line"></span><br><span class="line">export ZOOKEEPER_HOME=/home/hadoop/app/zookeeper</span><br><span class="line">export PATH=$ZOOKEEPER_HOME/bin:$PATH</span><br><span class="line"></span><br><span class="line">最后检查是否安装成功</span><br><span class="line">[hadoop@ruozedata001 zookeeper]$ which zkServer.sh</span><br><span class="line">~/app/zookeeper/bin/zkServer.sh</span><br></pre></td></tr></table></figure></div>
+<p>启动zk<br>zkServer.sh start<br>zkServer.sh status<br>（2）HDFS部署</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">1.vim hadoop-env.sh</span><br><span class="line"></span><br><span class="line"># The java implementation to use.</span><br><span class="line">export JAVA_HOME=/usr/java/jdk1.8.0_45               ***************这个路径要改java的不要用 $&#123;JAVA_HOME&#125; </span><br><span class="line"></span><br><span class="line"># The jsvc implementation to use. Jsvc is required to run secure datanodes</span><br><span class="line"># that bind to privileged ports to provide authentication of data transfer</span><br><span class="line"># protocol.  Jsvc is not required if SASL is configured for authentication of</span><br><span class="line"># data transfer protocol using non-privileged ports.</span><br><span class="line">#export JSVC_HOME=$&#123;JSVC_HOME&#125;</span><br><span class="line"></span><br><span class="line">export HADOOP_CONF_DIR=$&#123;HADOOP_CONF_DIR:-&quot;/etc/hadoop&quot;&#125;</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">2.删掉core-site.xml yarn-site.xml slaves hdfs-site.xml    用自己提供的.xml</span><br><span class="line">rm -f slaves yarn-site.xml hdfs-site.xml core-site.xml</span><br><span class="line">三台机器上传提供好的配置文件</span><br><span class="line">core-site.xml 需要注意：</span><br><span class="line">   a.创建临时文件夹（与core-site.xml里的要一样）</span><br><span class="line">        mkdir -p  /home/hadoop/tmp/hadoop</span><br><span class="line">       chmod -R 777 /home/hadoop/tmp/hadoop</span><br><span class="line"> b.hosts 与 groups  这是运行那些机器和那些用户组可以访问 注意</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">3.hdfs-site.xml  注意：</span><br><span class="line">块大小 和 副本数    按自己公司配置  官网上可以查看默认的配置</span><br><span class="line">http://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/hdfs-default.xml</span><br></pre></td></tr></table></figure></div>
+<p><img src="https://img-blog.csdnimg.cn/20190820233915106.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">3.hdfs-site.xml 注意：</span><br><span class="line">HA</span><br><span class="line">命名空间</span><br><span class="line">journalNode</span><br><span class="line">私钥的路径</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">4.mapreduce-site.xml注意：</span><br><span class="line">配置map端输出的压缩</span><br><span class="line">为什么使用snappy呢？压缩快解压快</span><br><span class="line">https://ruozedata.github.io/2018/04/18/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%8E%8B%E7%BC%A9%EF%BC%8C%E4%BD%A0%E4%BB%AC%E7%9C%9F%E7%9A%84%E4%BA%86%E8%A7%A3%E5%90%97%EF%BC%9F/</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">5.yarn-site.xml 注意：</span><br><span class="line"> Ha</span><br><span class="line"> 日志aggregation（分布式 把日志聚合起来）</span><br><span class="line"> nodemanager的内存 + 最小调度内存 + 最大分配内存  cpu-vcores (几比几的意思 2 =》就是 1 比 2 的意思)</span><br><span class="line"> 这看基础班的视频在 b站 这块很重要 日后调优很重要</span><br></pre></td></tr></table></figure></div>
+<p>配置hadoop的环境变量</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># .bash_profile</span><br><span class="line"></span><br><span class="line"># Get the aliases and functions</span><br><span class="line">if [ -f ~/.bashrc ]; then</span><br><span class="line">        . ~/.bashrc</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"># User specific environment and startup programs</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">export ZOOKEEPER_HOME=/home/hadoop/app/zookeeper</span><br><span class="line">export PATH=$ZOOKEEPER_HOME/bin:$PATH</span><br><span class="line">export HADOOP_HOME=/home/hadoop/app/hadoop</span><br><span class="line">export PATH=$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$PATH</span><br></pre></td></tr></table></figure></div>
+
+<p>（3）启动集群</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line">1.启动journalnode   三台一块做</span><br><span class="line">hadoop-daemon.sh start journalnode</span><br><span class="line">2.格式化namenode （这就不用三台一块做 选取第一台即可）</span><br><span class="line"> hadoop namenode -format</span><br><span class="line"> 3.第一台namenode ok了 要同步第一台元数据到第二台</span><br><span class="line"> scp -r  /home/hadoop/data/dfs/name/     hadoop@ruozedata002:/home/hadoop/data/dfs/</span><br><span class="line"> 这两个nn元数据要保持一样</span><br><span class="line"> 4.初始化zkfc (一台机器就可以了  zk是个集群 无需别的机器还去做)</span><br><span class="line"> hdfs zkfc -formatZK</span><br><span class="line"> 5.启动hdfs （一台）</span><br><span class="line"> start-dfs.sh </span><br><span class="line"> 这块有个坑：</span><br><span class="line">				 [hadoop@ruozedata001 dfs]$  start-dfs.sh </span><br><span class="line">				Starting namenodes on [ruozedata001 ruozedata002]</span><br><span class="line">				ruozedata001: starting namenode, logging to /home/hadoop/app/hadoop-2.6.0-cdh5.15.1/logs/hadoop-hadoop-namenode-ruozedata001.out</span><br><span class="line">				ruozedata002: starting namenode, logging to /home/hadoop/app/hadoop-2.6.0-cdh5.15.1/logs/hadoop-hadoop-namenode-ruozedata002.out</span><br><span class="line">				: Name or service not knownstname ruozedata001</span><br><span class="line">				: Name or service not knownstname ruozedata002</span><br><span class="line">				ruozedata003: starting datanode, logging to /home/hadoop/app/hadoop-2.6.0-cdh5.15.1/logs/hadoop-hadoop-datanode-ruozedata003.out</span><br><span class="line">				Starting journal nodes [ruozedata001 ruozedata002 ruozedata003]</span><br><span class="line">				ruozedata002: journalnode running as process 2392. Stop it first.</span><br><span class="line">				ruozedata003: journalnode running as process 2372. Stop it first.</span><br><span class="line">				ruozedata001: journalnode running as process 2468. Stop it first.</span><br><span class="line">				Starting ZK Failover Controllers on NN hosts [ruozedata001 ruozedata002]</span><br><span class="line">				ruozedata001: starting zkfc, logging to /home/hadoop/app/hadoop-2.6.0-cdh5.15.1/logs/hadoop-hadoop-zkfc-ruozedata001.out</span><br><span class="line">				ruozedata002: starting zkfc, logging to /home/hadoop/app/hadoop-2.6.0-cdh5.15.1/logs/hadoop-hadoop-zkfc-ruozedata002.out</span><br><span class="line"> </span><br><span class="line">这个日志倒着看  zk启动 jn启动 dn001 和dn002 启动报错  为什么？</span><br><span class="line"></span><br><span class="line">        dn是slaves 文件控制的 检查这个文件</span><br><span class="line"></span><br><span class="line">扩展小知识点：</span><br><span class="line">    linux文件的类型分为两种 window的格式/ linux本身的格式</span><br><span class="line">    这两种格式再Linux下都可以cat </span><br><span class="line"></span><br><span class="line">file slaves  :(查看文件类型)</span><br><span class="line">[hadoop@ruozedata001 hadoop]$ cat slaves </span><br><span class="line">ruozedata001</span><br><span class="line">ruozedata002</span><br><span class="line">ruozedata003[hadoop@ruozedata001 hadoop]$ file slaves </span><br><span class="line">slaves: ASCII text, with CRLF line terminators</span><br><span class="line"></span><br><span class="line">slaves: ASCII text, with CRLF line terminators说明类型是windows的   需要windows 转换成Linux的  </span><br><span class="line">解决：</span><br><span class="line">[root@ruozedata001 ~]# yum install -y dos2unix</span><br><span class="line">[hadoop@ruozedata001 hadoop]$ file slaves </span><br><span class="line">slaves: ASCII text, with CRLF line terminators</span><br><span class="line">[hadoop@ruozedata001 hadoop]$ dos2unix slaves </span><br><span class="line">dos2unix: converting file slaves to Unix format ...</span><br><span class="line">[hadoop@ruozedata001 hadoop]$ file slaves </span><br><span class="line">slaves: ASCII text</span><br><span class="line">hadoop@ruozedata001 hadoop]$ pwd</span><br><span class="line">/home/hadoop/app/hadoop/etc/hadoop</span><br><span class="line">[hadoop@ruozedata001 hadoop]$ scp slaves ruozedata002:/home/hadoop/app/hadoop/etc/hadoop/</span><br><span class="line">slaves                                          100%   38     0.0KB/s   00:00    </span><br><span class="line">[hadoop@ruozedata001 hadoop]$ scp slaves ruozedata003:/home/hadoop/app/hadoop/etc/hadoop/</span><br><span class="line">slaves                                          100%   38     0.0KB/s   00:00    </span><br><span class="line">[hadoop@ruozedata001 hadoop]$</span><br><span class="line"></span><br><span class="line">再次启动：</span><br><span class="line"> start-dfs.sh </span><br><span class="line">		[hadoop@ruozedata001 hadoop]$ start-dfs.sh </span><br><span class="line">		Starting namenodes on [ruozedata001 ruozedata002]</span><br><span class="line">		ruozedata001: namenode running as process 2765. Stop it first.</span><br><span class="line">		ruozedata002: namenode running as process 11693. Stop it first.</span><br><span class="line">		ruozedata003: datanode running as process 11654. Stop it first.</span><br><span class="line">		ruozedata002: starting datanode, logging to /home/hadoop/app/hadoop-2.6.0-cdh5.15.1/logs/hadoop-hadoop-datanode-ruozedata002.out</span><br><span class="line">		ruozedata001: starting datanode, logging to /home/hadoop/app/hadoop-2.6.0-cdh5.15.1/logs/hadoop-hadoop-datanode-ruozedata001.out</span><br><span class="line">		Starting journal nodes [ruozedata001 ruozedata002 ruozedata003]</span><br><span class="line">		ruozedata003: journalnode running as process 2372. Stop it first.</span><br><span class="line">		ruozedata001: journalnode running as process 2468. Stop it first.</span><br><span class="line">		ruozedata002: journalnode running as process 2392. Stop it first.</span><br><span class="line">		Starting ZK Failover Controllers on NN hosts [ruozedata001 ruozedata002]</span><br><span class="line">		ruozedata001: zkfc running as process 3076. Stop it first.</span><br><span class="line">		ruozedata002: zkfc running as process 11816. Stop it first.</span><br></pre></td></tr></table></figure></div>
+<p><img src="https://img-blog.csdnimg.cn/20190821003503698.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">6.访问hdfs页面50070</span><br></pre></td></tr></table></figure></div>
+<p>避免被挖矿配置只有自己的电脑ip能访问<br><img src="https://img-blog.csdnimg.cn/20190821004032963.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>active:<img src="https://img-blog.csdnimg.cn/20190821004617486.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>standby:<br><img src="https://img-blog.csdnimg.cn/20190821004657105.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">7.start-yarn.sh (一台)</span><br><span class="line">这块第二台的rm是启动不起来的 需要手工去启动</span><br><span class="line">yarn-daemon.sh start resourcemanager(第二台)</span><br></pre></td></tr></table></figure></div>
+<p><img src="https://img-blog.csdnimg.cn/20190821004943576.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>手工启动后：<br><img src="https://img-blog.csdnimg.cn/20190821005107475.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">8.访问yarn页面</span><br><span class="line">注意：</span><br><span class="line">active :ip1:8080 就可以直接访问</span><br><span class="line">standby：ip2:8080/cluster/cluster   才可以访问 他直接8080 访问不了</span><br></pre></td></tr></table></figure></div>
+
+<p>active:<br><img src="https://img-blog.csdnimg.cn/20190821005354827.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>standby:<br><img src="https://img-blog.csdnimg.cn/20190821005540689.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">9.$HADOOP_HOME/sbin/mr-jobhistory-daemon.sh start historyserver (001上启动 配置文件里配置的)</span><br></pre></td></tr></table></figure></div>
+<p><img src="https://img-blog.csdnimg.cn/20190821010246716.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>访问页面：<br>  <img src="https://img-blog.csdnimg.cn/20190821010457174.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>(4）关闭集群<br>倒着关闭<br>[root@hadoop001 sbin]# stop-yarn.sh<br>[root@hadoop002 sbin]# yarn-daemon.sh stop resourcemanager<br>[root@hadoop001 sbin]# stop-dfs.sh</p>
+<p>(5)常用脚本及命令</p>
+<p>1.启动集群<br>[root@hadoop001 ~]# $ZOOKEEPER_HOME/bin/zkServer.sh start<br>[root@hadoop002 ~]# $ZOOKEEPER_HOME/bin/zkServer.sh start<br>[root@hadoop003 ~]# $ZOOKEEPER_HOME/bin/zkServer.sh start<br>[root@hadoop001 ~]# $HADOOP_HOME/sbin/start-all.sh  （hdfs +yarn）<br>[root@hadoop002 ~]# $HADOOP_HOME/sbin/yarn-daemon.sh start resourcemanager<br>[root@hadoop001 ~]# $HADOOP_HOME/sbin/mr-jobhistory-daemon.sh start historyserver<br>2.关闭集群<br>[root@hadoop001 ~]# $HADOOP_HOME/sbin/mr-jobhistory-daemon.sh stop historyserver<br>[root@hadoop002 ~]# $HADOOP_HOME /sbin/yarn-daemon.sh stop resourcemanager<br>[root@hadoop001 ~]# $HADOOP_HOME /sbin/stop-all.sh<br>[root@hadoop001 ~]# $ZOOKEEPER_HOME /bin/zkServer.sh stop<br>[root@hadoop002 ~]# $ZOOKEEPER_HOME /bin/zkServer.sh stop</p>
+
+      
+    </div>
+    
+      <footer class="article-footer">
+        完
+      </footer>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  <div class="article-nav-block">
+    
+  </div>
+  <div class="article-nav-block">
+    
+      <a href="/2017/11/17/HDFS-Yarn-HA/" id="article-nav-older" class="article-nav-link-wrap">
+        <div class="article-nav-title">HDFS&amp;Yarn HA</div>
+        <strong class="article-nav-caption"></strong>
+      </a>
+    
+  </div>
+</nav>
+
+    <link rel="stylesheet" href="/css/gitment.css"> 
+<script src="/js/gitment.js"></script>
+
+<div id="gitmentContainer"></div>
+
+<script>
+var gitment = new Gitment({
+  owner: '',
+  repo: '',
+  oauth: {
+    client_id: '',
+    client_secret: '',
+  },
+})
+gitment.render('gitmentContainer')
+</script>
+
+  
+  
+</article>
+</section>
+        <aside id="sidebar">
+  
+    <div class="widget-box">
+  <div class="avatar-box">
+    <img class="avatar" src="/images/default-avatar.jpg" title="图片来自网络"></img>
+    <h3 class="avatar-name">
+      
+        DoubleHappy
+      
+    </h3>
+    <p class="avatar-slogan">
+      特别耐撕的大数据，资深的打酱油攻城狮。
+    </p>
+  </div>
+</div>
+
+
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/11/18/HDFS-Yarn-HA-%E9%83%A8%E7%BD%B2-%E7%AC%AC%E4%BA%8C%E6%AC%A1/">HDFS&amp;Yarn HA 部署 第二次</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/17/HDFS-Yarn-HA/">HDFS&amp;Yarn HA</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/15/JVM02/">JVM02</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/15/JVM01/">JVM01</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+      <div class="widget-box">
+    <h3 class="widget-title">友链</h3>
+    <div class="widget">
+      
+        <a style="display: block;" href="https://sxwanggit126.github.io/" title target='_blank'
+        >一路眼瞎</a>
+      
+    </div>
+  </div>
+
+  
+</aside>
+      </div>
+      <footer id="footer">
+  <div class="foot-box global-width">
+    &copy; 2019 DoubleHappy &nbsp;&nbsp;
+    Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    &nbsp;|&nbsp;主题 <a href="https://github.com/yiluyanxia/hexo-theme-antiquity" target="_blank" rel="noopener">antiquity</a>
+    <br>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv">不蒜子告之   阁下是第<span id="busuanzi_value_site_pv"></span>个访客</span>
+  </div>
+</footer>
+      <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script>
+if (!window.jQuery) {
+var script = document.createElement('script');
+script.src = "/js/jquery-2.0.3.min.js";
+document.body.write(script);
+}
+</script>
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+    </div>
+    <nav id="mobile-nav" class="mobile-nav-box">
+  <div class="mobile-nav-img mobile-nav-top"></div>
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+  <div class="mobile-nav-img  mobile-nav-bottom"></div>
+</nav>    
+  </div>
+</body>
+</html>
