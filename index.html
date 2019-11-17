@@ -54,6 +54,124 @@
       <div id="middlecontent" title class="global-width sidebar-right">
         <section id="main">
   
+    <article id="post-HDFS-Yarn-HA" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/11/17/HDFS-Yarn-HA/">HDFS&amp;Yarn HA</a>
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2017/11/17/HDFS-Yarn-HA/" class="article-date">
+  <time datetime="2017-11-17T11:33:40.000Z" itemprop="datePublished">2017-11-17</time>
+</a>
+    
+    
+  </div>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-cloud" itemprop="articleBody">
+      
+        <h1 id="1-Hadoop编译"><a href="#1-Hadoop编译" class="headerlink" title="1.Hadoop编译"></a>1.Hadoop编译</h1><p>总结一下在开发机上编译源码的小问题：<br>1.maven的setting.xml的配置</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;mirror&gt;</span><br><span class="line">     &lt;id&gt;nexus-aliyun&lt;/id&gt;</span><br><span class="line">     &lt;mirrorOf&gt;central&lt;/mirrorOf&gt;</span><br><span class="line">     &lt;name&gt;Nexus aliyun&lt;/name&gt;</span><br><span class="line">     &lt;url&gt;http://maven.aliyun.com/nexus/content/groups/public&lt;/url&gt;</span><br><span class="line">&lt;/mirror&gt;</span><br><span class="line">&lt;mirror&gt;</span><br><span class="line">     &lt;id&gt;cloudera&lt;/id&gt;</span><br><span class="line">     &lt;mirrorOf&gt;central&lt;/mirrorOf&gt;</span><br><span class="line">     &lt;name&gt;cloudera&lt;/name&gt;</span><br><span class="line">     &lt;url&gt;https://repository.cloudera.com/artifactory/cloudera-repos/&lt;/url&gt;</span><br><span class="line">&lt;/mirror&gt;</span><br></pre></td></tr></table></figure></div>
+
+<p>2.编译源码里的pom.xml文件里的cloudera-repos的url去掉https的s</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;repositories&gt;</span><br><span class="line">  &lt;repository&gt;</span><br><span class="line">    &lt;id&gt;cloudera&lt;/id&gt;</span><br><span class="line">    &lt;name&gt;cloudera&lt;/name&gt;</span><br><span class="line">    &lt;url&gt;http://repository.cloudera.com/artifactory/cloudera-repos/&lt;/url&gt;</span><br><span class="line">  &lt;/repository&gt;</span><br><span class="line">&lt;/repositories&gt;</span><br></pre></td></tr></table></figure></div>
+
+<p>  注意：idea开发的时候s是不去掉也ok(好像去不去掉都ok 都可以打开url提供的页面)</p>
+<p>  3.由于网络问题有些 .pom、.jar下载不完整，决解办法：去maven本地仓库先删掉对应文件，然后wget 文件的url。</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">扩展小知识：</span><br><span class="line">	   org/apache/avro/avro-parent/1.7.6-cdh5.15.1</span><br><span class="line">	   对应maven的坐标是：g：a：v</span><br><span class="line">	   即：org.apache.avro  ： avro-parent ： 1.7.6-cdh5.15.1</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="2-大数据的理解"><a href="#2-大数据的理解" class="headerlink" title="2.大数据的理解"></a>2.大数据的理解</h2><p>1.存储  （HDFS、Hive、HBase、Kudu）<br>2.计算   (Hive、sql、Spark、Flink)<br>3.资源作业调度 （Yarn）<br>这三个方面，个人认为 存储是最重要的，存储涉及到：同步设计、小文件、监控等。如果存储做的不好，计算写的天花乱坠也是没有用的。</p>
+<h2 id="3-HDFS-HA-amp-伪分布式"><a href="#3-HDFS-HA-amp-伪分布式" class="headerlink" title="3.HDFS HA &amp; 伪分布式"></a>3.HDFS HA &amp; 伪分布式</h2><p>对比较伪分布式再来引出HDFS的HA：</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">伪分布式：进程</span><br><span class="line">   HDFS：namenode、snn、dn</span><br><span class="line">   Yarn：rm、nm</span><br></pre></td></tr></table></figure></div>
+
+<p>  企业里用的绝对是HDFS的HA，伪分布式的snn无法做到实时checkpoint，snn只是一个冷备。<br>  那么企业是是需要是一个热备，做实时备份的：</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">nn节点挂掉，就不能提供对外服务，所以需要两个nn (active、standby)，任何时候只有1台 active的nn对外</span><br><span class="line">另一台是standby 做实时的备份(热备) ，随时准备有standby--&gt;active的状态，对外提供服务。外界是无感知的。</span><br></pre></td></tr></table></figure></div>
+
+<p>扩展小知识：</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">`客户端是通过什么同时对接两个nn呢？===》命名空间  （在配置文件里的）</span><br><span class="line">命名空间：挂载着nn1、nn2，client读写操作就可以通过命名空间操作。</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="4-HDFS-HA-机器进程（emmm以三台开发机为例）"><a href="#4-HDFS-HA-机器进程（emmm以三台开发机为例）" class="headerlink" title="4.HDFS HA 机器进程（emmm以三台开发机为例）"></a>4.HDFS HA 机器进程（emmm以三台开发机为例）</h2><p>首先去hadoop.apache.org官网查看，配置HA有两种QJM、NFS(类似百度网盘，百度一下nfs概念就明白了)，国内大部分是用QJM做HA的。下面的HA也是使用QJM做讲解。</p>
+<p>1.HDFS HA 三台机器的进程</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">doublehappy001:  ZK  NN   zkfc(zookeeperFailoverControl)     jn(JournalNode)              DN </span><br><span class="line">doublehappy002:  ZK  NN   zkfc			                     jn                           DN</span><br><span class="line">doublehappy003:  ZK                                          jn                           DN</span><br></pre></td></tr></table></figure></div>
+
+<p>jn：日志节点 记录请求的记录</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">企业里：</span><br><span class="line">		zk最好单独机器部署，不要和其他的进程放在一块，由于企业某些压力 进程放在一块可能（会造成）造成nn挂掉之后</span><br><span class="line">		standby的nn切换active的时候切换不了。</span><br><span class="line">		zk不是越多越好，多了选举的时候会相应慢。</span><br></pre></td></tr></table></figure></div>
+<p>经验：</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">jn: &gt;=3台 2n+1</span><br><span class="line">zk: 2n+1  投票选举</span><br><span class="line">zk的台数设置：</span><br><span class="line">    &lt;=20节点 : 5台  </span><br><span class="line">    20~100节点: 7/9/11台</span><br><span class="line">     &gt;100节点: 11台</span><br></pre></td></tr></table></figure></div>
+
+
+<p> 2.Yarn HA 三台机器的进程    </p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">doublehappy001: ZK        NN          zkfc(zookeeperFailoverControl)        jn(JournalNode)  DN    RM   NM</span><br><span class="line">doublehappy002: ZK        NN          zkfc			                        jn               DN    RM   NM</span><br><span class="line">doublehappy003: ZK                                                          jn               DN         NM</span><br></pre></td></tr></table></figure></div>
+
+<p>Yarn HA它没有用jn   ，这是HDFS HA &amp; Yarn HA 的所有进程</p>
+<p>扩展小知识：</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">主从架构 master --》slave </span><br><span class="line">    1.DN NM部署在同一个机器上  为了数据本地化  （spark那块，就是数据本地计算，不用经过网路传输到别的机器去算） </span><br><span class="line">    2.大数据生态圈 大部分组件都是主从架构  </span><br><span class="line">    hbase组件 master regionserver  （这块注意hbase读写流程  一般的主从架构读写是要访问master的 而HBase不访问master）</span><br></pre></td></tr></table></figure></div>
+
+
+
+<h2 id="5-HDFS-HA架构图"><a href="#5-HDFS-HA架构图" class="headerlink" title="5.HDFS HA架构图"></a>5.HDFS HA架构图</h2><p>HA使用active NN, standby NN两个节点解决单点问题。两个NN节点通过JN集群，共享状态，通过ZKFC选举active，监控状态，自动备援DN会同时向两个NN节点发送心跳。</p>
+<p>扩展小知识：</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">双写</span><br><span class="line">     生产上案例：</span><br><span class="line">       1.结果双写</span><br><span class="line">           spark--&gt;hbase（所有的） + es（对外 2个月数据 ttl）</span><br><span class="line">       2. 数据同步双写  </span><br><span class="line">           A线(延迟了 半小时) B线(没有延迟 )   电商节假日 （开启ab线，如果只开a线，在重要节日数据激增情况下数据会延迟）</span><br></pre></td></tr></table></figure></div>
+
+<p><img src="https://img-blog.csdnimg.cn/2019081812380949.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20190818123826419.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>active nn：</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">接收client的rpc请求并处理，同时自己editlog写一份，也向JN的共享存储上的editlog写一份。</span><br><span class="line">也同时接收DN的block report，block location updates 和 heartbeat</span><br></pre></td></tr></table></figure></div>
+
+<p>standby nn:</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">同样会接受到从JN的editlog上读取并执行这些log操作，使自己的NN的元数据和activenn的元数据是同步的，</span><br><span class="line">所以说standby是active nn的一个热备。一旦切换为active状态，就能够立即马上对外提供NN角色的服务。</span><br><span class="line">也同时接收DN的block report，block location updates 和 heartbeat</span><br></pre></td></tr></table></figure></div>
+
+<p>jn：</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">用于active nn,standby nn的同步数据，本身由一组的JN节点组成的集群，奇数，3台(CDH)，是支持Paxos协议。</span><br><span class="line">保证高可用。</span><br></pre></td></tr></table></figure></div>
+
+<p>ZKFC：</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">监控NN的健康状态</span><br><span class="line">向ZK集群定期发送心跳  ，让自己被选举，当自己被ZK选举为主时，zkfc进程通过rpc调用让nn转换为active状态</span><br></pre></td></tr></table></figure></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20190818124420729.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="6-Yarn-HA架构图"><a href="#6-Yarn-HA架构图" class="headerlink" title="6.Yarn HA架构图"></a>6.Yarn HA架构图</h2><p><img src="https://img-blog.csdnimg.cn/20190818124348795.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>RM:</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">a.启动时会通过向ZK的/hadoop-ha目录写一个lock文件，写成功则为active，否则standby。</span><br><span class="line">  standby RM会一直监控lock文件的是否存在，如果不存在就会尝试去创建，争取为active rm。</span><br><span class="line">b.会接收客户端的任务请求，接收和监控nm的资源的汇报，负责资源的分配与调度，启动和监控 ApplicationMaster（AM）</span><br></pre></td></tr></table></figure></div>
+
+<p>NM:</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">节点上的资源的管理，启动container 容器 运行task的计算，上报资源，container情况汇报给RM和任务的处理情况汇报给 </span><br><span class="line">ApplicationMaster（AM）</span><br></pre></td></tr></table></figure></div>
+
+<p>ApplicationMaster（AM）driver : </p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nm机器上的container</span><br><span class="line">单个application(job)的task的管理和调度，并向rm进行资源的申请，</span><br><span class="line">向nm发出 launch container指令，接收NM的task的处理状态信息。</span><br></pre></td></tr></table></figure></div>
+
+<p>RMstatestore:</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">a.RM的作业信息存储在ZK的/rmstore下，active RM向这个目录写app信息</span><br><span class="line">b.当active rm挂了，另外一个standby rm成功转换为active rm后，会从/rmstore目录读取相应的作业信息，</span><br><span class="line">重新构建作业的内存信息。然后启动内部服务，开始接收NM的心跳，构建集群资源的信息，并接收客户端的提交作业的请求等。</span><br></pre></td></tr></table></figure></div>
+
+<p>ZKFC:</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">自动故障转移 只作为RM进程的一个线程  而非独立的守护进程来启动</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="7-HDFS-amp-Yarn-HA架构区别"><a href="#7-HDFS-amp-Yarn-HA架构区别" class="headerlink" title="7.HDFS &amp;Yarn HA架构区别"></a>7.HDFS &amp;Yarn HA架构区别</h2><p>ZKFC：</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">   Yarn：只作为RM进程的一个线程，而非独立的守护进程来启动</span><br><span class="line">HDFS：作为一个进程来启动</span><br></pre></td></tr></table></figure></div>
+
+<p>从节点心跳接收：</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Yarn: 只有active的rm接受nm的心跳 standby不接受nm的心跳。</span><br><span class="line">HDFS：active和standby 都接受dn心跳</span><br></pre></td></tr></table></figure></div>
+
+<p>active-&gt;standby切换：</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Yarn：</span><br><span class="line">     当active rm挂了，另外一个standby rm成功转换为active rm后，会从/rmstore目录读取相应的作业信息，</span><br><span class="line">     重新构建作业的内存信息。然后启动内部服务，开始接收NM的心跳，构建集群资源的信息，并接收客户端的提交作业的请求。</span><br><span class="line"></span><br><span class="line">HDFS：</span><br><span class="line">    active nn 自己写editlog写一份，也向JN的共享存储上的editlog写一份，standby nn 同样会接受到从JN的editlog上</span><br><span class="line">    读取并执行这些log操作，使自己的NN的元数据和activenn的元数据是同步的，所以说standby是active nn的一个热备。</span><br><span class="line">    一旦切换为active状态，就能够立即马上对外提供NN角色的服务。</span><br></pre></td></tr></table></figure></div>
+<p>总结：</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Yarn是active挂了之后去RMstatestore读取作业信息</span><br><span class="line">HDFS是standby实时的去JN上读取editlog 使自己的NN的元数据和activenn的元数据是同步的。</span><br></pre></td></tr></table></figure></div>
+
+<p>体现出HDFS比Yarn的HA重要性，也体现出 存储比计算重要。</p>
+
+      
+    </div>
+    
+  </div>
+  
+  
+</article>
+
+  
     <article id="post-JVM02" class="article global-container article-type-post" itemscope itemprop="blogPost">
   
     <header class="article-header">
@@ -247,6 +365,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2017/11/17/HDFS-Yarn-HA/">HDFS&amp;Yarn HA</a>
+          </li>
         
           <li>
             <a href="/2017/11/15/JVM02/">JVM02</a>
