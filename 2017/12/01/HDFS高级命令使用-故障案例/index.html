@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>HDFS高级命令使用&amp;故障案例 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="1.高级命令常用命令总结：一：HA命令123456789操作HA 就用 hdfs haadmin[hadoop@ruozedata003 ~]$ hdfs haadminUsage: DFSHAAdmin [-ns &amp;lt;nameserviceId&amp;gt;]    [-transitionToActive &amp;lt;serviceId&amp;gt; [--forceactive]]    [-trans">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HDFS高级命令使用&amp;故障案例">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2017&#x2F;12&#x2F;01&#x2F;HDFS%E9%AB%98%E7%BA%A7%E5%91%BD%E4%BB%A4%E4%BD%BF%E7%94%A8-%E6%95%85%E9%9A%9C%E6%A1%88%E4%BE%8B&#x2F;index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="1.高级命令常用命令总结：一：HA命令123456789操作HA 就用 hdfs haadmin[hadoop@ruozedata003 ~]$ hdfs haadminUsage: DFSHAAdmin [-ns &amp;lt;nameserviceId&amp;gt;]    [-transitionToActive &amp;lt;serviceId&amp;gt; [--forceactive]]    [-trans">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-11-17T11:39:48.315Z">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/default-avatar.jpg">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/highlight.css">
+</head>
+
+<body>
+  <div id="fullpage" class="mobile-nav-right">
+    
+      <div id="wrapper" title="图片来自网络">
+    
+    
+      <header id="header">
+  <div id="nav-toggle" class="nav-toggle"></div>
+  <div class="head-box global-width">
+    <nav class="nav-box nav-right">
+      
+        <a class="nav-item" href="/" title
+        
+        >首页</a>
+      
+        <a class="nav-item" href="/archives" title
+        
+        >归档</a>
+      
+    </nav>
+  </div>
+</header>
+      <div id="middlecontent" title class="global-width sidebar-right">
+        <section id="main"><article id="post-HDFS高级命令使用-故障案例" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 class="article-title" itemprop="name">
+      HDFS高级命令使用&amp;故障案例
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2017/12/01/HDFS%E9%AB%98%E7%BA%A7%E5%91%BD%E4%BB%A4%E4%BD%BF%E7%94%A8-%E6%95%85%E9%9A%9C%E6%A1%88%E4%BE%8B/" class="article-date">
+  <time datetime="2017-12-01T11:39:04.000Z" itemprop="datePublished">2017-12-01</time>
+</a>
+    
+    
+  </div>
+  
+    <span id="busuanzi_container_page_pv">
+      本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+    </span>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-cloud" itemprop="articleBody">
+      
+        <h1 id="1-高级命令"><a href="#1-高级命令" class="headerlink" title="1.高级命令"></a>1.高级命令</h1><h1 id="常用命令总结："><a href="#常用命令总结：" class="headerlink" title="常用命令总结："></a>常用命令总结：</h1><h1 id="一：HA命令"><a href="#一：HA命令" class="headerlink" title="一：HA命令"></a>一：HA命令</h1><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">操作HA 就用 hdfs haadmin</span><br><span class="line">[hadoop@ruozedata003 ~]$ hdfs haadmin</span><br><span class="line">Usage: DFSHAAdmin [-ns &lt;nameserviceId&gt;]</span><br><span class="line">    [-transitionToActive &lt;serviceId&gt; [--forceactive]]</span><br><span class="line">    [-transitionToStandby &lt;serviceId&gt;]</span><br><span class="line">    [-failover [--forcefence] [--forceactive] &lt;serviceId&gt; &lt;serviceId&gt;]</span><br><span class="line">    [-getServiceState &lt;serviceId&gt;]</span><br><span class="line">    [-checkHealth &lt;serviceId&gt;]</span><br><span class="line">    [-help &lt;command&gt;]</span><br></pre></td></tr></table></figure></div>
+<pre><code>1.hdfs  haadmin  -getServiceState    nn1/nn2       查看serviceId的状态</code></pre><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">eg：</span><br><span class="line">[hadoop@ruozedata003 ~]$ hdfs haadmin -getServiceState nn1</span><br><span class="line">active</span><br><span class="line">[hadoop@ruozedata003 ~]$ hdfs haadmin -getServiceState nn2</span><br><span class="line">standby</span><br><span class="line">[hadoop@ruozedata003 ~]$</span><br></pre></td></tr></table></figure></div>
+<p>小案例模拟：假设active 的 nn 被kill 掉了 ，standby 的 nn 能不能变成active？</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">（1）把 nn1的namenode kill掉</span><br><span class="line">			[hadoop@ruozedata001 ~]$ kill -9 4584</span><br><span class="line">			[hadoop@ruozedata001 ~]$ jps</span><br><span class="line">			5184 ResourceManager</span><br><span class="line">			4690 DataNode</span><br><span class="line">			4338 QuorumPeerMain</span><br><span class="line">			4883 JournalNode</span><br><span class="line">			5291 NodeManager</span><br><span class="line">			5836 Jps</span><br><span class="line">			5070 DFSZKFailoverController</span><br><span class="line">			[hadoop@ruozedata001 ~]$ </span><br><span class="line">（2）查看nn2的状态 </span><br><span class="line">			[hadoop@ruozedata003 ~]$ hdfs haadmin  -getServiceState nn1</span><br><span class="line">			19/08/24 17:49:08 INFO ipc.Client: Retrying connect to server: ruozedata001/172.17.76.204:8020. Already tried 0 time(s); retry policy is RetryUpToMaximumCountWithFixedSleep(maxRetries=1, sleepTime=1000 MILLISECONDS)</span><br><span class="line">			Operation failed: Call From ruozedata003/172.17.76.205 to ruozedata001:8020 failed on connection exception: java.net.ConnectException: Connection refused; For more details see:  http://wiki.apache.org/hadoop/ConnectionRefused</span><br><span class="line">			[hadoop@ruozedata003 ~]$ hdfs haadmin  -getServiceState nn2</span><br><span class="line">			active</span><br><span class="line">说明standby nn 切换成active</span><br><span class="line">（3）手动启动 nn1 单点的namenode</span><br><span class="line">			[hadoop@ruozedata001 ~]$ hadoop-daemon.sh start namenode</span><br><span class="line">			starting namenode, logging to /home/hadoop/app/hadoop-2.6.0-cdh5.15.1/logs/hadoop-hadoop-namenode-ruozedata001.out</span><br><span class="line">			[hadoop@ruozedata001 ~]$ jps</span><br><span class="line">			5184 ResourceManager</span><br><span class="line">			4690 DataNode</span><br><span class="line">			4338 QuorumPeerMain</span><br><span class="line">			4883 JournalNode</span><br><span class="line">			5989 Jps</span><br><span class="line">			5909 NameNode</span><br><span class="line">			5291 NodeManager</span><br><span class="line">			5070 DFSZKFailoverController</span><br><span class="line">			[hadoop@ruozedata001 ~]$ </span><br><span class="line">（4）查看各个serviceId的状态</span><br><span class="line">			[hadoop@ruozedata001 ~]$ hdfs haadmin  -getServiceState nn1</span><br><span class="line">			standby</span><br><span class="line">			[hadoop@ruozedata001 ~]$ hdfs haadmin  -getServiceState nn2</span><br><span class="line">			active</span><br><span class="line">			[hadoop@ruozedata001 ~]$</span><br></pre></td></tr></table></figure></div>
+<p>2.把standby 切换为active的    失效转移<br>hdfs haadmin -failover  <serviceId> <serviceId>     第一个参数是active的nn   serviceId1的active转向serviceId2的active</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[hadoop@ruozedata001 ~]$ hdfs haadmin -getServiceState nn1</span><br><span class="line">active</span><br><span class="line">[hadoop@ruozedata001 ~]$ hdfs haadmin -getServiceState nn2</span><br><span class="line">standby</span><br><span class="line">[hadoop@ruozedata001 ~]$ hdfs haadmin -failover nn2 nn1   </span><br><span class="line">Failover to NameNode at ruozedata001/172.17.76.204:8020 successful</span><br><span class="line">[hadoop@ruozedata001 ~]$ hdfs haadmin -getServiceState nn1</span><br><span class="line">active</span><br><span class="line">[hadoop@ruozedata001 ~]$ hdfs haadmin -getServiceState nn2</span><br><span class="line">standby</span><br><span class="line">[hadoop@ruozedata001 ~]$ hdfs haadmin -failover nn1 nn2</span><br><span class="line">Failover to NameNode at ruozedata002/172.17.76.206:8020 successful</span><br><span class="line">[hadoop@ruozedata001 ~]$ hdfs haadmin -getServiceState nn1</span><br><span class="line">standby</span><br><span class="line">[hadoop@ruozedata001 ~]$ hdfs haadmin -getServiceState nn2</span><br><span class="line">active</span><br><span class="line">[hadoop@ruozedata001 ~]$</span><br></pre></td></tr></table></figure></div>
+<h1 id="二：HDFS集群的健康检查命令"><a href="#二：HDFS集群的健康检查命令" class="headerlink" title="二：HDFS集群的健康检查命令"></a>二：HDFS集群的健康检查命令</h1><p>当有文件损坏的时候 损坏的块/丢失的副本  </p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">做hdfs集群健康检查hdfs fsck</span><br><span class="line">[hadoop@ruozedata001 ~]$ hdfs fsck</span><br><span class="line">Usage: DFSck &lt;path&gt; [-list-corruptfileblocks | [-move | -delete | -openforwrite] [-files [-blocks [-locations | -racks]]]] [-maintenance]</span><br><span class="line">        &lt;path&gt;  start checking from this path</span><br><span class="line">        -move   move corrupted files to /lost+found</span><br><span class="line">        -delete delete corrupted files</span><br><span class="line">        -files  print out files being checked</span><br><span class="line">        -openforwrite   print out files opened for write</span><br><span class="line">        -includeSnapshots       include snapshot data if the given path indicates a snapshottable directory or there are snapshottable directories under it</span><br><span class="line">        -list-corruptfileblocks    print out list of missing blocks and files they belong to</span><br><span class="line">        -blocks print out block report</span><br><span class="line">        -locations      print out locations for every block</span><br><span class="line">        -racks  print out network topology for data-node locations</span><br><span class="line"></span><br><span class="line">        -maintenance    print out maintenance state node details</span><br><span class="line">        -blockId        print out which file this blockId belongs to, locations (nodes, racks) of this block, and other diagnostics info (under replicated, corrupted or not, etc)</span><br></pre></td></tr></table></figure></div>
+<p>1.查看有没有损坏的块和丢失的副本</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">[hadoop@ruozedata001 ~]$ hdfs fsck /</span><br><span class="line">Connecting to namenode via http://ruozedata002:50070/fsck?ugi=hadoop&amp;path=%2F</span><br><span class="line">FSCK started by hadoop (auth:SIMPLE) from /172.17.76.204 for path / at Sat Aug 24 18:14:07 CST 2019</span><br><span class="line">Status: HEALTHY</span><br><span class="line"> Total size:    0 B</span><br><span class="line"> Total dirs:    7</span><br><span class="line"> Total files:   0</span><br><span class="line"> Total symlinks:                0</span><br><span class="line"> Total blocks (validated):      0</span><br><span class="line"> Minimally replicated blocks:   0</span><br><span class="line"> Over-replicated blocks:        0</span><br><span class="line"> Under-replicated blocks:       0</span><br><span class="line"> Mis-replicated blocks:         0</span><br><span class="line"> Default replication factor:    3</span><br><span class="line"> Average block replication:     0.0</span><br><span class="line"> Corrupt blocks:                0</span><br><span class="line"> Missing replicas:              0</span><br><span class="line"> Number of data-nodes:          3</span><br><span class="line"> Number of racks:               1</span><br><span class="line">FSCK ended at Sat Aug 24 18:14:07 CST 2019 in 2 milliseconds</span><br><span class="line">The filesystem under path &apos;/&apos; is HEALTHY</span><br><span class="line">[hadoop@ruozedata001 ~]$</span><br></pre></td></tr></table></figure></div>
+<p>2.如果有损坏的块和丢失的副本  不想恢复他们想一了百了    只删除损坏的文件</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">[hadoop@ruozedata001 ~]$ hdfs fsck / -delete</span><br><span class="line">Connecting to namenode via http://ruozedata002:50070/fsck?ugi=hadoop&amp;delete=1&amp;path=%2F</span><br><span class="line">FSCK started by hadoop (auth:SIMPLE) from /172.17.76.204 for path / at Sat Aug 24 18:16:17 CST 2019</span><br><span class="line">Status: HEALTHY</span><br><span class="line"> Total size:    0 B</span><br><span class="line"> Total dirs:    7</span><br><span class="line"> Total files:   0</span><br><span class="line"> Total symlinks:                0</span><br><span class="line"> Total blocks (validated):      0</span><br><span class="line"> Minimally replicated blocks:   0</span><br><span class="line"> Over-replicated blocks:        0</span><br><span class="line"> Under-replicated blocks:       0</span><br><span class="line"> Mis-replicated blocks:         0</span><br><span class="line"> Default replication factor:    3</span><br><span class="line"> Average block replication:     0.0</span><br><span class="line"> Corrupt blocks:                0</span><br><span class="line"> Missing replicas:              0</span><br><span class="line"> Number of data-nodes:          3</span><br><span class="line"> Number of racks:               1</span><br><span class="line">FSCK ended at Sat Aug 24 18:16:17 CST 2019 in 0 milliseconds</span><br><span class="line">The filesystem under path &apos;/&apos; is HEALTHY</span><br></pre></td></tr></table></figure></div>
+<p>注意：如果不想删除损坏的文件怎么办呢？（作业）<br>3.损坏的文件 在哪些块上面（因为也不知道文件的这些块分布在那台机器上面） -list-corruptfileblocks  会打印损坏的文件的哪些块损坏了或丢失了</p>
+<h1 id="三：HDFS集群案例"><a href="#三：HDFS集群案例" class="headerlink" title="三：HDFS集群案例"></a>三：HDFS集群案例</h1><p>1.现象是：<br>断电 导致HDFS服务不正常或者显示块损坏</p>
+<p>2.检查HDFS系统文件健康状态<br>hdfs fsck /  或者在50070的页面查看(这个命令只会显示哪个文件损坏了)</p>
+<p>3.检查 损坏的文件的哪些块损坏 (加上-list-corruptfileblocks 参数)</p>
+<p>hdfs fsck / -list-corruptfileblocks   会打印出损坏的块<br>这块会打印出哪个文件的哪些块损坏</p>
+<p>4.解决<br> 1.第一种解决办法：不建议 耗时<br>    把损坏的数据 重新刷一份到HDFS平台即可（前提你明确知道  重刷的哪个数据（就是你删除哪个损坏文件 对应的源头数据在哪））<br> 2.第二种解决办法：下面的实验</p>
+<p>5.想要知道文件的哪些块分布在哪些机器上面？<br>  如果我知道哪个文件的哪些块在哪台机器上面 我就可以手工的把那个块删掉了（使用linux命令） 就不用使用 hdfs fsck / -delete </p>
+<p> 因为 hdfs fsck / -delete  他是删除损坏的文件 （直接把损坏的文件干掉了 而不是删除损坏的块）</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">但是 有一个问题 如果这个损坏的块被删除 你的数据该如何完整的恢复？ 你怎么知道删除的那个块 数据丢了多少？ 根本不知道</span><br></pre></td></tr></table></figure></div>
+
+
+
+<p>实验：上传一个文件到hdfs上 （三个副本），在某台机器上找到对应的副本文件 删掉一个副本文件<br>最终使用hdfs debug 来利用其余两个好的副本恢复损坏的文件</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">重要的命令：hdfs debug</span><br><span class="line">[hadoop@ruozedata001 ~]$ hdfs debug</span><br><span class="line">Usage: hdfs debug &lt;command&gt; [arguments]</span><br><span class="line">These commands are for advanced users only.</span><br><span class="line">Incorrect usages may result in data loss. Use at your own risk.</span><br><span class="line">verifyMeta -meta &lt;metadata-file&gt; [-block &lt;block-file&gt;]</span><br><span class="line">computeMeta -block &lt;block-file&gt; -out &lt;output-metadata-file&gt;</span><br><span class="line">recoverLease -path &lt;path&gt; [-retries &lt;num-retries&gt;]</span><br><span class="line">[hadoop@ruozedata001 ~]$</span><br></pre></td></tr></table></figure></div>
+      
+    </div>
+    
+      <footer class="article-footer">
+        完
+      </footer>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  <div class="article-nav-block">
+    
+      <a href="/2019/12/02/MapReduce%E5%8E%9F%E7%90%8601/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption"></strong>
+        <div class="article-nav-title">
+          
+            MapReduce原理01
+          
+        </div>
+      </a>
+    
+  </div>
+  <div class="article-nav-block">
+    
+      <a href="/2017/11/18/HDFS-Yarn-HA-%E9%83%A8%E7%BD%B2-%E7%AC%AC%E4%BA%8C%E6%AC%A1/" id="article-nav-older" class="article-nav-link-wrap">
+        <div class="article-nav-title">HDFS&amp;Yarn HA 部署 第二次</div>
+        <strong class="article-nav-caption"></strong>
+      </a>
+    
+  </div>
+</nav>
+
+    <link rel="stylesheet" href="/css/gitment.css"> 
+<script src="/js/gitment.js"></script>
+
+<div id="gitmentContainer"></div>
+
+<script>
+var gitment = new Gitment({
+  owner: '',
+  repo: '',
+  oauth: {
+    client_id: '',
+    client_secret: '',
+  },
+})
+gitment.render('gitmentContainer')
+</script>
+
+  
+  
+</article>
+</section>
+        <aside id="sidebar">
+  
+    <div class="widget-box">
+  <div class="avatar-box">
+    <img class="avatar" src="/images/default-avatar.jpg" title="图片来自网络"></img>
+    <h3 class="avatar-name">
+      
+        DoubleHappy
+      
+    </h3>
+    <p class="avatar-slogan">
+      特别耐撕的大数据，资深的打酱油攻城狮。
+    </p>
+  </div>
+</div>
+
+
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/12/02/MapReduce%E5%8E%9F%E7%90%8601/">MapReduce原理01</a>
+          </li>
+        
+          <li>
+            <a href="/2017/12/01/HDFS%E9%AB%98%E7%BA%A7%E5%91%BD%E4%BB%A4%E4%BD%BF%E7%94%A8-%E6%95%85%E9%9A%9C%E6%A1%88%E4%BE%8B/">HDFS高级命令使用&amp;故障案例</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/18/HDFS-Yarn-HA-%E9%83%A8%E7%BD%B2-%E7%AC%AC%E4%BA%8C%E6%AC%A1/">HDFS&amp;Yarn HA 部署 第二次</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/17/HDFS-Yarn-HA/">HDFS&amp;Yarn HA</a>
+          </li>
+        
+          <li>
+            <a href="/2017/11/15/JVM02/">JVM02</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+      <div class="widget-box">
+    <h3 class="widget-title">友链</h3>
+    <div class="widget">
+      
+        <a style="display: block;" href="https://sxwanggit126.github.io/" title target='_blank'
+        >一路眼瞎</a>
+      
+    </div>
+  </div>
+
+  
+</aside>
+      </div>
+      <footer id="footer">
+  <div class="foot-box global-width">
+    &copy; 2019 DoubleHappy &nbsp;&nbsp;
+    Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    &nbsp;|&nbsp;主题 <a href="https://github.com/yiluyanxia/hexo-theme-antiquity" target="_blank" rel="noopener">antiquity</a>
+    <br>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv">不蒜子告之   阁下是第<span id="busuanzi_value_site_pv"></span>个访客</span>
+  </div>
+</footer>
+      <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script>
+if (!window.jQuery) {
+var script = document.createElement('script');
+script.src = "/js/jquery-2.0.3.min.js";
+document.body.write(script);
+}
+</script>
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+    </div>
+    <nav id="mobile-nav" class="mobile-nav-box">
+  <div class="mobile-nav-img mobile-nav-top"></div>
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+  <div class="mobile-nav-img  mobile-nav-bottom"></div>
+</nav>    
+  </div>
+</body>
+</html>
