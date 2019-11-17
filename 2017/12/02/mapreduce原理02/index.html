@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>mapreduce原理02 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="1.combinermappartitionreducecombiner 12345678910111213141516171819202122232425combiner :前提：正常模式下：InputSplit:   map:    (ruoze,1)    (ruoze,1)    (ruoze,1)    (jepson,1)    (jepson,1)    (xingxing,1)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mapreduce原理02">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2017&#x2F;12&#x2F;02&#x2F;mapreduce%E5%8E%9F%E7%90%8602&#x2F;index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="1.combinermappartitionreducecombiner 12345678910111213141516171819202122232425combiner :前提：正常模式下：InputSplit:   map:    (ruoze,1)    (ruoze,1)    (ruoze,1)    (jepson,1)    (jepson,1)    (xingxing,1)">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-11-17T11:43:35.434Z">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/default-avatar.jpg">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/highlight.css">
+</head>
+
+<body>
+  <div id="fullpage" class="mobile-nav-right">
+    
+      <div id="wrapper" title="图片来自网络">
+    
+    
+      <header id="header">
+  <div id="nav-toggle" class="nav-toggle"></div>
+  <div class="head-box global-width">
+    <nav class="nav-box nav-right">
+      
+        <a class="nav-item" href="/" title
+        
+        >首页</a>
+      
+        <a class="nav-item" href="/archives" title
+        
+        >归档</a>
+      
+    </nav>
+  </div>
+</header>
+      <div id="middlecontent" title class="global-width sidebar-right">
+        <section id="main"><article id="post-mapreduce原理02" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 class="article-title" itemprop="name">
+      mapreduce原理02
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2017/12/02/mapreduce%E5%8E%9F%E7%90%8602/" class="article-date">
+  <time datetime="2017-12-02T11:43:10.000Z" itemprop="datePublished">2017-12-02</time>
+</a>
+    
+    
+  </div>
+  
+    <span id="busuanzi_container_page_pv">
+      本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+    </span>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-cloud" itemprop="articleBody">
+      
+        <h1 id="1-combiner"><a href="#1-combiner" class="headerlink" title="1.combiner"></a>1.combiner</h1><p>map<br>partition<br>reduce<br>combiner</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">combiner :</span><br><span class="line">前提：</span><br><span class="line">正常模式下：</span><br><span class="line">InputSplit:</span><br><span class="line">   map:</span><br><span class="line">    (ruoze,1)</span><br><span class="line">    (ruoze,1)</span><br><span class="line">    (ruoze,1)</span><br><span class="line">    (jepson,1)</span><br><span class="line">    (jepson,1)</span><br><span class="line">    (xingxing,1)</span><br><span class="line"></span><br><span class="line">   reduce:</span><br><span class="line">    (ruoze,&lt;1,1,1&gt;)</span><br><span class="line">    </span><br><span class="line">combiner ：目的是解决map结束后本地预聚合（实际上是运行在map task 里的）</span><br><span class="line">Combiner: 就是一个本地化的Reduce，局部的聚合  Ruducer是全局的聚合</span><br><span class="line">    运行在MapTask</span><br><span class="line">    (ruoze,3)</span><br><span class="line">    (jepson,2)</span><br><span class="line">    (xingxing,1)</span><br><span class="line"></span><br><span class="line">好处是 shuffle时候map输出 到reduce  传输的数据量 会减少很多 减少io</span><br><span class="line"></span><br><span class="line">前提是  使用场景 不影响业务本身！！！</span><br></pre></td></tr></table></figure></div>
+<h1 id="2-TopN（全局）"><a href="#2-TopN（全局）" class="headerlink" title="2.TopN（全局）"></a>2.TopN（全局）</h1><p>两个思路：假设有100个map，那么在map输出的时候</p>
+<ol>
+<li>是要输出map里所有的（利用reduce input时候 key排序 来设计 map端输出到reduce   在reduce端进行topn）</li>
+<li>map输出的时候只需要输出map里的topn就可以呢（在map 方法里写 topn   最后使用clean up 输出 reduecer 那边和mapper类似）</li>
+</ol>
+<p>最好是现在map里处理好再输出。</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">1，2 都有这个问题 ： 会把重复的key覆盖掉，注意不是treemap的问题 treemap是用来排序的 是key的类型的问题 key的类型的comparable方法的问题，所以这里你要自定义一个key的数据类型</span><br><span class="line"></span><br><span class="line">1方法. 不使用treemap mapper里全部输出 在reducer里做topn</span><br><span class="line"></span><br><span class="line">2方法.map里使用treemap   （会把重复的key覆盖掉，注意不是treemap的问题 treemap是用来排序的 是key的类型的问题 key的类型的comparable方法的问题，所以这里你要自定义一个key的数据类型 ）这个不用写reducer</span><br><span class="line"></span><br><span class="line">总结 ： 那么分区的topn 应该也会了吧</span><br></pre></td></tr></table></figure></div>
+<h1 id="3-ArrayList"><a href="#3-ArrayList" class="headerlink" title="3.ArrayList"></a>3.ArrayList</h1><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">1.底层是一个object类型的数组</span><br><span class="line">2.线程不安全的   多线程情况下使用 Collections.synchronizedList(传一个list)</span><br><span class="line">    主要的属性</span><br><span class="line">        DEFAULT_CAPACITY = 10;</span><br><span class="line">        Object[] EMPTY_ELEMENTDATA = &#123;&#125;;</span><br><span class="line">        Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = &#123;&#125;;</span><br><span class="line">        Object[] elementData;</span><br><span class="line">        int size;</span><br><span class="line">注意：</span><br><span class="line">1.问 new ArrayList() 它的数组size是多少 ？ 很多人认为是10   ，不是的 是空  </span><br><span class="line"></span><br><span class="line">方法</span><br><span class="line">        构造函数</span><br><span class="line">        add</span><br><span class="line">            是否扩容</span><br><span class="line">            添加</span><br><span class="line">            扩容：</span><br><span class="line">                原来是elementdata.length</span><br><span class="line">                原来的1.5倍   &gt;&gt; 1</span><br><span class="line">                Integer.MAX_VALUE</span><br><span class="line">        remove</span><br><span class="line"></span><br><span class="line">        特点：适合快速查找  inde</span><br><span class="line">        缺点：删除 指定index插入  性能很低 因为涉及到数组后续元素的移动</span><br><span class="line"></span><br><span class="line">注意：</span><br><span class="line">List&lt;String&gt; list = new ArrayList&lt;.();</span><br><span class="line"> list.add(&quot;ruoze&quot;);</span><br><span class="line"> list.add(&quot;double_hadppy&quot;);</span><br><span class="line"> list.add(&quot;double_hadppy&quot;);</span><br><span class="line"> list.add(&quot;double_hadppy&quot;);</span><br><span class="line"> list.add(&quot;kairis&quot;);</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">*ruoze    double_hadppy  double_hadppy  double_hadppy   kairis</span><br><span class="line">*ruoze    do`在这里插入代码片`uble_hadppy  double_hadppy    kairis</span><br><span class="line">* ruoze    double_hadppy   kairis</span><br><span class="line">*/</span><br><span class="line">//删除</span><br><span class="line">for(int i = 0 ; i&lt; list.size(); i++)&#123;</span><br><span class="line">	if(list.get(i).equals(&quot;double_happy&quot;))&#123;</span><br><span class="line">	 	list.remove(i);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">System.out.println(list.size());</span><br><span class="line">//这个结果是什么呢？  ruoze    double_hadppy   kairis</span><br><span class="line">这个题很经典</span><br><span class="line">那么如何把 double_hadppy 全删掉呢？</span><br></pre></td></tr></table></figure></div>
+<h1 id="4-outputformat"><a href="#4-outputformat" class="headerlink" title="4.outputformat"></a>4.outputformat</h1><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1.自定义outputformat</span><br><span class="line">    a.实先Fileoutputformat</span><br><span class="line">    b.实现里面的recordwriter 方法</span><br><span class="line">    c.定义recordwriter类  带有构造方法（job）   通过输出流把数据写出去</span><br></pre></td></tr></table></figure></div>
+<h1 id="5-把不同数据分类写入不同的文件（两种方法）"><a href="#5-把不同数据分类写入不同的文件（两种方法）" class="headerlink" title="5.把不同数据分类写入不同的文件（两种方法）"></a>5.把不同数据分类写入不同的文件（两种方法）</h1><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1.自定义分区</span><br><span class="line">2.自定义outputformat</span><br></pre></td></tr></table></figure></div>
+
+<h1 id="6-join"><a href="#6-join" class="headerlink" title="6.join"></a>6.join</h1><p>reducer join<br>map join</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">流程：</span><br><span class="line">emp</span><br><span class="line">    &lt;deptno, emp_value&gt;</span><br><span class="line">dept</span><br><span class="line">    &lt;deptno, dept_value&gt;</span><br><span class="line"></span><br><span class="line">==&gt; shuffle</span><br><span class="line">    &lt;deptno, &lt;emp_value,dept_value&gt;&gt;</span><br><span class="line"></span><br><span class="line">reduce join的原理：区分出来哪个数据来自于哪里 flag</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">reducer join：</span><br><span class="line">	1.自定义类型</span><br><span class="line">	2.mapper里 setup方法 context获取分片强转成FileSplit  获取文件名  在map方法里把不同表数据（这块写数据 可以使用 set方法 / 构造器 / 反射 ）写出去（设置flag）</span><br><span class="line">	3.reducer里   数据拆分</span><br></pre></td></tr></table></figure></div>
+      
+    </div>
+    
+      <footer class="article-footer">
+        完
+      </footer>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  <div class="article-nav-block">
+    
+      <a href="/2017/12/03/Scala%E8%AF%AD%E6%B3%95%E7%BB%86%E8%8A%8201-double-happy/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption"></strong>
+        <div class="article-nav-title">
+          
+            Scala语法细节01--double_happy
+          
+        </div>
+      </a>
+    
+  </div>
+  <div class="article-nav-block">
+    
+      <a href="/2017/12/02/MapReduce%E5%8E%9F%E7%90%8601/" id="article-nav-older" class="article-nav-link-wrap">
+        <div class="article-nav-title">MapReduce原理01</div>
+        <strong class="article-nav-caption"></strong>
+      </a>
+    
+  </div>
+</nav>
+
+    <link rel="stylesheet" href="/css/gitment.css"> 
+<script src="/js/gitment.js"></script>
+
+<div id="gitmentContainer"></div>
+
+<script>
+var gitment = new Gitment({
+  owner: '',
+  repo: '',
+  oauth: {
+    client_id: '',
+    client_secret: '',
+  },
+})
+gitment.render('gitmentContainer')
+</script>
+
+  
+  
+</article>
+</section>
+        <aside id="sidebar">
+  
+    <div class="widget-box">
+  <div class="avatar-box">
+    <img class="avatar" src="/images/default-avatar.jpg" title="图片来自网络"></img>
+    <h3 class="avatar-name">
+      
+        DoubleHappy
+      
+    </h3>
+    <p class="avatar-slogan">
+      特别耐撕的大数据，资深的打酱油攻城狮。
+    </p>
+  </div>
+</div>
+
+
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/01/05/Azkaban%E8%B0%83%E5%BA%A6-double-happy/">Azkaban调度--double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2019/01/04/Zookeeper%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E4%B8%8E%E7%9B%91%E6%8E%A7-Curator/">Zookeeper基本使用与监控(Curator)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/04/17/SparkSQL-TextFile%E8%BE%93%E5%87%BA%E5%A4%9A%E5%88%97/">SparkSQL--TextFile输出多列</a>
+          </li>
+        
+          <li>
+            <a href="/2018/03/17/%E9%9B%85%E6%81%A9%E8%B5%84%E6%BA%90%E8%B0%83%E4%BC%98-double-happy/">雅恩资源调优---double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/22/SS04/">SS04</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+      <div class="widget-box">
+    <h3 class="widget-title">友链</h3>
+    <div class="widget">
+      
+        <a style="display: block;" href="https://sxwanggit126.github.io/" title target='_blank'
+        >一路眼瞎</a>
+      
+    </div>
+  </div>
+
+  
+</aside>
+      </div>
+      <footer id="footer">
+  <div class="foot-box global-width">
+    &copy; 2019 DoubleHappy &nbsp;&nbsp;
+    Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    &nbsp;|&nbsp;主题 <a href="https://github.com/yiluyanxia/hexo-theme-antiquity" target="_blank" rel="noopener">antiquity</a>
+    <br>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv">不蒜子告之   阁下是第<span id="busuanzi_value_site_pv"></span>个访客</span>
+  </div>
+</footer>
+      <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script>
+if (!window.jQuery) {
+var script = document.createElement('script');
+script.src = "/js/jquery-2.0.3.min.js";
+document.body.write(script);
+}
+</script>
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+    </div>
+    <nav id="mobile-nav" class="mobile-nav-box">
+  <div class="mobile-nav-img mobile-nav-top"></div>
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+  <div class="mobile-nav-img  mobile-nav-bottom"></div>
+</nav>    
+  </div>
+</body>
+</html>

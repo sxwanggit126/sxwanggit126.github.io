@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Flume02--double_happy | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="Flume的agent配置模板1234567891011121314agent_name: 配置的agent的名称a1：就是agent的名称（名字随便起的哈）# Name the components on this agent&amp;lt;agent_name&amp;gt;.sources = &amp;lt;source_name&amp;gt;&amp;lt;agent_name&amp;gt;.sinks = &amp;lt;sink_na">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flume02--double_happy">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2017&#x2F;12&#x2F;11&#x2F;Flume02-double-happy&#x2F;index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Flume的agent配置模板1234567891011121314agent_name: 配置的agent的名称a1：就是agent的名称（名字随便起的哈）# Name the components on this agent&amp;lt;agent_name&amp;gt;.sources = &amp;lt;source_name&amp;gt;&amp;lt;agent_name&amp;gt;.sinks = &amp;lt;sink_na">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-11-17T11:51:17.870Z">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/default-avatar.jpg">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/highlight.css">
+</head>
+
+<body>
+  <div id="fullpage" class="mobile-nav-right">
+    
+      <div id="wrapper" title="图片来自网络">
+    
+    
+      <header id="header">
+  <div id="nav-toggle" class="nav-toggle"></div>
+  <div class="head-box global-width">
+    <nav class="nav-box nav-right">
+      
+        <a class="nav-item" href="/" title
+        
+        >首页</a>
+      
+        <a class="nav-item" href="/archives" title
+        
+        >归档</a>
+      
+    </nav>
+  </div>
+</header>
+      <div id="middlecontent" title class="global-width sidebar-right">
+        <section id="main"><article id="post-Flume02-double-happy" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 class="article-title" itemprop="name">
+      Flume02--double_happy
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2017/12/11/Flume02-double-happy/" class="article-date">
+  <time datetime="2017-12-11T11:50:48.000Z" itemprop="datePublished">2017-12-11</time>
+</a>
+    
+    
+  </div>
+  
+    <span id="busuanzi_container_page_pv">
+      本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+    </span>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-cloud" itemprop="articleBody">
+      
+        <h2 id="Flume的agent配置模板"><a href="#Flume的agent配置模板" class="headerlink" title="Flume的agent配置模板"></a>Flume的agent配置模板</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">agent_name: 配置的agent的名称</span><br><span class="line">a1：就是agent的名称（名字随便起的哈）</span><br><span class="line"></span><br><span class="line"># Name the components on this agent</span><br><span class="line">&lt;agent_name&gt;.sources = &lt;source_name&gt;</span><br><span class="line">&lt;agent_name&gt;.sinks = &lt;sink_name&gt;</span><br><span class="line">&lt;agent_name&gt;.channels = &lt;channel_name&gt;</span><br><span class="line"></span><br><span class="line">&lt;agent_name&gt;.sources.&lt;source_name&gt;.type = xx</span><br><span class="line">&lt;agent_name&gt;.sinks.&lt;sink_name&gt;.type = yyy</span><br><span class="line">&lt;agent_name&gt;.channels.&lt;channel_name&gt;.type = zzz</span><br><span class="line"></span><br><span class="line">&lt;agent_name&gt;.sources.&lt;source_name&gt;.channels = &lt;channel_name&gt;</span><br><span class="line">&lt;agent_name&gt;.sinks.&lt;sink_name&gt;.channel = &lt;channel_name&gt;</span><br></pre></td></tr></table></figure></div>
+<p>基于上一篇文章末尾引出一个，</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">从指定的网络端口上采集日志到控制台输出</span><br></pre></td></tr></table></figure></div>
+<p>那么Flume支持的source、channel、sink有哪些呢？</p>
+<h2 id="2-Flume支持的source、channel、sink有哪些呢？"><a href="#2-Flume支持的source、channel、sink有哪些呢？" class="headerlink" title="2.Flume支持的source、channel、sink有哪些呢？"></a>2.Flume支持的source、channel、sink有哪些呢？</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">source：</span><br><span class="line">	avro（是rpc服务框架）</span><br><span class="line">	exec （是监控一个文件） ： tail -F  xx.log（大F和小f有区别）后面只能接一个文件(小f是动态的)</span><br><span class="line">	Spooling Directory: 能监控一个文件夹（文件夹下不能有子文件夹的）</span><br><span class="line">	Taildir（是既能监控文件又能监控文件夹）**</span><br><span class="line">	netcat</span><br><span class="line">sink：</span><br><span class="line">	HDFS</span><br><span class="line">	logger（写到控制台）</span><br><span class="line">	avro : 配合avro source使用</span><br><span class="line">	kafka	</span><br><span class="line">channel：只是数据的存储不涉及到数据的缓存</span><br><span class="line">	memory</span><br><span class="line">	file</span><br><span class="line">Agent：各种组合source、channel、sink之间的关系</span><br></pre></td></tr></table></figure></div>
+<h2 id="3-案例分析"><a href="#3-案例分析" class="headerlink" title="3.案例分析"></a>3.案例分析</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">eg：为了学习   这个思路可以借鉴      生产上直接用 Taildir</span><br><span class="line">   把一个文件中新增的内容收集到HDFS上去</span><br><span class="line">	exec - memory - hdfs</span><br><span class="line">    一个文件夹</span><br><span class="line">	spooling - memory - hdfs</span><br><span class="line">    文件数据写入kafka</span><br><span class="line">	exec - memory - kafka</span><br></pre></td></tr></table></figure></div>
+<h2 id="4-实战"><a href="#4-实战" class="headerlink" title="4.实战"></a>4.实战</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">需求1：采集指定文件的内容到HDFS</span><br><span class="line">技术选型：exec - memory - hdfs</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">agent  待续。。</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">需求1总结：</span><br><span class="line">batchSize :积累多少个event 刷到hdfs上去</span><br><span class="line">fileType：默认是secqueceFile   ,DataStream可以理解为文本（没有压缩的）</span><br><span class="line">writeFormat:默认是Writable</span><br><span class="line"></span><br><span class="line">hdfs上一个128m的文件和1kb文件都各自占用一个block，而一个block有一个元数据信息，</span><br><span class="line">元数据多了会占用namenode的内存，元数据过多会导致namenode挂掉 （所以注意 设置文件多大合适呢？）</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">需求2：采集指定文件夹的内容到控制台</span><br><span class="line">选型：spooling - memory - logger</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">agent  待续。。</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">需求2总结：</span><br><span class="line">如果监控的文件夹下进来一个文件，那个文件处理完以后，会在那个文件后面加一个COMPLETED标识 ，</span><br><span class="line">但是为什么同一个文件进去两次flume就挂掉了呢 ， 在spooling监控的文件夹下的文件如果被处理过以后，</span><br><span class="line">再给这个文件内容追加写或者改就会报错，如果处理过后的文件的文件名在后面又被用到了，也会报错。</span><br><span class="line">也就是文件名不能有重复的</span><br><span class="line">如果agent里fileHeader参数设置为true，默认event 里的header的key就是文件路径+文件名</span><br></pre></td></tr></table></figure></div>
+      
+    </div>
+    
+      <footer class="article-footer">
+        完
+      </footer>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  <div class="article-nav-block">
+    
+      <a href="/2017/12/13/Flume03-double-happy/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption"></strong>
+        <div class="article-nav-title">
+          
+            Flume03--double_happy
+          
+        </div>
+      </a>
+    
+  </div>
+  <div class="article-nav-block">
+    
+      <a href="/2017/12/10/Flume01-double-happy/" id="article-nav-older" class="article-nav-link-wrap">
+        <div class="article-nav-title">Flume01--double_happy</div>
+        <strong class="article-nav-caption"></strong>
+      </a>
+    
+  </div>
+</nav>
+
+    <link rel="stylesheet" href="/css/gitment.css"> 
+<script src="/js/gitment.js"></script>
+
+<div id="gitmentContainer"></div>
+
+<script>
+var gitment = new Gitment({
+  owner: '',
+  repo: '',
+  oauth: {
+    client_id: '',
+    client_secret: '',
+  },
+})
+gitment.render('gitmentContainer')
+</script>
+
+  
+  
+</article>
+</section>
+        <aside id="sidebar">
+  
+    <div class="widget-box">
+  <div class="avatar-box">
+    <img class="avatar" src="/images/default-avatar.jpg" title="图片来自网络"></img>
+    <h3 class="avatar-name">
+      
+        DoubleHappy
+      
+    </h3>
+    <p class="avatar-slogan">
+      特别耐撕的大数据，资深的打酱油攻城狮。
+    </p>
+  </div>
+</div>
+
+
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/01/05/Azkaban%E8%B0%83%E5%BA%A6-double-happy/">Azkaban调度--double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2019/01/04/Zookeeper%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E4%B8%8E%E7%9B%91%E6%8E%A7-Curator/">Zookeeper基本使用与监控(Curator)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/04/17/SparkSQL-TextFile%E8%BE%93%E5%87%BA%E5%A4%9A%E5%88%97/">SparkSQL--TextFile输出多列</a>
+          </li>
+        
+          <li>
+            <a href="/2018/03/17/%E9%9B%85%E6%81%A9%E8%B5%84%E6%BA%90%E8%B0%83%E4%BC%98-double-happy/">雅恩资源调优---double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/22/SS04/">SS04</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+      <div class="widget-box">
+    <h3 class="widget-title">友链</h3>
+    <div class="widget">
+      
+        <a style="display: block;" href="https://sxwanggit126.github.io/" title target='_blank'
+        >一路眼瞎</a>
+      
+    </div>
+  </div>
+
+  
+</aside>
+      </div>
+      <footer id="footer">
+  <div class="foot-box global-width">
+    &copy; 2019 DoubleHappy &nbsp;&nbsp;
+    Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    &nbsp;|&nbsp;主题 <a href="https://github.com/yiluyanxia/hexo-theme-antiquity" target="_blank" rel="noopener">antiquity</a>
+    <br>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv">不蒜子告之   阁下是第<span id="busuanzi_value_site_pv"></span>个访客</span>
+  </div>
+</footer>
+      <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script>
+if (!window.jQuery) {
+var script = document.createElement('script');
+script.src = "/js/jquery-2.0.3.min.js";
+document.body.write(script);
+}
+</script>
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+    </div>
+    <nav id="mobile-nav" class="mobile-nav-box">
+  <div class="mobile-nav-img mobile-nav-top"></div>
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+  <div class="mobile-nav-img  mobile-nav-bottom"></div>
+</nav>    
+  </div>
+</body>
+</html>

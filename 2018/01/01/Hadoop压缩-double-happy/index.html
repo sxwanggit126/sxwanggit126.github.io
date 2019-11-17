@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Hadoop压缩---double_happy | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="调优点：为什么要使用压缩呢？ 123456781.节省空间 （数据在hdfs上以3副本存储 如果采用压缩 占用空间会少一些）2.时间：网络io 和 磁盘io 会减少   （mapreduce过程中 map端输出采用压缩和不采用压缩效果很明显）  2.1 map端到reduce端会经过shuffle 如果map端采用压缩那么 map端数据传到reduce端过程中     数据压缩后体积会变小，那么经">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hadoop压缩---double_happy">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2018&#x2F;01&#x2F;01&#x2F;Hadoop%E5%8E%8B%E7%BC%A9-double-happy&#x2F;index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="调优点：为什么要使用压缩呢？ 123456781.节省空间 （数据在hdfs上以3副本存储 如果采用压缩 占用空间会少一些）2.时间：网络io 和 磁盘io 会减少   （mapreduce过程中 map端输出采用压缩和不采用压缩效果很明显）  2.1 map端到reduce端会经过shuffle 如果map端采用压缩那么 map端数据传到reduce端过程中     数据压缩后体积会变小，那么经">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20190923100126703.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20190923100600403.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;2019092310115462.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20190923102928382.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20190923103255281.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20190923112832168.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20190923113549154.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20190923113944539.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20190923114026402.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+<meta property="og:updated_time" content="2019-11-17T11:54:59.034Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20190923100126703.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/default-avatar.jpg">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/highlight.css">
+</head>
+
+<body>
+  <div id="fullpage" class="mobile-nav-right">
+    
+      <div id="wrapper" title="图片来自网络">
+    
+    
+      <header id="header">
+  <div id="nav-toggle" class="nav-toggle"></div>
+  <div class="head-box global-width">
+    <nav class="nav-box nav-right">
+      
+        <a class="nav-item" href="/" title
+        
+        >首页</a>
+      
+        <a class="nav-item" href="/archives" title
+        
+        >归档</a>
+      
+    </nav>
+  </div>
+</header>
+      <div id="middlecontent" title class="global-width sidebar-right">
+        <section id="main"><article id="post-Hadoop压缩-double-happy" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 class="article-title" itemprop="name">
+      Hadoop压缩---double_happy
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2018/01/01/Hadoop%E5%8E%8B%E7%BC%A9-double-happy/" class="article-date">
+  <time datetime="2018-01-01T11:54:32.000Z" itemprop="datePublished">2018-01-01</time>
+</a>
+    
+    
+  </div>
+  
+    <span id="busuanzi_container_page_pv">
+      本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+    </span>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-cloud" itemprop="articleBody">
+      
+        <h2 id="调优点："><a href="#调优点：" class="headerlink" title="调优点："></a>调优点：</h2><p>为什么要使用压缩呢？</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">1.节省空间 （数据在hdfs上以3副本存储 如果采用压缩 占用空间会少一些）</span><br><span class="line">2.时间：网络io 和 磁盘io 会减少 </span><br><span class="line">  （mapreduce过程中 map端输出采用压缩和不采用压缩效果很明显）</span><br><span class="line">  2.1 map端到reduce端会经过shuffle 如果map端采用压缩那么 map端数据传到reduce端过程中</span><br><span class="line">     数据压缩后体积会变小，那么经过网络传输的数据会变少 减少网络io</span><br><span class="line">     因为要经过网络传输，需要从磁盘读到内存 磁盘上的数据压缩后 读取到内存的数据体积</span><br><span class="line">     也会变小  所以也减少磁盘io</span><br><span class="line">  这样传输的时间也会减少很多，所以有必要进行压缩。</span><br></pre></td></tr></table></figure></div>
+<p>但是注意的是如果采用压缩，对机器的cpu的要求高，所以压缩的使用场景</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1.存储数据的空间不够</span><br><span class="line">2.机器的core要足够</span><br></pre></td></tr></table></figure></div>
+<p>如果core不够还采用压缩，那么还是别采用压缩啦。</p>
+<h2 id="压缩的技术"><a href="#压缩的技术" class="headerlink" title="压缩的技术"></a>压缩的技术</h2><p>有损压缩(lossy compression) :  适用于图片和视频  允许丢失几帧<br>无损压缩(lossless compression):原始数据解压缩数据是没有丢失的</p>
+<p>对称和非对称：就是压缩和解压的时间相同叫对称 ，反义。</p>
+<h2 id="压缩的使用场景结合mapreduce"><a href="#压缩的使用场景结合mapreduce" class="headerlink" title="压缩的使用场景结合mapreduce"></a>压缩的使用场景结合mapreduce</h2><p>数据压缩  map端输出可以用，reduce端输出也可以使用</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">input   </span><br><span class="line">  因为这块 map读取数据的时候的inputformat默认会识别数据输入采用什么格式的压缩获取codec（</span><br><span class="line">     textinputformat源码里有）</span><br><span class="line">map out         配个参数就可以</span><br><span class="line">reduce out    配个参数就可以</span><br></pre></td></tr></table></figure></div>
+<p>spark、flink同样的</p>
+<h2 id="凡事都有两面性"><a href="#凡事都有两面性" class="headerlink" title="凡事都有两面性"></a>凡事都有两面性</h2><p>空间和时间  ok<br>cpu   耗费     cpu的利用率会高  而且整个作业的处理时长会略微长一些</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">使用的压缩：</span><br><span class="line">	有个解压缩过程 所以整个作业时间会略微长</span><br><span class="line"></span><br><span class="line">所以为了减少空间和网络磁盘io传输时间 cpu的耗费以及作业的时长会变长</span><br></pre></td></tr></table></figure></div>
+<h2 id="常见的压缩格式"><a href="#常见的压缩格式" class="headerlink" title="常见的压缩格式"></a>常见的压缩格式</h2><p><img src="https://img-blog.csdnimg.cn/20190923100126703.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>还有LZ4</p>
+<h2 id="如何选择呢，这么多压缩的格式-压缩比和解压缩度"><a href="#如何选择呢，这么多压缩的格式-压缩比和解压缩度" class="headerlink" title="如何选择呢，这么多压缩的格式 压缩比和解压缩度"></a>如何选择呢，这么多压缩的格式 压缩比和解压缩度</h2><p><img src="https://img-blog.csdnimg.cn/20190923100600403.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>相同配置的机器测试看看 </p>
+<p>压缩比：压缩前和压缩后的比值</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">压缩比    Bzip2 30%   Gzip (两者之间)  ,snappy \lzo50%</span><br><span class="line">解压速度    反过来</span><br></pre></td></tr></table></figure></div>
+<p><img src="https://img-blog.csdnimg.cn/2019092310115462.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="压缩能否分片"><a href="#压缩能否分片" class="headerlink" title="压缩能否分片"></a>压缩能否分片</h2><p>hadoop作业是io密集型的，所以他的作业尽可能的采用压缩<br>spark、flink作业是pipline型的</p>
+<p>注意：压缩又的是java写的，有的是native的，<br>所以你要在Hadoop里使用LZO(native的) 需要下载一些native的依赖</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Splitable：</span><br><span class="line">	一个文件相当于一个map task来处理，</span><br><span class="line">	1.假设一个5G的文件，不能使用分割的，也就意味着这个文件只能使用一个</span><br><span class="line">	maptask来处理，如果这个能分割，5G拆成10分 会采用10个maptask来处理</span><br><span class="line">	并行处理。5*1024/10 = 一个maptask处理的数据量。</span><br><span class="line"></span><br><span class="line">是否能够分割就决定了你的一个maptask处理的数据量有多少，</span><br><span class="line">如果能够分割就可以多个maptask并行处理</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="压缩是否支持分割"><a href="#压缩是否支持分割" class="headerlink" title="压缩是否支持分割"></a>压缩是否支持分割</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">分割：  注意是压缩过后的压缩文件是否支持分割的</span><br><span class="line">gzip    不可分割</span><br><span class="line">bzip2  可分割</span><br><span class="line">LZo    带索引可以分割（默认是不支持分割的）</span><br><span class="line">Snappy 不可分割</span><br></pre></td></tr></table></figure></div>
+<p>是否能分割对使用哪个压缩有很大的影响意义</p>
+<p><img src="https://img-blog.csdnimg.cn/20190923102928382.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>上图三个部分使用压缩：mapreduce的流程使用压缩的部分</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">input：</span><br><span class="line">map out</span><br><span class="line">reduce out</span><br></pre></td></tr></table></figure></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20190923103255281.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">三个地方使用的压缩推荐：</span><br><span class="line">	input：</span><br><span class="line">		Bzip2(支持分割 读一个文件 支持分割会多个并行的maptask进行处理) 数据量特别大 如果不支持压缩</span><br><span class="line">		就会有一个maptask进行处理，性能很低。</span><br><span class="line">	</span><br><span class="line">	mapout：</span><br><span class="line">		shuffle过程要选择一个解压速度更快的压缩</span><br><span class="line">		因为每个maptask输出数据写到磁盘上之后经过网络io</span><br><span class="line">		没有必要采用压缩比高的，之后到reducetask这过程中是采用分片和不分片这块不重要了已经</span><br><span class="line">		因为maptask进来之前是一个大文件拆成多个maptask来处理</span><br><span class="line">		到reduce这个过程中 难道你还需要拆么？不需要，所以这块最重要的是解压速度</span><br><span class="line">	reduceout：</span><br><span class="line">		1.高的压缩比节省空间（使用于归档文件）</span><br><span class="line">		2.作为下一个map的输入呢？应该采用什么压缩方式，我会选择Bzip2或者LZO带索引的(支持分片)</span><br></pre></td></tr></table></figure></div>
+<h2 id="MapReduce作业使用压缩实战"><a href="#MapReduce作业使用压缩实战" class="headerlink" title="MapReduce作业使用压缩实战"></a>MapReduce作业使用压缩实战</h2><p>在Hadoop的core-site.xml里配置压缩 ，mapreduce-site.xml配置你采用压缩的位置(map的输出和reduce的输出)</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">core-site.xml:</span><br><span class="line"></span><br><span class="line">  &lt;property&gt;</span><br><span class="line">    &lt;name&gt;io.compression.codecs&lt;/name&gt;</span><br><span class="line">  &lt;value&gt;</span><br><span class="line">  org.apache.hadoop.io.compress.GzipCodec,</span><br><span class="line">  org.apache.hadoop.io.compress.DefaultCodec,</span><br><span class="line">  org.apache.hadoop.io.compress.BZip2Codec,</span><br><span class="line">  org.apache.hadoop.io.compress.SnappyCodec,</span><br><span class="line">  com.hadoop.compression.lzo.LzoCodec,</span><br><span class="line">  com.hadoop.compression.lzo.LzopCodec</span><br><span class="line">  &lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">mapreduce-site.xml:</span><br><span class="line">	 &lt;property&gt;</span><br><span class="line">    &lt;name&gt;mapreduce.output.fileoutputformat.compress&lt;/name&gt;</span><br><span class="line">    &lt;value&gt;true&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br><span class="line"></span><br><span class="line">&lt;property&gt;</span><br><span class="line">  &lt;name&gt;mapreduce.output.fileoutputformat.compress.codec&lt;/name&gt;</span><br><span class="line">  &lt;value&gt;org.apache.hadoop.io.compress.BZip2Codec&lt;/value&gt;</span><br><span class="line">&lt;/property&gt;</span><br></pre></td></tr></table></figure></div>
+<p>测试：<br>    wc<br>    hdfs最后生成的结果是以bzip结尾的</p>
+<p><img src="https://img-blog.csdnimg.cn/20190923112832168.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="Hive的压缩使用"><a href="#Hive的压缩使用" class="headerlink" title="Hive的压缩使用"></a>Hive的压缩使用</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">1.创建表：</span><br><span class="line">CREATE EXTERNAL TABLE `ods_uid_pid_info_compression_test`(</span><br><span class="line">`uid` string, </span><br><span class="line">`pid` string</span><br><span class="line">)</span><br><span class="line">row format delimited fields terminated by &apos;\t&apos;;</span><br><span class="line"></span><br><span class="line">load data local inpath &apos;/home/double_happy/data/user_pid.txt&apos; overwrite into table ods_uid_pid_info_compression_test;</span><br><span class="line"></span><br><span class="line">2.去hdfs上查看这数据</span><br></pre></td></tr></table></figure></div>
+
+<p><img src="https://img-blog.csdnimg.cn/20190923113549154.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">使用压缩：</span><br><span class="line">	hive客户端里：</span><br><span class="line">	set hive.exec.compress.output=true;</span><br><span class="line">	set mapreduce.output.fileoutputformat.compress.codec=org.apache.hadoop.io.compress.BZip2Codec;</span><br></pre></td></tr></table></figure></div>
+<p><img src="https://img-blog.csdnimg.cn/20190923113944539.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>查看hdfs上数据大小：<br><img src="https://img-blog.csdnimg.cn/20190923114026402.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>可以对比一下 数据小了。</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">注意：</span><br><span class="line">	hive里设置压缩不建议直接在hive-site.xml里面配置，那是全局的，</span><br><span class="line">	建议还是在使用的时候用命令的方式</span><br></pre></td></tr></table></figure></div>
+      
+    </div>
+    
+      <footer class="article-footer">
+        完
+      </footer>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  <div class="article-nav-block">
+    
+      <a href="/2018/01/03/Hadoop%E9%A1%B9%E7%9B%AE%E6%B5%81%E7%A8%8B%EF%BC%9AHive2MySQL-double-happy/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption"></strong>
+        <div class="article-nav-title">
+          
+            Hadoop项目流程：Hive2MySQL--double_happy
+          
+        </div>
+      </a>
+    
+  </div>
+  <div class="article-nav-block">
+    
+      <a href="/2017/12/20/SQL-01/" id="article-nav-older" class="article-nav-link-wrap">
+        <div class="article-nav-title">SQL-01</div>
+        <strong class="article-nav-caption"></strong>
+      </a>
+    
+  </div>
+</nav>
+
+    <link rel="stylesheet" href="/css/gitment.css"> 
+<script src="/js/gitment.js"></script>
+
+<div id="gitmentContainer"></div>
+
+<script>
+var gitment = new Gitment({
+  owner: '',
+  repo: '',
+  oauth: {
+    client_id: '',
+    client_secret: '',
+  },
+})
+gitment.render('gitmentContainer')
+</script>
+
+  
+  
+</article>
+</section>
+        <aside id="sidebar">
+  
+    <div class="widget-box">
+  <div class="avatar-box">
+    <img class="avatar" src="/images/default-avatar.jpg" title="图片来自网络"></img>
+    <h3 class="avatar-name">
+      
+        DoubleHappy
+      
+    </h3>
+    <p class="avatar-slogan">
+      特别耐撕的大数据，资深的打酱油攻城狮。
+    </p>
+  </div>
+</div>
+
+
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/01/05/Azkaban%E8%B0%83%E5%BA%A6-double-happy/">Azkaban调度--double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2019/01/04/Zookeeper%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E4%B8%8E%E7%9B%91%E6%8E%A7-Curator/">Zookeeper基本使用与监控(Curator)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/04/17/SparkSQL-TextFile%E8%BE%93%E5%87%BA%E5%A4%9A%E5%88%97/">SparkSQL--TextFile输出多列</a>
+          </li>
+        
+          <li>
+            <a href="/2018/03/17/%E9%9B%85%E6%81%A9%E8%B5%84%E6%BA%90%E8%B0%83%E4%BC%98-double-happy/">雅恩资源调优---double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/22/SS04/">SS04</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+      <div class="widget-box">
+    <h3 class="widget-title">友链</h3>
+    <div class="widget">
+      
+        <a style="display: block;" href="https://sxwanggit126.github.io/" title target='_blank'
+        >一路眼瞎</a>
+      
+    </div>
+  </div>
+
+  
+</aside>
+      </div>
+      <footer id="footer">
+  <div class="foot-box global-width">
+    &copy; 2019 DoubleHappy &nbsp;&nbsp;
+    Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    &nbsp;|&nbsp;主题 <a href="https://github.com/yiluyanxia/hexo-theme-antiquity" target="_blank" rel="noopener">antiquity</a>
+    <br>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv">不蒜子告之   阁下是第<span id="busuanzi_value_site_pv"></span>个访客</span>
+  </div>
+</footer>
+      <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script>
+if (!window.jQuery) {
+var script = document.createElement('script');
+script.src = "/js/jquery-2.0.3.min.js";
+document.body.write(script);
+}
+</script>
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+    </div>
+    <nav id="mobile-nav" class="mobile-nav-box">
+  <div class="mobile-nav-img mobile-nav-top"></div>
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+  <div class="mobile-nav-img  mobile-nav-bottom"></div>
+</nav>    
+  </div>
+</body>
+</html>

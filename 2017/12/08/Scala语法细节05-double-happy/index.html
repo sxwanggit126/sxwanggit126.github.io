@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Scala语法细节05--double_happy | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="Case Class1234567891011121314151617181920&#x2F;**  *     * case class 样例类  必须要有参数列表  * case object 样例对象  必须不能加参数列表  *  * interview： class 和 case class的区别  *  * case class 重写了toString， equals  hashCode  * c">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Scala语法细节05--double_happy">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2017&#x2F;12&#x2F;08&#x2F;Scala%E8%AF%AD%E6%B3%95%E7%BB%86%E8%8A%8205-double-happy&#x2F;index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Case Class1234567891011121314151617181920&#x2F;**  *     * case class 样例类  必须要有参数列表  * case object 样例对象  必须不能加参数列表  *  * interview： class 和 case class的区别  *  * case class 重写了toString， equals  hashCode  * c">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-11-17T11:49:27.359Z">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/default-avatar.jpg">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/highlight.css">
+</head>
+
+<body>
+  <div id="fullpage" class="mobile-nav-right">
+    
+      <div id="wrapper" title="图片来自网络">
+    
+    
+      <header id="header">
+  <div id="nav-toggle" class="nav-toggle"></div>
+  <div class="head-box global-width">
+    <nav class="nav-box nav-right">
+      
+        <a class="nav-item" href="/" title
+        
+        >首页</a>
+      
+        <a class="nav-item" href="/archives" title
+        
+        >归档</a>
+      
+    </nav>
+  </div>
+</header>
+      <div id="middlecontent" title class="global-width sidebar-right">
+        <section id="main"><article id="post-Scala语法细节05-double-happy" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 class="article-title" itemprop="name">
+      Scala语法细节05--double_happy
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2017/12/08/Scala%E8%AF%AD%E6%B3%95%E7%BB%86%E8%8A%8205-double-happy/" class="article-date">
+  <time datetime="2017-12-08T11:49:04.000Z" itemprop="datePublished">2017-12-08</time>
+</a>
+    
+    
+  </div>
+  
+    <span id="busuanzi_container_page_pv">
+      本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+    </span>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-cloud" itemprop="articleBody">
+      
+        <h2 id="Case-Class"><a href="#Case-Class" class="headerlink" title="Case Class"></a>Case Class</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">/**</span><br><span class="line">  *   </span><br><span class="line">  * case class 样例类  必须要有参数列表</span><br><span class="line">  * case object 样例对象  必须不能加参数列表</span><br><span class="line">  *</span><br><span class="line">  * interview： class 和 case class的区别</span><br><span class="line">  *</span><br><span class="line">  * case class 重写了toString， equals  hashCode</span><br><span class="line">  * case class 默认就实现了序列化</span><br><span class="line">  * case class 不用new</span><br><span class="line">  */</span><br><span class="line">object CaseClassApp &#123;</span><br><span class="line">  def main(args: Array[String]): Unit = &#123;</span><br><span class="line">    println(Dog(&quot;旺财&quot;).name)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">case class Dog(name:String)</span><br></pre></td></tr></table></figure></div>
+<p>测试上面的结论：</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">class :</span><br><span class="line">	scala&gt; class person(val name :String , val age : Int)</span><br><span class="line">	defined class person</span><br><span class="line">	</span><br><span class="line">	scala&gt; val p1 = new person(&quot;sx&quot;,24)</span><br><span class="line">	p1: person = person@38f796a5</span><br><span class="line">	</span><br><span class="line">	scala&gt; val p2 = new person(&quot;sx&quot;,24)</span><br><span class="line">	p2: person = person@1d04ef4f</span><br><span class="line">	</span><br><span class="line">	scala&gt; p1 ==p2</span><br><span class="line">	res37: Boolean = false</span><br><span class="line">case class :</span><br><span class="line">	scala&gt; case class Person(name : String ,age : Int)</span><br><span class="line">	defined class Person</span><br><span class="line"></span><br><span class="line">	scala&gt; val p3 = Person(&quot;sx&quot;,30)</span><br><span class="line">	p3: Person = Person(sx,30)</span><br><span class="line">	</span><br><span class="line">	scala&gt; val p4 = Person(&quot;sx&quot;,30)</span><br><span class="line">	p4: Person = Person(sx,30)</span><br><span class="line">	</span><br><span class="line">	scala&gt; p3 ==p4</span><br><span class="line">	res38: Boolean = true</span><br><span class="line"></span><br><span class="line">这里为什么 case  class 的就相等呢？</span><br><span class="line">	case class 重写了toString， equals  hashCode</span><br></pre></td></tr></table></figure></div>
+<h2 id="模式匹配"><a href="#模式匹配" class="headerlink" title="模式匹配"></a>模式匹配</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><span class="line">**</span><br><span class="line">  *</span><br><span class="line">  * 模式匹配</span><br><span class="line">  * 身高</span><br><span class="line">  * 腿</span><br><span class="line">  * 脸</span><br><span class="line">  * 胸</span><br><span class="line">  *</span><br><span class="line">  *  变量  match &#123;</span><br><span class="line">  *     case 颜值 =&gt; code</span><br><span class="line">  *     case 腿  =&gt; code</span><br><span class="line">  *     case 身高 =&gt; code</span><br><span class="line">  *     case 脸   =&gt;  code</span><br><span class="line">  *     case _  =&gt; 凤姐 芙蓉姐姐</span><br><span class="line">  *  &#125;</span><br><span class="line">  *</span><br><span class="line">  * 匹配内容、匹配类型、匹配集合、匹配case</span><br><span class="line">  */</span><br><span class="line">object MatchApp &#123;</span><br><span class="line"></span><br><span class="line">  def main(args: Array[String]): Unit = &#123;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">      * 匹配内容</span><br><span class="line">      */</span><br><span class="line"></span><br><span class="line">    val teachers = Array(&quot;Aoi Sola&quot;, &quot;YuiHatano&quot;, &quot;Akiho Yoshizawa&quot;)</span><br><span class="line">    val name = teachers(Random.nextInt(teachers.length))</span><br><span class="line"></span><br><span class="line">    name match &#123;</span><br><span class="line">      case &quot;YuiHatano&quot; =&gt; println(&quot;波老师&quot;)</span><br><span class="line">      case &quot;Akiho Yoshizawa&quot; =&gt; println(&quot;吉老师&quot;)</span><br><span class="line">      case _ =&gt; println(&quot;真不知道这位老师是谁&quot;)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">//    println(name)</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">      * 类型匹配</span><br><span class="line">      */</span><br><span class="line"></span><br><span class="line">    def matchType(obj:Any) = obj match &#123;</span><br><span class="line">      case x:Int =&gt; println(&quot;Int&quot;)</span><br><span class="line">      case s:String =&gt; println(&quot;String&quot;)</span><br><span class="line">      case m:Map[_,_] =&gt; println(&quot;Map&quot;)</span><br><span class="line">      case _ =&gt; println(&quot;Other Type...&quot;)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">//    matchType(1)</span><br><span class="line">//    matchType(&quot;若泽&quot;)</span><br><span class="line">//    matchType(Map(&quot;ruoze&quot;-&gt;30))</span><br><span class="line">//    matchType(10L)</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">      * 匹配集合</span><br><span class="line">      */</span><br><span class="line">    def matchList(list:List[String]): Unit = &#123;</span><br><span class="line">      list match &#123;</span><br><span class="line">        case &quot;ruoze&quot;::Nil =&gt; println(&quot;Hello: ruoze&quot;) // 只能匹配只有若泽一个元素</span><br><span class="line">        case x::y::Nil =&gt; println(s&quot;Hi: $x , $y&quot;) // 能匹配集合中有两个元素的</span><br><span class="line">        case &quot;jepson&quot;::tail =&gt; println(&quot;HI:jepson and others&quot;) // 匹配jepson开头的</span><br><span class="line">        case _ =&gt; println(&quot;......&quot;)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">//    matchList(List(&quot;ruoze&quot;))</span><br><span class="line">//    matchList(List(&quot;苍老师&quot;,&quot;泷老师&quot;))</span><br><span class="line">//    matchList(List(&quot;jepson&quot;,&quot;苍老师&quot;,&quot;泷老师&quot;,&quot;波老师&quot;))</span><br><span class="line">//    matchList(List(&quot;苍老师&quot;,&quot;泷老师&quot;,&quot;波老师&quot;,&quot;jepson&quot;))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">      * case class匹配</span><br><span class="line">      */</span><br><span class="line">    val caseclasses = Array(CheckTimeOutTask,HeartBeat(3000),SubmitTask(&quot;100&quot;,&quot;task100&quot;))</span><br><span class="line"></span><br><span class="line">    caseclasses(Random.nextInt(caseclasses.length)) match &#123;</span><br><span class="line">      case CheckTimeOutTask =&gt; println(&quot;CheckTimeOutTask&quot;)</span><br><span class="line">      case HeartBeat(time) =&gt; println(&quot;HeartBeat&quot;)</span><br><span class="line">      case SubmitTask(id,name) =&gt; println(&quot;SubmitTask&quot;)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">//涉及到流的方式 </span><br><span class="line">    val file = &quot;xx.txt&quot;</span><br><span class="line">    try&#123;</span><br><span class="line">      //TODO... 业务逻辑处理</span><br><span class="line">      // open file</span><br><span class="line">      1/0</span><br><span class="line">    &#125; catch &#123;</span><br><span class="line">      case e:ArithmeticException =&gt; println(&quot;除数不能为0...&quot;)</span><br><span class="line">      case e:Exception =&gt; e.printStackTrace()</span><br><span class="line">    &#125; finally &#123;</span><br><span class="line">      // 资源释放的</span><br><span class="line">      // close</span><br><span class="line">      println(&quot;一定会执行....&quot;)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">case class SubmitTask(id:String,name:String)</span><br><span class="line">case class HeartBeat(time:Long)</span><br><span class="line">case object CheckTimeOutTask</span><br></pre></td></tr></table></figure></div>
+<h2 id="柯里化与偏函数"><a href="#柯里化与偏函数" class="headerlink" title="柯里化与偏函数"></a>柯里化与偏函数</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">object OtherFunctionApp &#123;</span><br><span class="line"></span><br><span class="line">  def main(args: Array[String]): Unit = &#123;</span><br><span class="line">    // currying</span><br><span class="line">    def sum(a:Int,b:Int) = a + b</span><br><span class="line"></span><br><span class="line">    //println(sum(3,5))</span><br><span class="line"></span><br><span class="line">    // Spark源码  Spark SQL UDF</span><br><span class="line">    def sum2(a:Int)(b:Int) = a + b</span><br><span class="line">    //println(sum2(4)(6))</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">      * 偏函数  PartialFunction</span><br><span class="line">      * A: 输入参数类型</span><br><span class="line">      * B：输出参数类型</span><br><span class="line">      *</span><br><span class="line">      * 包在花括号内没有match的一组case语句</span><br><span class="line">      */</span><br><span class="line">    val teachers = Array(&quot;Aoi Sola&quot;, &quot;YuiHatano&quot;, &quot;Akiho Yoshizawa&quot;)</span><br><span class="line">    val name = teachers(Random.nextInt(teachers.length))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    def say:PartialFunction[String,String] = &#123;</span><br><span class="line">      case &quot;YuiHatano&quot; =&gt; &quot;波老师&quot;</span><br><span class="line">      case &quot;Akiho Yoshizawa&quot; =&gt; &quot;吉老师&quot;</span><br><span class="line">      case _ =&gt; &quot;真不知道这位老师是谁&quot;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    println(say(name))</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<h2 id="文件操作"><a href="#文件操作" class="headerlink" title="文件操作"></a>文件操作</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">object FileApp &#123;</span><br><span class="line">  def main(args: Array[String]): Unit = &#123;</span><br><span class="line">    val content = Source.fromFile(&quot;E:\\ruozedata_workspace\\ruozedata-spark\\data\\file.txt&quot;)</span><br><span class="line">//    println(content)</span><br><span class="line"></span><br><span class="line">    def read(): Unit =&#123;</span><br><span class="line">      for(line &lt;- content.getLines())&#123;  //</span><br><span class="line">        println(line)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    read()</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+      
+    </div>
+    
+      <footer class="article-footer">
+        完
+      </footer>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  <div class="article-nav-block">
+    
+      <a href="/2017/12/10/Flume01-double-happy/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption"></strong>
+        <div class="article-nav-title">
+          
+            Flume01--double_happy
+          
+        </div>
+      </a>
+    
+  </div>
+  <div class="article-nav-block">
+    
+      <a href="/2017/12/07/Scala%E8%AF%AD%E6%B3%95%E7%BB%86%E8%8A%8204-double-happy/" id="article-nav-older" class="article-nav-link-wrap">
+        <div class="article-nav-title">Scala语法细节04--double_happy</div>
+        <strong class="article-nav-caption"></strong>
+      </a>
+    
+  </div>
+</nav>
+
+    <link rel="stylesheet" href="/css/gitment.css"> 
+<script src="/js/gitment.js"></script>
+
+<div id="gitmentContainer"></div>
+
+<script>
+var gitment = new Gitment({
+  owner: '',
+  repo: '',
+  oauth: {
+    client_id: '',
+    client_secret: '',
+  },
+})
+gitment.render('gitmentContainer')
+</script>
+
+  
+  
+</article>
+</section>
+        <aside id="sidebar">
+  
+    <div class="widget-box">
+  <div class="avatar-box">
+    <img class="avatar" src="/images/default-avatar.jpg" title="图片来自网络"></img>
+    <h3 class="avatar-name">
+      
+        DoubleHappy
+      
+    </h3>
+    <p class="avatar-slogan">
+      特别耐撕的大数据，资深的打酱油攻城狮。
+    </p>
+  </div>
+</div>
+
+
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/01/05/Azkaban%E8%B0%83%E5%BA%A6-double-happy/">Azkaban调度--double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2019/01/04/Zookeeper%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E4%B8%8E%E7%9B%91%E6%8E%A7-Curator/">Zookeeper基本使用与监控(Curator)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/04/17/SparkSQL-TextFile%E8%BE%93%E5%87%BA%E5%A4%9A%E5%88%97/">SparkSQL--TextFile输出多列</a>
+          </li>
+        
+          <li>
+            <a href="/2018/03/17/%E9%9B%85%E6%81%A9%E8%B5%84%E6%BA%90%E8%B0%83%E4%BC%98-double-happy/">雅恩资源调优---double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/22/SS04/">SS04</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+      <div class="widget-box">
+    <h3 class="widget-title">友链</h3>
+    <div class="widget">
+      
+        <a style="display: block;" href="https://sxwanggit126.github.io/" title target='_blank'
+        >一路眼瞎</a>
+      
+    </div>
+  </div>
+
+  
+</aside>
+      </div>
+      <footer id="footer">
+  <div class="foot-box global-width">
+    &copy; 2019 DoubleHappy &nbsp;&nbsp;
+    Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    &nbsp;|&nbsp;主题 <a href="https://github.com/yiluyanxia/hexo-theme-antiquity" target="_blank" rel="noopener">antiquity</a>
+    <br>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv">不蒜子告之   阁下是第<span id="busuanzi_value_site_pv"></span>个访客</span>
+  </div>
+</footer>
+      <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script>
+if (!window.jQuery) {
+var script = document.createElement('script');
+script.src = "/js/jquery-2.0.3.min.js";
+document.body.write(script);
+}
+</script>
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+    </div>
+    <nav id="mobile-nav" class="mobile-nav-box">
+  <div class="mobile-nav-img mobile-nav-top"></div>
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+  <div class="mobile-nav-img  mobile-nav-bottom"></div>
+</nav>    
+  </div>
+</body>
+</html>

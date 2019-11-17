@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Flume03--double_happy | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="Flume核心组件六大组件：Source、Interceptors、 Channel Selectors、channel、Sink、Sink Processors事务  三大核心组件自定义开发 这些是必须要掌握的重点 1234如果整个流程的事务不能保证好的话 会产生两个问题？1.数据丢失   2.数据会重复为什么丢失？为什么重复？ 之后章节演示 多AgentFlume：Agent的技术选型 没有对">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flume03--double_happy">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2017&#x2F;12&#x2F;13&#x2F;Flume03-double-happy&#x2F;index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Flume核心组件六大组件：Source、Interceptors、 Channel Selectors、channel、Sink、Sink Processors事务  三大核心组件自定义开发 这些是必须要掌握的重点 1234如果整个流程的事务不能保证好的话 会产生两个问题？1.数据丢失   2.数据会重复为什么丢失？为什么重复？ 之后章节演示 多AgentFlume：Agent的技术选型 没有对">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;2019091023540096.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;2019091100054664.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20190911000928562.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20190911001420721.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;2019091100164313.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70">
+<meta property="og:updated_time" content="2019-11-17T11:52:01.949Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;2019091023540096.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/default-avatar.jpg">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/highlight.css">
+</head>
+
+<body>
+  <div id="fullpage" class="mobile-nav-right">
+    
+      <div id="wrapper" title="图片来自网络">
+    
+    
+      <header id="header">
+  <div id="nav-toggle" class="nav-toggle"></div>
+  <div class="head-box global-width">
+    <nav class="nav-box nav-right">
+      
+        <a class="nav-item" href="/" title
+        
+        >首页</a>
+      
+        <a class="nav-item" href="/archives" title
+        
+        >归档</a>
+      
+    </nav>
+  </div>
+</header>
+      <div id="middlecontent" title class="global-width sidebar-right">
+        <section id="main"><article id="post-Flume03-double-happy" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 class="article-title" itemprop="name">
+      Flume03--double_happy
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2017/12/13/Flume03-double-happy/" class="article-date">
+  <time datetime="2017-12-13T11:51:37.000Z" itemprop="datePublished">2017-12-13</time>
+</a>
+    
+    
+  </div>
+  
+    <span id="busuanzi_container_page_pv">
+      本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+    </span>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-cloud" itemprop="articleBody">
+      
+        <h2 id="Flume核心组件"><a href="#Flume核心组件" class="headerlink" title="Flume核心组件"></a>Flume核心组件</h2><p>六大组件：Source、Interceptors、 Channel Selectors、channel、Sink、Sink Processors<br>事务  三大核心组件自定义开发 这些是必须要掌握的重点</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">如果整个流程的事务不能保证好的话 会产生两个问题？</span><br><span class="line">1.数据丢失   </span><br><span class="line">2.数据会重复</span><br><span class="line">为什么丢失？为什么重复？ 之后章节演示</span><br></pre></td></tr></table></figure></div>
+<h2 id="多Agent"><a href="#多Agent" class="headerlink" title="多Agent"></a>多Agent</h2><p>Flume：Agent的技术选型 没有对与错只有合适不合适</p>
+<p>案例1</p>
+<p><img src="https://img-blog.csdnimg.cn/2019091023540096.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">三个 agent 配置</span><br><span class="line">    待续。。。。</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">总结：</span><br><span class="line">	1.多个Agent进行传输 选择</span><br><span class="line">			nc：avro sink</span><br><span class="line">			taildir：avro sink</span><br><span class="line">			source: avro source</span><br><span class="line">	2.A1 和A2可能是不同业务的数据 格式也可能是不一样的 可以按这个图接 ，接到A3之后是要加一些标识的，明确知道日志是什么类型的，</span><br><span class="line">	通过event进来之后进过一系列拦截器链可以设置header信息来区别日志</span><br></pre></td></tr></table></figure></div>
+<h2 id="优化上面的图"><a href="#优化上面的图" class="headerlink" title="优化上面的图"></a>优化上面的图</h2><p>A3数据从channel出来直接写道一个sink里去的，工作当中肯定是不行的，sink挂掉就gg了。</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Sink Processors：</span><br><span class="line">	1.load balance</span><br><span class="line">	2.failover</span><br></pre></td></tr></table></figure></div>
+<p><strong>Sink Processors：</strong><br><img src="https://img-blog.csdnimg.cn/2019091100054664.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br><strong>load balance</strong><br>        一个sink发一些数据，另外sink发送一些数据（轮询 和随机）<img src="https://img-blog.csdnimg.cn/20190911000928562.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>案例2：</p>
+<p><img src="https://img-blog.csdnimg.cn/20190911001420721.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">配置待续。。。</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">总结：</span><br><span class="line">	1.A0需要sink组</span><br></pre></td></tr></table></figure></div>
+
+<p><strong>failover</strong><br><img src="https://img-blog.csdnimg.cn/2019091100164313.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">总结：</span><br><span class="line">	1.优先级高的sink发送数据 另一个sink是不发送数据的      值越大的优先级越大</span><br><span class="line">		优先级高的sink挂掉之后会走优先级低的sink</span><br></pre></td></tr></table></figure></div>
+
+
+<h2 id="Flume优化的东西要注意的"><a href="#Flume优化的东西要注意的" class="headerlink" title="Flume优化的东西要注意的"></a>Flume优化的东西要注意的</h2><p>面试题：</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">QA1：谈谈你在工作中针对Flume的调优有哪些</span><br><span class="line">	Source：</span><br><span class="line">		文件：TailDir   注意 默认是不支持递归的     </span><br><span class="line">		     </span><br><span class="line">		网络：avro</span><br><span class="line">	Channel：</span><br><span class="line">		Memory</span><br><span class="line">		File</span><br><span class="line">		capacity</span><br><span class="line">		transactionCapacity</span><br><span class="line">		source/sink: batchSize</span><br><span class="line">		</span><br><span class="line">	Sink：配置sink的个数多和少  吞吐量的问题 </span><br><span class="line">	不是越多越好 每一个sink都是jvm进程 </span><br><span class="line">	sink的batchsize决定出来多少数据</span><br><span class="line">	</span><br><span class="line">	Flume Agent架构 ：</span><br><span class="line">		failover和load balance  什么场景可用性最高 </span><br><span class="line">		一起用可以 但是对机器要求也高 ，退而求其次 ，但是failover是一定要配置的</span><br><span class="line"></span><br><span class="line">QA2：谈谈你们使用Flume过程中时如何监控的</span><br><span class="line">    主要是监控 channel    如果channle数据多了 说明数据挤压 sink说明出问题了</span><br><span class="line">    如果sink出现问题了，意味着source 疯狂的往channle里入数据，但是这时候没有sink消费channel数据 </span><br><span class="line">    那么 channle早晚会爆掉，随之 source也写不进去了。</span><br><span class="line">Ganglia，json-》es-&gt;kabanna展示 都可以做监控</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1. TailDir   Source：</span><br><span class="line">	注意：</span><br><span class="line">	如果某一个目录下面或者某几个目录下面的数据文件非常非常多，</span><br><span class="line">	1.最好增加filegroups的个数，这样吞吐量肯定能上去 因为你处理的是不同的文件</span><br><span class="line">     2.对于source 来讲里面是有一个 batchsize的 （参考值 10000-50000）</span><br><span class="line">         Max number of lines to read and send to the channel at a time.</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">2. channel</span><br><span class="line">      选择memory 和file 看你能不能接受丢少量数据 mem达到99.99%才会丢</span><br><span class="line">      不要采用kafka channel 一个flume框架就可以了 模型当中你又引用一个kafka进来，出问题的可能性成指数增长 </span><br><span class="line">      </span><br><span class="line">      capacity（channel里能存多少个event）</span><br><span class="line">      		The maximum number of events stored in the channel</span><br><span class="line">	  transactionCapacity（souce往channle里塞多少数据 和 sink从channle里取多少数据  事务的时候）</span><br><span class="line">	  		The maximum number of events the channel will take from a source or give to a sink per transaction</span><br><span class="line"></span><br><span class="line">transactionCapacity  是大于capacity</span><br></pre></td></tr></table></figure></div>
+      
+    </div>
+    
+      <footer class="article-footer">
+        完
+      </footer>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  <div class="article-nav-block">
+    
+      <a href="/2017/12/17/Scala06-double-happy/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption"></strong>
+        <div class="article-nav-title">
+          
+            Scala06--double_happy
+          
+        </div>
+      </a>
+    
+  </div>
+  <div class="article-nav-block">
+    
+      <a href="/2017/12/11/Flume02-double-happy/" id="article-nav-older" class="article-nav-link-wrap">
+        <div class="article-nav-title">Flume02--double_happy</div>
+        <strong class="article-nav-caption"></strong>
+      </a>
+    
+  </div>
+</nav>
+
+    <link rel="stylesheet" href="/css/gitment.css"> 
+<script src="/js/gitment.js"></script>
+
+<div id="gitmentContainer"></div>
+
+<script>
+var gitment = new Gitment({
+  owner: '',
+  repo: '',
+  oauth: {
+    client_id: '',
+    client_secret: '',
+  },
+})
+gitment.render('gitmentContainer')
+</script>
+
+  
+  
+</article>
+</section>
+        <aside id="sidebar">
+  
+    <div class="widget-box">
+  <div class="avatar-box">
+    <img class="avatar" src="/images/default-avatar.jpg" title="图片来自网络"></img>
+    <h3 class="avatar-name">
+      
+        DoubleHappy
+      
+    </h3>
+    <p class="avatar-slogan">
+      特别耐撕的大数据，资深的打酱油攻城狮。
+    </p>
+  </div>
+</div>
+
+
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/01/05/Azkaban%E8%B0%83%E5%BA%A6-double-happy/">Azkaban调度--double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2019/01/04/Zookeeper%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E4%B8%8E%E7%9B%91%E6%8E%A7-Curator/">Zookeeper基本使用与监控(Curator)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/04/17/SparkSQL-TextFile%E8%BE%93%E5%87%BA%E5%A4%9A%E5%88%97/">SparkSQL--TextFile输出多列</a>
+          </li>
+        
+          <li>
+            <a href="/2018/03/17/%E9%9B%85%E6%81%A9%E8%B5%84%E6%BA%90%E8%B0%83%E4%BC%98-double-happy/">雅恩资源调优---double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/22/SS04/">SS04</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+      <div class="widget-box">
+    <h3 class="widget-title">友链</h3>
+    <div class="widget">
+      
+        <a style="display: block;" href="https://sxwanggit126.github.io/" title target='_blank'
+        >一路眼瞎</a>
+      
+    </div>
+  </div>
+
+  
+</aside>
+      </div>
+      <footer id="footer">
+  <div class="foot-box global-width">
+    &copy; 2019 DoubleHappy &nbsp;&nbsp;
+    Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    &nbsp;|&nbsp;主题 <a href="https://github.com/yiluyanxia/hexo-theme-antiquity" target="_blank" rel="noopener">antiquity</a>
+    <br>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv">不蒜子告之   阁下是第<span id="busuanzi_value_site_pv"></span>个访客</span>
+  </div>
+</footer>
+      <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script>
+if (!window.jQuery) {
+var script = document.createElement('script');
+script.src = "/js/jquery-2.0.3.min.js";
+document.body.write(script);
+}
+</script>
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+    </div>
+    <nav id="mobile-nav" class="mobile-nav-box">
+  <div class="mobile-nav-img mobile-nav-top"></div>
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+  <div class="mobile-nav-img  mobile-nav-bottom"></div>
+</nav>    
+  </div>
+</body>
+</html>

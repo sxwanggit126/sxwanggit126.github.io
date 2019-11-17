@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Hadoop项目流程：Hive2MySQL--double_happy | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="Hive统计表不管使用Hive统计的结果是什么维度，统计的结果表选择：    1.external    2.partition    就是分区+外部表 12345平台报表别人如何访问呢：	1.使用hiveservie2 使用jdbc方式去连接     可以    生产上不这么用	2.最好把数据倒入mysql里面   *****  那么下面就是基于这个思路进行讲解Hdfs --》Mysql  这里">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hadoop项目流程：Hive2MySQL--double_happy">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2018&#x2F;01&#x2F;03&#x2F;Hadoop%E9%A1%B9%E7%9B%AE%E6%B5%81%E7%A8%8B%EF%BC%9AHive2MySQL-double-happy&#x2F;index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Hive统计表不管使用Hive统计的结果是什么维度，统计的结果表选择：    1.external    2.partition    就是分区+外部表 12345平台报表别人如何访问呢：	1.使用hiveservie2 使用jdbc方式去连接     可以    生产上不这么用	2.最好把数据倒入mysql里面   *****  那么下面就是基于这个思路进行讲解Hdfs --》Mysql  这里">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20190923164039631.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20190923164443832.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20190923165037161.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+<meta property="og:updated_time" content="2019-11-17T11:55:53.323Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20190923164039631.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/default-avatar.jpg">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/highlight.css">
+</head>
+
+<body>
+  <div id="fullpage" class="mobile-nav-right">
+    
+      <div id="wrapper" title="图片来自网络">
+    
+    
+      <header id="header">
+  <div id="nav-toggle" class="nav-toggle"></div>
+  <div class="head-box global-width">
+    <nav class="nav-box nav-right">
+      
+        <a class="nav-item" href="/" title
+        
+        >首页</a>
+      
+        <a class="nav-item" href="/archives" title
+        
+        >归档</a>
+      
+    </nav>
+  </div>
+</header>
+      <div id="middlecontent" title class="global-width sidebar-right">
+        <section id="main"><article id="post-Hadoop项目流程：Hive2MySQL-double-happy" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 class="article-title" itemprop="name">
+      Hadoop项目流程：Hive2MySQL--double_happy
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2018/01/03/Hadoop%E9%A1%B9%E7%9B%AE%E6%B5%81%E7%A8%8B%EF%BC%9AHive2MySQL-double-happy/" class="article-date">
+  <time datetime="2018-01-03T11:55:22.000Z" itemprop="datePublished">2018-01-03</time>
+</a>
+    
+    
+  </div>
+  
+    <span id="busuanzi_container_page_pv">
+      本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+    </span>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-cloud" itemprop="articleBody">
+      
+        <h2 id="Hive统计表"><a href="#Hive统计表" class="headerlink" title="Hive统计表"></a>Hive统计表</h2><p>不管使用Hive统计的结果是什么维度，统计的结果表选择：<br>    1.external<br>    2.partition<br>    就是分区+外部表</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">平台报表别人如何访问呢：</span><br><span class="line">	1.使用hiveservie2 使用jdbc方式去连接     可以    生产上不这么用</span><br><span class="line">	2.最好把数据倒入mysql里面   *****  那么下面就是基于这个思路进行讲解</span><br><span class="line"></span><br><span class="line">Hdfs --》Mysql  这里使用Sqoop     到Spark那块就不用Sqoop了 太low了</span><br></pre></td></tr></table></figure></div>
+<h2 id="使用Sqoop把Hive里数据倒入MySQL-注意的点"><a href="#使用Sqoop把Hive里数据倒入MySQL-注意的点" class="headerlink" title="使用Sqoop把Hive里数据倒入MySQL 注意的点"></a>使用Sqoop把Hive里数据倒入MySQL 注意的点</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">注意：</span><br><span class="line">Hive里表的设计 ：分区字段 要在Hive建表的时候 多一个字段 代表分区字段</span><br><span class="line">	hdfs上的数据是三个字段不算分区的 mySQL里面要对应上 </span><br><span class="line">	分区字段不能作为最终字段来使用的在mysql中（sqoop）</span><br><span class="line">	所以在Sqoop的时候要指定上字段而且还要指定分割符</span><br><span class="line">	</span><br><span class="line">	对于hive来讲默认的分割符是\001</span><br><span class="line">	不然会报错 如下：	</span><br><span class="line">	解决办法就是：</span><br><span class="line">		Hive表 + Sqoop  使用</span><br></pre></td></tr></table></figure></div>
+<p><img src="https://img-blog.csdnimg.cn/20190923164039631.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">MySQL里表：需要Hive表里的哪几个字段就创建什么样的表</span><br><span class="line">create table  platform_stat(</span><br><span class="line">platform  varchar(20),</span><br><span class="line">cnt  int,</span><br><span class="line">d varchar(8)</span><br><span class="line">)engine=innodb default charset=utf8;</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Hive里表设计：</span><br><span class="line">create table dwd_platform_stat_info(</span><br><span class="line">platform string,</span><br><span class="line">cnt int,</span><br><span class="line">d string</span><br><span class="line">) partitioned by(day string)</span><br><span class="line">location &apos;/hadoop/project/platform_stat&apos;;</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Sqoop使用：Sqoop 在什么地方执行 那么 能够地方会有一个java文件生成</span><br><span class="line"></span><br><span class="line">sqoop export \</span><br><span class="line">--connect jdbc:mysql://localhost:3306/hive_dwd \</span><br><span class="line">--password wsx123$%^ \</span><br><span class="line">--username root \</span><br><span class="line">--mapreduce-job-name  Platform_info_Hive2MySQL \</span><br><span class="line">--columns &quot;platform,cnt,d&quot;   \</span><br><span class="line">--input-fields-terminated-by &apos;\001&apos; \</span><br><span class="line">--table platform_stat \</span><br><span class="line">--export-dir /hadoop/project/platform_stat/day=20190921</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">查看MySQL表结果：</span><br></pre></td></tr></table></figure></div>
+<p><img src="https://img-blog.csdnimg.cn/20190923164443832.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">脚本封装：</span><br><span class="line">	#!/bin/bash</span><br><span class="line"></span><br><span class="line">if [ $# -eq 1 ]; then</span><br><span class="line">    time=$1</span><br><span class="line">else</span><br><span class="line">    time=`date -d &quot;yesterday&quot; +%Y%m%d`</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">#platforma_state 数据统计</span><br><span class="line">hive -e &quot;</span><br><span class="line"></span><br><span class="line">use homework;</span><br><span class="line">insert overwrite table dwd_platform_stat_info partition(day=$&#123;time&#125;)</span><br><span class="line">select platform , count(1) ,day as d  from access_wide where day =&apos;$&#123;time&#125;&apos;  group by platform,day ;</span><br><span class="line">&quot;</span><br><span class="line"></span><br><span class="line">#Sqoop platforma_state_Hive2MySQL </span><br><span class="line">sqoop export \</span><br><span class="line">--connect jdbc:mysql://localhost:3306/hive_dwd \</span><br><span class="line">--password wsx123$%^ \</span><br><span class="line">--username root \</span><br><span class="line">--mapreduce-job-name  Platform_info_Hive2MySQL \</span><br><span class="line">--columns &quot;platform,cnt,d&quot;   \</span><br><span class="line">--input-fields-terminated-by &apos;\001&apos; \ </span><br><span class="line">--table platform_stat \</span><br><span class="line">--export-dir /hadoop/project/platform_stat/day=$&#123;time&#125;</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">存在的问题：</span><br><span class="line">	按上面的脚本走 如果多次导入同一天的数据</span><br><span class="line">	MySQL里面会有重复数据的</span><br></pre></td></tr></table></figure></div>
+<p><img src="https://img-blog.csdnimg.cn/20190923165037161.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>数据是有重复的</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">解决MySQL数据重复：</span><br><span class="line">	这块只要把上次导入的日期数据删掉就可以了</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line">脚本封装：</span><br><span class="line">	#!/bin/bash</span><br><span class="line"></span><br><span class="line">if [ $# -eq 1 ]; then</span><br><span class="line">    time=$1</span><br><span class="line">else</span><br><span class="line">    time=`date -d &quot;yesterday&quot; +%Y%m%d`</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">#platforma_state 数据统计</span><br><span class="line">echo &quot;-------------------------------------------------------------------------------------------&quot;</span><br><span class="line">echo &quot;step  : hive -e ---&gt;  insert data to platforma_state table&quot;</span><br><span class="line">echo &quot;-------------------------------------------------------------------------------------------&quot;</span><br><span class="line">hive -e &quot;</span><br><span class="line"></span><br><span class="line">use homework;</span><br><span class="line">insert overwrite table dwd_platform_stat_info partition(day=$&#123;time&#125;)</span><br><span class="line">select platform , count(1) ,day as d  from access_wide  where day =&apos;$&#123;time&#125;&apos; group by platform,day ;</span><br><span class="line">&quot;</span><br><span class="line"></span><br><span class="line">#登陆MySQL 删除上次 处理日期 表中数据</span><br><span class="line">echo &quot;-------------------------------------------------------------------------------------------&quot;</span><br><span class="line">echo &quot;step : MySQL ---&gt; delete  last time process $&#123;time&#125; data&quot;</span><br><span class="line">echo &quot;-------------------------------------------------------------------------------------------&quot;</span><br><span class="line"></span><br><span class="line">MySQL_USER=&apos;root&apos;</span><br><span class="line">MySQL_PASSWD=&apos;wsx123$%^&apos;</span><br><span class="line"></span><br><span class="line">SQL_RESULT=`</span><br><span class="line">mysql \</span><br><span class="line">--user=&quot;$&#123;MySQL_USER&#125;&quot; \</span><br><span class="line">--password=&quot;$&#123;MySQL_PASSWD&#125;&quot;  \</span><br><span class="line">-e &quot;select count(1) as cnt from hive_dwd.platform_stat where d = $&#123;time&#125;;&quot; | tail -1</span><br><span class="line">`</span><br><span class="line">echo &quot;-------------------------------------------------------------------------------------------&quot;</span><br><span class="line">echo &quot;MySQL last time $&#123;time&#125; data size ：$&#123;SQL_RESULT&#125;&quot;</span><br><span class="line">echo &quot;-------------------------------------------------------------------------------------------&quot;</span><br><span class="line">if [ $&#123;SQL_RESULT&#125; -ne 0 ] ; then</span><br><span class="line">    mysql --user=&quot;$&#123;MySQL_USER&#125;&quot; --password=&quot;$&#123;MySQL_PASSWD&#125;&quot;  \</span><br><span class="line">    -e &quot;delete from hive_dwd.platform_stat where d = $&#123;time&#125;;&quot;</span><br><span class="line">    echo &quot;-------------------------------------------------------------------------------------------&quot;</span><br><span class="line">    echo &quot;Delete Mysql last time  $&#123;time&#125; data done ,next step do Sqoop : Hive 2 MySQL&quot;</span><br><span class="line">    echo &quot;-------------------------------------------------------------------------------------------&quot;</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#Sqoop platforma_state_Hive2MySQL </span><br><span class="line">echo &quot;-------------------------------------------------------------------------------------------&quot;</span><br><span class="line">echo &quot;step : sqoop --&gt; Hive 2 MySQL &quot;</span><br><span class="line">echo &quot;-------------------------------------------------------------------------------------------&quot;</span><br><span class="line">sqoop export \</span><br><span class="line">--connect jdbc:mysql://localhost:3306/hive_dwd \</span><br><span class="line">--password wsx123$%^ \</span><br><span class="line">--username root \</span><br><span class="line">--mapreduce-job-name  Platform_info_Hive2MySQL \</span><br><span class="line">--columns &quot;platform,cnt,d&quot;   \</span><br><span class="line">--input-fields-terminated-by &apos;\001&apos; \</span><br><span class="line">--table platform_stat \</span><br><span class="line">--export-dir /hadoop/project/platform_stat/day=$&#123;time&#125; </span><br><span class="line"></span><br><span class="line">error=$?</span><br><span class="line">if [ $error == 0 ] ; then</span><br><span class="line"> echo &quot;-------------------------------------------------------------------------------------------&quot;</span><br><span class="line"> echo &quot;$&#123;time&#125; work suceess&quot;</span><br><span class="line"> echo &quot;-------------------------------------------------------------------------------------------&quot;</span><br><span class="line">fi</span><br></pre></td></tr></table></figure></div>
+<h2 id="任务调度"><a href="#任务调度" class="headerlink" title="任务调度"></a>任务调度</h2><p>下一个博客Azkaban讲解</p>
+
+      
+    </div>
+    
+      <footer class="article-footer">
+        完
+      </footer>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  <div class="article-nav-block">
+    
+      <a href="/2018/01/15/Spark001-double-happy/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption"></strong>
+        <div class="article-nav-title">
+          
+            Spark001--double_happy
+          
+        </div>
+      </a>
+    
+  </div>
+  <div class="article-nav-block">
+    
+      <a href="/2018/01/01/Hadoop%E5%8E%8B%E7%BC%A9-double-happy/" id="article-nav-older" class="article-nav-link-wrap">
+        <div class="article-nav-title">Hadoop压缩---double_happy</div>
+        <strong class="article-nav-caption"></strong>
+      </a>
+    
+  </div>
+</nav>
+
+    <link rel="stylesheet" href="/css/gitment.css"> 
+<script src="/js/gitment.js"></script>
+
+<div id="gitmentContainer"></div>
+
+<script>
+var gitment = new Gitment({
+  owner: '',
+  repo: '',
+  oauth: {
+    client_id: '',
+    client_secret: '',
+  },
+})
+gitment.render('gitmentContainer')
+</script>
+
+  
+  
+</article>
+</section>
+        <aside id="sidebar">
+  
+    <div class="widget-box">
+  <div class="avatar-box">
+    <img class="avatar" src="/images/default-avatar.jpg" title="图片来自网络"></img>
+    <h3 class="avatar-name">
+      
+        DoubleHappy
+      
+    </h3>
+    <p class="avatar-slogan">
+      特别耐撕的大数据，资深的打酱油攻城狮。
+    </p>
+  </div>
+</div>
+
+
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/01/05/Azkaban%E8%B0%83%E5%BA%A6-double-happy/">Azkaban调度--double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2019/01/04/Zookeeper%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E4%B8%8E%E7%9B%91%E6%8E%A7-Curator/">Zookeeper基本使用与监控(Curator)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/04/17/SparkSQL-TextFile%E8%BE%93%E5%87%BA%E5%A4%9A%E5%88%97/">SparkSQL--TextFile输出多列</a>
+          </li>
+        
+          <li>
+            <a href="/2018/03/17/%E9%9B%85%E6%81%A9%E8%B5%84%E6%BA%90%E8%B0%83%E4%BC%98-double-happy/">雅恩资源调优---double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/22/SS04/">SS04</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+      <div class="widget-box">
+    <h3 class="widget-title">友链</h3>
+    <div class="widget">
+      
+        <a style="display: block;" href="https://sxwanggit126.github.io/" title target='_blank'
+        >一路眼瞎</a>
+      
+    </div>
+  </div>
+
+  
+</aside>
+      </div>
+      <footer id="footer">
+  <div class="foot-box global-width">
+    &copy; 2019 DoubleHappy &nbsp;&nbsp;
+    Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    &nbsp;|&nbsp;主题 <a href="https://github.com/yiluyanxia/hexo-theme-antiquity" target="_blank" rel="noopener">antiquity</a>
+    <br>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv">不蒜子告之   阁下是第<span id="busuanzi_value_site_pv"></span>个访客</span>
+  </div>
+</footer>
+      <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script>
+if (!window.jQuery) {
+var script = document.createElement('script');
+script.src = "/js/jquery-2.0.3.min.js";
+document.body.write(script);
+}
+</script>
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+    </div>
+    <nav id="mobile-nav" class="mobile-nav-box">
+  <div class="mobile-nav-img mobile-nav-top"></div>
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+  <div class="mobile-nav-img  mobile-nav-bottom"></div>
+</nav>    
+  </div>
+</body>
+</html>

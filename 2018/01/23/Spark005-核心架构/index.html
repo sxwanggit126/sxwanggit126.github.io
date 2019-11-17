@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Spark005--核心架构 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="spark核心架构官网 核心术语Glossary12345678910111213141516171819202122232425262728293031323334核心术语    Application *****        a driver program        executors on the cluster.    Application jar    Driver progr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spark005--核心架构">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2018&#x2F;01&#x2F;23&#x2F;Spark005-%E6%A0%B8%E5%BF%83%E6%9E%B6%E6%9E%84&#x2F;index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="spark核心架构官网 核心术语Glossary12345678910111213141516171819202122232425262728293031323334核心术语    Application *****        a driver program        executors on the cluster.    Application jar    Driver progr">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;2019102214595656.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20191022152821973.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+<meta property="og:updated_time" content="2019-11-17T12:01:59.024Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;2019102214595656.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/default-avatar.jpg">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/highlight.css">
+</head>
+
+<body>
+  <div id="fullpage" class="mobile-nav-right">
+    
+      <div id="wrapper" title="图片来自网络">
+    
+    
+      <header id="header">
+  <div id="nav-toggle" class="nav-toggle"></div>
+  <div class="head-box global-width">
+    <nav class="nav-box nav-right">
+      
+        <a class="nav-item" href="/" title
+        
+        >首页</a>
+      
+        <a class="nav-item" href="/archives" title
+        
+        >归档</a>
+      
+    </nav>
+  </div>
+</header>
+      <div id="middlecontent" title class="global-width sidebar-right">
+        <section id="main"><article id="post-Spark005-核心架构" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 class="article-title" itemprop="name">
+      Spark005--核心架构
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2018/01/23/Spark005-%E6%A0%B8%E5%BF%83%E6%9E%B6%E6%9E%84/" class="article-date">
+  <time datetime="2018-01-23T12:01:31.000Z" itemprop="datePublished">2018-01-23</time>
+</a>
+    
+    
+  </div>
+  
+    <span id="busuanzi_container_page_pv">
+      本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+    </span>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-cloud" itemprop="articleBody">
+      
+        <p><a href="http://spark.apache.org/docs/latest/cluster-overview.html" target="_blank" rel="noopener">spark核心架构官网</a></p>
+<h2 id="核心术语Glossary"><a href="#核心术语Glossary" class="headerlink" title="核心术语Glossary"></a>核心术语Glossary</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">核心术语</span><br><span class="line">    Application *****</span><br><span class="line">        a driver program</span><br><span class="line">        executors on the cluster.</span><br><span class="line">    Application jar</span><br><span class="line">    Driver program  *****</span><br><span class="line">        main  </span><br><span class="line">        sc </span><br><span class="line">    Cluster manager</span><br><span class="line">    Deploy mode</span><br><span class="line">        YARN: RM NM(container)</span><br><span class="line">            cluster: Driver是跑在container</span><br><span class="line">            client：Driver就运行在你提交机器的本地</span><br><span class="line">                client是不是一定要是集群内的？gateway</span><br><span class="line">    Worker node</span><br><span class="line">    Executor  *****</span><br><span class="line">        process</span><br><span class="line">        runs tasks</span><br><span class="line">        keeps data in memory or disk storage across them</span><br><span class="line">        Each application has its own executors.</span><br><span class="line">            A：executor1 2 3</span><br><span class="line">            B：executor1 2 3</span><br><span class="line">    Task	*****</span><br><span class="line">        A unit of work that will be sent to one executor</span><br><span class="line">        RDD: partitions == task</span><br><span class="line">    Job    *****</span><br><span class="line">        action ==&gt; job</span><br><span class="line">    Stage</span><br><span class="line"></span><br><span class="line">eg：</span><br><span class="line">spark-shell  应用程序</span><br><span class="line">一个application：1到n个job</span><br><span class="line">一个job ： 1到n个stage构成</span><br><span class="line">一个stage： 1到n个task  task与partition一一对应</span><br></pre></td></tr></table></figure></div>
+<h2 id="Application"><a href="#Application" class="headerlink" title="Application"></a>Application</h2><p>User program built on Spark. Consists of a driver program and executors on the cluster.</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1.User program built on Spark</span><br><span class="line">2.a driver program</span><br><span class="line">3. executors on the cluster.</span><br></pre></td></tr></table></figure></div>
+<h2 id="Application-jar"><a href="#Application-jar" class="headerlink" title="Application jar"></a>Application jar</h2><p>A jar containing the user’s Spark application. In some cases users will want to create an “uber jar” containing their application along with its dependencies. <strong>The user’s jar should never include Hadoop or Spark libraries, however, these will be added at runtime.</strong></p>
+<h2 id="Driver-program"><a href="#Driver-program" class="headerlink" title="Driver program"></a>Driver program</h2><p>The process running the main() function of the application and creating the SparkContext</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1. running the main() function of the application </span><br><span class="line">2.  creating the SparkContext</span><br></pre></td></tr></table></figure></div>
+<h2 id="Cluster-manager"><a href="#Cluster-manager" class="headerlink" title="Cluster manager"></a>Cluster manager</h2><p>An external service for acquiring resources on the cluster (e.g. standalone manager, Mesos, YARN)</p>
+<p>所以你的代码里 上传到集群的时候 不要写 死  appname 和 master<br>到时候通过 spark-submit 来指定就 可以选择 外部的cluster </p>
+<h2 id="Deploy-mode"><a href="#Deploy-mode" class="headerlink" title="Deploy mode"></a>Deploy mode</h2><p><strong>Distinguishes where the driver process runs.</strong> In “cluster” mode, the framework launches the driver inside of the cluster. In “client” mode, the submitter launches the driver outside of the cluster.</p>
+<p>一切以yarn为主</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">YARN: RM NM(container)</span><br><span class="line">           cluster: Driver是跑在container  （跑在NM 里的container的 ）</span><br><span class="line">           client：Driver就运行在你提交机器的本地</span><br><span class="line">               client是不是一定要是集群内的？gateway</span><br></pre></td></tr></table></figure></div>
+<h2 id="Worker-node"><a href="#Worker-node" class="headerlink" title="Worker node"></a>Worker node</h2><p>Any node that can run application code in the cluster</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yarn模式下 就是 nm </span><br><span class="line"></span><br><span class="line">run application code</span><br></pre></td></tr></table></figure></div>
+<h2 id="Executor"><a href="#Executor" class="headerlink" title="Executor"></a>Executor</h2><p>a process launched for an application on a worker node, that runs tasks and keeps data in memory or disk storage across them. Each application has its own executors.</p>
+<p>一个进程 jps 就能看到<br><strong>对应yarn上 就跑在 nm的container里的</strong> </p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"> 1.  runs tasks</span><br><span class="line">2.  keeps data in memory or disk storage across them</span><br><span class="line">3. Each application has its own executors.</span><br><span class="line">            A：executor1 2 3</span><br><span class="line">            B：executor1 2 3</span><br><span class="line">这6个东西 是跑在container里的</span><br></pre></td></tr></table></figure></div>
+<h2 id="Task"><a href="#Task" class="headerlink" title="Task"></a>Task</h2><p>A unit of work that will be sent to one executor</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1.task 是发送到 executor里的</span><br><span class="line">2.RDD: partitions == tasks</span><br><span class="line">RDD是由多个partition所构成的，</span><br><span class="line">一个partition就对应一个task</span><br></pre></td></tr></table></figure></div>
+<h2 id="Job"><a href="#Job" class="headerlink" title="Job"></a>Job</h2><p>A parallel computation consisting of multiple tasks that gets spawned in response to a Spark action (e.g. save, collect); you’ll see this term used in the driver’s logs.</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1.一个action算子对应一个job</span><br></pre></td></tr></table></figure></div>
+<h2 id="Stage"><a href="#Stage" class="headerlink" title="Stage"></a>Stage</h2><p>Each job gets divided into smaller sets of tasks called stages that depend on each other (similar to the map and reduce stages in MapReduce); you’ll see this term used in the driver’s logs.</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1.一组task的集合 叫一个stage</span><br><span class="line">2.遇到一个shuffle算子  就会被拆成两个stage </span><br><span class="line"></span><br><span class="line">那遇到两个shuffle算子 会被拆成几个stage呢？ 3个哈  </span><br><span class="line">（跟一个桌子切掉一个桌角 还有几个角一样的哈 你别把桌子对角切就行 ）</span><br></pre></td></tr></table></figure></div>
+<h2 id="总结案例"><a href="#总结案例" class="headerlink" title="总结案例"></a>总结案例</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">eg：</span><br><span class="line">spark-shell  应用程序</span><br><span class="line">一个application：1到n个job</span><br><span class="line">一个job ： 1到n个stage构成</span><br><span class="line">一个stage： 1到n个task  task与partition一一对应</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="Components"><a href="#Components" class="headerlink" title="Components  ***"></a>Components  ***</h2><p>Spark applications run as independent sets of processes on a cluster<br> <strong>independent sets of processes：就是executor</strong></p>
+<p>Spark applications run as <strong>independent sets of processes on a cluster</strong>, coordinated by the SparkContext object in your main program (called the driver program).</p>
+<p>Specifically, to run on a cluster, <strong>the SparkContext can connect to several types of cluster managers (either Spark’s own standalone cluster manager, Mesos or YARN), which allocate resources across applications.</strong> <strong>Once connected, Spark acquires executors on nodes in the cluster,</strong> <strong>which are processes that run computations and store data for your application.</strong> Next<strong>, <strong>it sends your application code (defined by JAR or Python files passed to SparkContext) to the executors</strong></strong>. Finally, <strong>SparkContext sends tasks to the executors to run.</strong></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">1. which allocate resources across applications.  which  ===》  cluster managers</span><br><span class="line">2.  Once connected, Spark acquires executors on nodes in the cluster</span><br><span class="line">     一旦连接上 spark 就yarn集群的 nm 的contatiner 里启动executor</span><br><span class="line">3.which are processes that run computations and store data for your application ：  </span><br><span class="line">        which  ===》executor</span><br><span class="line">4.it sends your application code (defined by JAR or Python files passed to SparkContext) to the executors </span><br><span class="line">    it ==》 sc</span><br></pre></td></tr></table></figure></div>
+
+<p><img src="https://img-blog.csdnimg.cn/2019102214595656.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1.driver ： main方法里有个 sc</span><br></pre></td></tr></table></figure></div>
+
+
+
+<p>There are several useful things to note about this architecture:</p>
+<p>1.<strong>Each application gets its own executor processes, which stay up for the duration of the whole application and run tasks in multiple threads.</strong> <strong>This has the benefit of isolating applications from each other,</strong> <strong>on both the scheduling side (each driver schedules its own tasks) and executor side (tasks from different applications run in different JVMs).</strong> However, <strong>it also means that data cannot be shared across different Spark applications (instances of SparkContext) without writing it to an external storage system</strong>.<br>2.Spark is agnostic to the underlying cluster manager. <strong>As long as it can acquire executor processes, and these communicate with each other</strong>, it is relatively easy to run it even on a cluster manager that also supports other applications (e.g. Mesos/YARN).</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">1. which stay up for the duration of the whole application and run tasks in multiple threads </span><br><span class="line">		which  ==》executor processes</span><br><span class="line">		1.stay up for the duration of the whole application</span><br><span class="line">		2.run tasks in multiple threads</span><br><span class="line">2.This has the benefit of isolating applications from each other</span><br><span class="line">		Each application gets its own executor processes 就是每个application有自己独立的 executor processes</span><br><span class="line">		带来的好处就是 applications之间是隔离的</span><br><span class="line">3.cannot be shared across different Spark applications</span><br><span class="line">	without writing it to an external storage system    ===》Alluxio这个框架 现在可以实现 多个application之间共享</span><br><span class="line"></span><br><span class="line">4. agnostic  不关注</span><br><span class="line">    As long as it can acquire executor processes, and these communicate with each other</span><br><span class="line">    指的是 driver 和 executor之间的通信</span><br></pre></td></tr></table></figure></div>
+
+
+<p>3.<strong>The driver program must listen for and accept incoming connections from its executors throughout its lifetime</strong> (e.g., see spark.driver.port in the network config section). As such, the driver program must be <strong>network addressable</strong> from the worker nodes.<br>4.Because the driver schedules tasks on the cluster, <strong>it should be run close to the worker nodes</strong>, preferably on the same local area network. If you’d like to send requests to the cluster remotely, it’s better to open an RPC to the driver and have it submit operations from <strong>nearby than to run a driver far away from the worker nodes</strong>.</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1.The driver program must listen for and accept incoming connections from its executors throughout its lifetime</span><br><span class="line"> driver一定要知道你的executor在哪台机器上的</span><br></pre></td></tr></table></figure></div>
+<p><img src="https://img-blog.csdnimg.cn/20191022152821973.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>这块可以看到 executor 在那台机器的哪个端口上</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">2.As such, the driver program must be network addressable from the worker nodes. </span><br><span class="line"></span><br><span class="line">所以yarn的client模式下 </span><br><span class="line">必须保证这台本地的机器能与yarn通了 ，client是不是一定要是集群内的？不一定的哈 能连上yarn就可以  </span><br><span class="line">     最开始的文章 gateway什么意思呢？你亲我一下我就告诉你 （这是对未来女朋友说的）</span><br><span class="line"></span><br><span class="line">3.driver进程最好离executor进程 近一点</span><br></pre></td></tr></table></figure></div>
+      
+    </div>
+    
+      <footer class="article-footer">
+        完
+      </footer>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  <div class="article-nav-block">
+    
+      <a href="/2018/01/24/Spark06-%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption"></strong>
+        <div class="article-nav-title">
+          
+            Spark06--依赖关系
+          
+        </div>
+      </a>
+    
+  </div>
+  <div class="article-nav-block">
+    
+      <a href="/2018/01/22/Spark004-%E6%80%BB%E7%BB%93%E5%89%8D%E9%9D%A2%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/" id="article-nav-older" class="article-nav-link-wrap">
+        <div class="article-nav-title">Spark004--总结前面的基本操作</div>
+        <strong class="article-nav-caption"></strong>
+      </a>
+    
+  </div>
+</nav>
+
+    <link rel="stylesheet" href="/css/gitment.css"> 
+<script src="/js/gitment.js"></script>
+
+<div id="gitmentContainer"></div>
+
+<script>
+var gitment = new Gitment({
+  owner: '',
+  repo: '',
+  oauth: {
+    client_id: '',
+    client_secret: '',
+  },
+})
+gitment.render('gitmentContainer')
+</script>
+
+  
+  
+</article>
+</section>
+        <aside id="sidebar">
+  
+    <div class="widget-box">
+  <div class="avatar-box">
+    <img class="avatar" src="/images/default-avatar.jpg" title="图片来自网络"></img>
+    <h3 class="avatar-name">
+      
+        DoubleHappy
+      
+    </h3>
+    <p class="avatar-slogan">
+      特别耐撕的大数据，资深的打酱油攻城狮。
+    </p>
+  </div>
+</div>
+
+
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/01/05/Azkaban%E8%B0%83%E5%BA%A6-double-happy/">Azkaban调度--double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2019/01/04/Zookeeper%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E4%B8%8E%E7%9B%91%E6%8E%A7-Curator/">Zookeeper基本使用与监控(Curator)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/04/17/SparkSQL-TextFile%E8%BE%93%E5%87%BA%E5%A4%9A%E5%88%97/">SparkSQL--TextFile输出多列</a>
+          </li>
+        
+          <li>
+            <a href="/2018/03/17/%E9%9B%85%E6%81%A9%E8%B5%84%E6%BA%90%E8%B0%83%E4%BC%98-double-happy/">雅恩资源调优---double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/22/SS04/">SS04</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+      <div class="widget-box">
+    <h3 class="widget-title">友链</h3>
+    <div class="widget">
+      
+        <a style="display: block;" href="https://sxwanggit126.github.io/" title target='_blank'
+        >一路眼瞎</a>
+      
+    </div>
+  </div>
+
+  
+</aside>
+      </div>
+      <footer id="footer">
+  <div class="foot-box global-width">
+    &copy; 2019 DoubleHappy &nbsp;&nbsp;
+    Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    &nbsp;|&nbsp;主题 <a href="https://github.com/yiluyanxia/hexo-theme-antiquity" target="_blank" rel="noopener">antiquity</a>
+    <br>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv">不蒜子告之   阁下是第<span id="busuanzi_value_site_pv"></span>个访客</span>
+  </div>
+</footer>
+      <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script>
+if (!window.jQuery) {
+var script = document.createElement('script');
+script.src = "/js/jquery-2.0.3.min.js";
+document.body.write(script);
+}
+</script>
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+    </div>
+    <nav id="mobile-nav" class="mobile-nav-box">
+  <div class="mobile-nav-img mobile-nav-top"></div>
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+  <div class="mobile-nav-img  mobile-nav-bottom"></div>
+</nav>    
+  </div>
+</body>
+</html>

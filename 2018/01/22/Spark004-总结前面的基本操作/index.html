@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Spark004--总结前面的基本操作 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="实现排序功能（1）按照价格排序 第一种 123456789101112131415161718192021222324252627282930313233package com.ruozedata.spark.spark02import com.ruozedata.spark.homework.utils.ContextUtilsimport com.ruozedata.spark.homewor">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spark004--总结前面的基本操作">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2018&#x2F;01&#x2F;22&#x2F;Spark004-%E6%80%BB%E7%BB%93%E5%89%8D%E9%9D%A2%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C&#x2F;index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="实现排序功能（1）按照价格排序 第一种 123456789101112131415161718192021222324252627282930313233package com.ruozedata.spark.spark02import com.ruozedata.spark.homework.utils.ContextUtilsimport com.ruozedata.spark.homewor">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;2019102213123198.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20191022131456435.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+<meta property="og:updated_time" content="2019-11-17T12:01:08.567Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;2019102213123198.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/default-avatar.jpg">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/highlight.css">
+</head>
+
+<body>
+  <div id="fullpage" class="mobile-nav-right">
+    
+      <div id="wrapper" title="图片来自网络">
+    
+    
+      <header id="header">
+  <div id="nav-toggle" class="nav-toggle"></div>
+  <div class="head-box global-width">
+    <nav class="nav-box nav-right">
+      
+        <a class="nav-item" href="/" title
+        
+        >首页</a>
+      
+        <a class="nav-item" href="/archives" title
+        
+        >归档</a>
+      
+    </nav>
+  </div>
+</header>
+      <div id="middlecontent" title class="global-width sidebar-right">
+        <section id="main"><article id="post-Spark004-总结前面的基本操作" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 class="article-title" itemprop="name">
+      Spark004--总结前面的基本操作
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2018/01/22/Spark004-%E6%80%BB%E7%BB%93%E5%89%8D%E9%9D%A2%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/" class="article-date">
+  <time datetime="2018-01-22T12:00:42.000Z" itemprop="datePublished">2018-01-22</time>
+</a>
+    
+    
+  </div>
+  
+    <span id="busuanzi_container_page_pv">
+      本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+    </span>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-cloud" itemprop="articleBody">
+      
+        <h2 id="实现排序功能"><a href="#实现排序功能" class="headerlink" title="实现排序功能"></a>实现排序功能</h2><p>（1）按照价格排序</p>
+<p><strong>第一种</strong></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">package com.ruozedata.spark.spark02</span><br><span class="line"></span><br><span class="line">import com.ruozedata.spark.homework.utils.ContextUtils</span><br><span class="line">import com.ruozedata.spark.homework.utils.ImplicitAspect._</span><br><span class="line"></span><br><span class="line">object SortApp01 &#123;</span><br><span class="line"></span><br><span class="line">  def main(args: Array[String]): Unit = &#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    val sc = ContextUtils.getSparkContext(this.getClass.getSimpleName)</span><br><span class="line"></span><br><span class="line">    val products = sc.parallelize(List(&quot;皮鞭 20 10&quot;,&quot;蜡烛 20 100&quot;,&quot;扑克牌 5 2000&quot;,&quot;iphone11 7000 1000&quot;))</span><br><span class="line">        products.map(x =&gt; &#123;</span><br><span class="line">          val splits = x.split(&quot; &quot;)</span><br><span class="line">          val name = splits(0)</span><br><span class="line">          val price = splits(1).toDouble</span><br><span class="line">          val amount = splits(2).toInt</span><br><span class="line"></span><br><span class="line">          (name, price, amount)</span><br><span class="line">        &#125;).sortBy(-_._2).printInfo()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">      sc.stop()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">输出的结果：</span><br><span class="line">(iphone11,7000.0,1000)</span><br><span class="line">(皮鞭,20.0,10)</span><br><span class="line">(蜡烛,20.0,100)</span><br><span class="line">(扑克牌,5.0,2000)</span><br><span class="line">-------------------------</span><br></pre></td></tr></table></figure></div>
+<p> 这里一定要注意：<br> <strong>你运行出来的结果可能顺序不对，sortBy是全局排序的 所以你测试的时候 可以设置分区数为 1</strong></p>
+<p>上面的结果当然也可以按多个排：<br>价格相同，再按照库存的数量排序</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">package com.ruozedata.spark.spark02</span><br><span class="line">import com.ruozedata.spark.homework.utils.ContextUtils</span><br><span class="line">import com.ruozedata.spark.homework.utils.ImplicitAspect._</span><br><span class="line"></span><br><span class="line">object SortApp01 &#123;</span><br><span class="line"></span><br><span class="line">  def main(args: Array[String]): Unit = &#123;</span><br><span class="line"></span><br><span class="line">    val sc = ContextUtils.getSparkContext(this.getClass.getSimpleName)</span><br><span class="line"></span><br><span class="line">    val products = sc.parallelize(List(&quot;皮鞭 20 10&quot;,&quot;蜡烛 20 100&quot;,&quot;扑克牌 5 2000&quot;,&quot;iphone11 7000 1000&quot;),1)</span><br><span class="line">        products.map(x =&gt; &#123;</span><br><span class="line">          val splits = x.split(&quot; &quot;)</span><br><span class="line">          val name = splits(0)</span><br><span class="line">          val price = splits(1).toDouble</span><br><span class="line">          val amount = splits(2).toInt</span><br><span class="line"></span><br><span class="line">          (name, price, amount)</span><br><span class="line">        &#125;).sortBy(x=&gt;(-x._2,-x._3)).printInfo()</span><br><span class="line">      sc.stop()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">结果：</span><br><span class="line">(iphone11,7000.0,1000)</span><br><span class="line">(蜡烛,20.0,100)</span><br><span class="line">(皮鞭,20.0,10)</span><br><span class="line">(扑克牌,5.0,2000)</span><br><span class="line">-------------------------</span><br></pre></td></tr></table></figure></div>
+<p>上面那种是使用Tuple的方式 ，生产上还是要封装一个类来实现的 </p>
+<p><strong>第二种</strong></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">package com.ruozedata.spark.spark02</span><br><span class="line"></span><br><span class="line">import com.ruozedata.spark.homework.utils.ContextUtils</span><br><span class="line">import com.ruozedata.spark.homework.utils.ImplicitAspect._</span><br><span class="line"></span><br><span class="line">object SortApp02 &#123;</span><br><span class="line"></span><br><span class="line">  def main(args: Array[String]): Unit = &#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    val sc = ContextUtils.getSparkContext(this.getClass.getSimpleName)</span><br><span class="line"></span><br><span class="line">    val products = sc.parallelize(List(&quot;皮鞭 20 10&quot;,&quot;蜡烛 20 100&quot;,&quot;扑克牌 5 2000&quot;,&quot;iphone11 7000 1000&quot;),1)</span><br><span class="line">        products.map(x =&gt; &#123;</span><br><span class="line">          val splits = x.split(&quot; &quot;)</span><br><span class="line">          val name = splits(0)</span><br><span class="line">          val price = splits(1).toDouble</span><br><span class="line">          val amount = splits(2).toInt</span><br><span class="line"></span><br><span class="line">          new Products(name,price,amount)</span><br><span class="line">        &#125;).sortBy(x=&gt;x).printInfo()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">      sc.stop()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>直接报错：<br>Error:(21, 18) No implicit Ordering defined for com.ruozedata.spark.spark02.Products.<br>        }).sortBy(x=&gt;x).printInfo()<br>Error:(21, 18) not enough arguments for method sortBy: (implicit ord: Ordering[com.ruozedata.spark.spark02.Products], implicit ctag: scala.reflect.ClassTag[com.ruozedata.spark.spark02.Products])org.apache.spark.rdd.RDD[com.ruozedata.spark.spark02.Products].<br>Unspecified value parameters ord, ctag.<br>        }).sortBy(x=&gt;x).printInfo()</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">按上面那么写有什么问题？</span><br><span class="line"></span><br><span class="line"> /**</span><br><span class="line">   * Return this RDD sorted by the given key function.</span><br><span class="line">   */</span><br><span class="line">  def sortBy[K](</span><br><span class="line">      f: (T) =&gt; K,</span><br><span class="line">      ascending: Boolean = true,</span><br><span class="line">      numPartitions: Int = this.partitions.length)</span><br><span class="line">      (implicit ord: Ordering[K], ctag: ClassTag[K]): RDD[T] = withScope &#123;</span><br><span class="line">    this.keyBy[K](f)</span><br><span class="line">        .sortByKey(ascending, numPartitions)</span><br><span class="line">        .values</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">注意：</span><br><span class="line">1.有一个隐式转换的 需要一个Ordering 这个东西 ，而我们传进去的是x ==》 product </span><br><span class="line">它根本找不到任何排序规则</span><br></pre></td></tr></table></figure></div>
+
+<p>因为：<br>Error:(21, 18) not enough arguments for method sortBy: (implicit ord: Ordering[com.ruozedata.spark.spark02.Products], implicit ctag: scala.reflect.ClassTag[com.ruozedata.spark.spark02.Products])org.apache.spark.rdd.RDD[com.ruozedata.spark.spark02.Products].<br>所以：<br>1.not enough arguments<br>2.(implicit ord: Ordering[com.ruozedata.spark.spark02.Products]   一个Products类型</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">package com.ruozedata.spark.spark02</span><br><span class="line"></span><br><span class="line">class Products(val name:String , val price:Double,val amount:Int) </span><br><span class="line">      extends  Ordered[Products]&#123;</span><br><span class="line">  override def compare(that: Products): Int = &#123;</span><br><span class="line">    </span><br><span class="line">    this.amount - that.amount</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>修改之后再看：<br><img src="https://img-blog.csdnimg.cn/2019102213123198.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>又报错了：<br>Serialization stack:<br>    - object not serializable (class: com.ruozedata.spark.spark02.Products, value: com.ruozedata.spark.spark02.Products@237c4154)</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">class Products(val name:String , val price:Double,val amount:Int)</span><br><span class="line">      extends  Ordered[Products] with Serializable&#123;</span><br><span class="line">  override def compare(that: Products): Int = &#123;</span><br><span class="line"></span><br><span class="line">    this.amount - that.amount</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>修改之后：<br><img src="https://img-blog.csdnimg.cn/20191022131456435.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>没问题了 那么我想看输出结果 该怎么办呢？<br>toString 就可以了</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">class Products(val name:String , val price:Double,val amount:Int)</span><br><span class="line">      extends  Ordered[Products] with Serializable&#123;</span><br><span class="line">  override def compare(that: Products): Int = &#123;</span><br><span class="line"></span><br><span class="line">    this.amount - that.amount</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  override def toString: String = name + &quot;\t&quot; + price + &quot;\t&quot; +amount</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">package com.ruozedata.spark.spark02</span><br><span class="line"></span><br><span class="line">import com.ruozedata.spark.homework.utils.ContextUtils</span><br><span class="line">import com.ruozedata.spark.homework.utils.ImplicitAspect._</span><br><span class="line"></span><br><span class="line">object SortApp02 &#123;</span><br><span class="line"></span><br><span class="line">  def main(args: Array[String]): Unit = &#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    val sc = ContextUtils.getSparkContext(this.getClass.getSimpleName)</span><br><span class="line"></span><br><span class="line">    val products = sc.parallelize(List(&quot;皮鞭 20 10&quot;,&quot;蜡烛 20 100&quot;,&quot;扑克牌 5 2000&quot;,&quot;iphone11 7000 1000&quot;),1)</span><br><span class="line">        products.map(x =&gt; &#123;</span><br><span class="line">          val splits = x.split(&quot; &quot;)</span><br><span class="line">          val name = splits(0)</span><br><span class="line">          val price = splits(1).toDouble</span><br><span class="line">          val amount = splits(2).toInt</span><br><span class="line"></span><br><span class="line">          new Products(name,price,amount)</span><br><span class="line">        &#125;).sortBy(x=&gt;x).printInfo()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">      sc.stop()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">结果：</span><br><span class="line">皮鞭	20.0	10</span><br><span class="line">蜡烛	20.0	100</span><br><span class="line">iphone11	7000.0	1000</span><br><span class="line">扑克牌	5.0	2000</span><br><span class="line">-------------------------</span><br></pre></td></tr></table></figure></div>
+<p>工作当中别这么用 毕竟自己实现类 还需要序列化 挺麻烦的</p>
+<p><strong>第三种  case class</strong><br>生产上用的比较多</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">package com.ruozedata.spark.spark02</span><br><span class="line"></span><br><span class="line">case  class  Products02( name:String,  price:Double,  amount:Int)</span><br><span class="line">      extends  Ordered[Products02] &#123;</span><br><span class="line">  override def compare(that: Products02): Int = &#123;</span><br><span class="line"></span><br><span class="line">    this.amount - that.amount</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">package com.ruozedata.spark.spark02</span><br><span class="line"></span><br><span class="line">import com.ruozedata.spark.homework.utils.ContextUtils</span><br><span class="line">import com.ruozedata.spark.homework.utils.ImplicitAspect._</span><br><span class="line"></span><br><span class="line">object SortApp02 &#123;</span><br><span class="line"></span><br><span class="line">  def main(args: Array[String]): Unit = &#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    val sc = ContextUtils.getSparkContext(this.getClass.getSimpleName)</span><br><span class="line"></span><br><span class="line">    val products = sc.parallelize(List(&quot;皮鞭 20 10&quot;,&quot;蜡烛 20 100&quot;,&quot;扑克牌 5 2000&quot;,&quot;iphone11 7000 1000&quot;),1)</span><br><span class="line">        products.map(x =&gt; &#123;</span><br><span class="line">          val splits = x.split(&quot; &quot;)</span><br><span class="line">          val name = splits(0)</span><br><span class="line">          val price = splits(1).toDouble</span><br><span class="line">          val amount = splits(2).toInt</span><br><span class="line"></span><br><span class="line">//          new Products(name,price,amount)</span><br><span class="line">          Products02(name,price,amount)</span><br><span class="line"></span><br><span class="line">        &#125;).sortBy(x=&gt;x).printInfo()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">      sc.stop()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">结果是：</span><br><span class="line">Products02(皮鞭,20.0,10)</span><br><span class="line">Products02(蜡烛,20.0,100)</span><br><span class="line">Products02(iphone11,7000.0,1000)</span><br><span class="line">Products02(扑克牌,5.0,2000)</span><br><span class="line">-------------------------</span><br></pre></td></tr></table></figure></div>
+<p>那么 class  和case class 的区别是什么？ 看scala篇 </p>
+<p>*<em>第四种     使用隐式转换的方式 *</em></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">package com.ruozedata.spark.spark02</span><br><span class="line"></span><br><span class="line">import com.ruozedata.spark.homework.utils.ContextUtils</span><br><span class="line">import com.ruozedata.spark.homework.utils.ImplicitAspect._</span><br><span class="line"></span><br><span class="line">object SortApp03 &#123;</span><br><span class="line"></span><br><span class="line">  def main(args: Array[String]): Unit = &#123;</span><br><span class="line">    val sc = ContextUtils.getSparkContext(this.getClass.getSimpleName)</span><br><span class="line">    val products = sc.parallelize(List(&quot;皮鞭 20 10&quot;,&quot;蜡烛 20 100&quot;,&quot;扑克牌 5 2000&quot;,&quot;iphone11 7000 1000&quot;),1)</span><br><span class="line">        products.map(x =&gt; &#123;</span><br><span class="line">          val splits = x.split(&quot; &quot;)</span><br><span class="line">          val name = splits(0)</span><br><span class="line">          val price = splits(1).toDouble</span><br><span class="line">          val amount = splits(2).toInt</span><br><span class="line">          new Products03(name,price,amount)</span><br><span class="line">        &#125;).sortBy(x=&gt;x).printInfo()</span><br><span class="line">      sc.stop()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">class Products03( name:String,  price:Double,  amount:Int)</span><br></pre></td></tr></table></figure></div>
+<p><strong>不准对Products03 做任何修改 完成排序功能该怎么办？</strong><br>Product3默认是不能排序的 ====implicit==&gt; 能排序的</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">package com.ruozedata.spark.spark02</span><br><span class="line"></span><br><span class="line">import com.ruozedata.spark.homework.utils.ContextUtils</span><br><span class="line">import com.ruozedata.spark.homework.utils.ImplicitAspect._</span><br><span class="line"></span><br><span class="line">object SortApp03 &#123;</span><br><span class="line"></span><br><span class="line">  def main(args: Array[String]): Unit = &#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    val sc = ContextUtils.getSparkContext(this.getClass.getSimpleName)</span><br><span class="line"></span><br><span class="line">    val products = sc.parallelize(List(&quot;皮鞭 20 10&quot;,&quot;蜡烛 20 100&quot;,&quot;扑克牌 5 2000&quot;,&quot;iphone11 7000 1000&quot;),1)</span><br><span class="line">        products.map(x =&gt; &#123;</span><br><span class="line">          val splits = x.split(&quot; &quot;)</span><br><span class="line">          val name = splits(0)</span><br><span class="line">          val price = splits(1).toDouble</span><br><span class="line">          val amount = splits(2).toInt</span><br><span class="line"></span><br><span class="line">          new Products03(name,price,amount)</span><br><span class="line"></span><br><span class="line">        &#125;).sortBy(x=&gt;x).printInfo()</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">      * Product3默认是不能排序的 ====implicit==&gt; 能排序的</span><br><span class="line">      */</span><br><span class="line"></span><br><span class="line">    implicit def product2Ordered(products: Products03):Ordered[Products03] = new Ordered[Products03]&#123;</span><br><span class="line">      override def compare(that: Products03): Int = &#123;</span><br><span class="line">        products.amount - that.amount</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    sc.stop()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Products03( val  name:String, val  price:Double,  val amount:Int) extends Serializable &#123;</span><br><span class="line">  override def toString: String = name + &quot;\t&quot; + price + &quot;\t&quot; + amount</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p><strong>第五种 花里胡哨</strong><br> 能看懂就行 不需要掌握<br> 实际上也是 隐式转换   隐式变量</p>
+<p>思路就是 ：<br>(implicit ord: Ordering[com.ruozedata.spark.spark02.Products]   一个Products类型</p>
+<p>既然你却这个 就隐式转换给你 </p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">package com.ruozedata.spark.spark02</span><br><span class="line"></span><br><span class="line">import com.ruozedata.spark.homework.utils.ContextUtils</span><br><span class="line">import com.ruozedata.spark.homework.utils.ImplicitAspect._</span><br><span class="line">import org.apache.spark.rdd.RDD</span><br><span class="line"></span><br><span class="line">object SortApp04 &#123;</span><br><span class="line"></span><br><span class="line">  def main(args: Array[String]): Unit = &#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    val sc = ContextUtils.getSparkContext(this.getClass.getSimpleName)</span><br><span class="line"></span><br><span class="line">    val products = sc.parallelize(List(&quot;皮鞭 20 10&quot;,&quot;蜡烛 20 100&quot;,&quot;扑克牌 5 2000&quot;,&quot;iphone11 7000 1000&quot;),1)</span><br><span class="line">    val product = products.map(x =&gt; &#123;</span><br><span class="line">      val splits = x.split(&quot; &quot;)</span><br><span class="line">      val name = splits(0)</span><br><span class="line">      val price = splits(1).toDouble</span><br><span class="line">      val amount = splits(2).toInt</span><br><span class="line"></span><br><span class="line">      (name, price, amount)</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">      * Ordering on</span><br><span class="line">      *</span><br><span class="line">      * -x._2, -x._3  排序规则</span><br><span class="line">      * (Double,Int) 定义的是规则的返回值的类型  就是参与排序的 类型</span><br><span class="line">      * (String,Double,Int) 数据的类型</span><br><span class="line">      */</span><br><span class="line">    implicit val ord = Ordering[(Double,Int)].on[(String,Double,Int)](x=&gt;(-x._2, -x._3))</span><br><span class="line">    product.sortBy(x=&gt;x).printInfo()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">      sc.stop()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">结果是：</span><br><span class="line">(iphone11,7000.0,1000)</span><br><span class="line">(蜡烛,20.0,100)</span><br><span class="line">(皮鞭,20.0,10)</span><br><span class="line">(扑克牌,5.0,2000)</span><br><span class="line">-------------------------</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">package com.ruozedata.spark.spark02</span><br><span class="line"></span><br><span class="line">import com.ruozedata.spark.homework.utils.ContextUtils</span><br><span class="line">import com.ruozedata.spark.homework.utils.ImplicitAspect._</span><br><span class="line">import org.apache.spark.rdd.RDD</span><br><span class="line"></span><br><span class="line">object SortApp04 &#123;</span><br><span class="line"></span><br><span class="line">  def main(args: Array[String]): Unit = &#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    val sc = ContextUtils.getSparkContext(this.getClass.getSimpleName)</span><br><span class="line"></span><br><span class="line">    val products = sc.parallelize(List(&quot;皮鞭 20 10&quot;,&quot;蜡烛 20 100&quot;,&quot;扑克牌 5 2000&quot;,&quot;iphone11 7000 1000&quot;),1)</span><br><span class="line">    val product = products.map(x =&gt; &#123;</span><br><span class="line">      val splits = x.split(&quot; &quot;)</span><br><span class="line">      val name = splits(0)</span><br><span class="line">      val price = splits(1).toDouble</span><br><span class="line">      val amount = splits(2).toInt</span><br><span class="line"></span><br><span class="line">      Products02(name, price, amount)</span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">      * Ordering on</span><br><span class="line">      *</span><br><span class="line">      * -x._2, -x._3  排序规则</span><br><span class="line">      * (Double,Int) 定义的是规则的返回值的类型  就是参与排序的 类型</span><br><span class="line">      * (String,Double,Int) 数据的类型</span><br><span class="line">      */</span><br><span class="line">    implicit val ord = Ordering[(Double,Int)].on[Products02](x=&gt;(-x.price, -x.amount))</span><br><span class="line">    product.sortBy(x=&gt;x).printInfo()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">      sc.stop()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">总结：</span><br><span class="line">后面两种都是隐式转换：</span><br><span class="line">一个是增强类</span><br><span class="line">一个是隐式参数 </span><br><span class="line"></span><br><span class="line">隐式转换没什么 听着挺吓人的</span><br></pre></td></tr></table></figure></div>
+      
+    </div>
+    
+      <footer class="article-footer">
+        完
+      </footer>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  <div class="article-nav-block">
+    
+      <a href="/2018/01/23/Spark005-%E6%A0%B8%E5%BF%83%E6%9E%B6%E6%9E%84/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption"></strong>
+        <div class="article-nav-title">
+          
+            Spark005--核心架构
+          
+        </div>
+      </a>
+    
+  </div>
+  <div class="article-nav-block">
+    
+      <a href="/2018/01/21/Spark002-transform-action/" id="article-nav-older" class="article-nav-link-wrap">
+        <div class="article-nav-title">Spark002-transform&amp;action</div>
+        <strong class="article-nav-caption"></strong>
+      </a>
+    
+  </div>
+</nav>
+
+    <link rel="stylesheet" href="/css/gitment.css"> 
+<script src="/js/gitment.js"></script>
+
+<div id="gitmentContainer"></div>
+
+<script>
+var gitment = new Gitment({
+  owner: '',
+  repo: '',
+  oauth: {
+    client_id: '',
+    client_secret: '',
+  },
+})
+gitment.render('gitmentContainer')
+</script>
+
+  
+  
+</article>
+</section>
+        <aside id="sidebar">
+  
+    <div class="widget-box">
+  <div class="avatar-box">
+    <img class="avatar" src="/images/default-avatar.jpg" title="图片来自网络"></img>
+    <h3 class="avatar-name">
+      
+        DoubleHappy
+      
+    </h3>
+    <p class="avatar-slogan">
+      特别耐撕的大数据，资深的打酱油攻城狮。
+    </p>
+  </div>
+</div>
+
+
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/01/05/Azkaban%E8%B0%83%E5%BA%A6-double-happy/">Azkaban调度--double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2019/01/04/Zookeeper%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E4%B8%8E%E7%9B%91%E6%8E%A7-Curator/">Zookeeper基本使用与监控(Curator)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/04/17/SparkSQL-TextFile%E8%BE%93%E5%87%BA%E5%A4%9A%E5%88%97/">SparkSQL--TextFile输出多列</a>
+          </li>
+        
+          <li>
+            <a href="/2018/03/17/%E9%9B%85%E6%81%A9%E8%B5%84%E6%BA%90%E8%B0%83%E4%BC%98-double-happy/">雅恩资源调优---double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/22/SS04/">SS04</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+      <div class="widget-box">
+    <h3 class="widget-title">友链</h3>
+    <div class="widget">
+      
+        <a style="display: block;" href="https://sxwanggit126.github.io/" title target='_blank'
+        >一路眼瞎</a>
+      
+    </div>
+  </div>
+
+  
+</aside>
+      </div>
+      <footer id="footer">
+  <div class="foot-box global-width">
+    &copy; 2019 DoubleHappy &nbsp;&nbsp;
+    Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    &nbsp;|&nbsp;主题 <a href="https://github.com/yiluyanxia/hexo-theme-antiquity" target="_blank" rel="noopener">antiquity</a>
+    <br>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv">不蒜子告之   阁下是第<span id="busuanzi_value_site_pv"></span>个访客</span>
+  </div>
+</footer>
+      <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script>
+if (!window.jQuery) {
+var script = document.createElement('script');
+script.src = "/js/jquery-2.0.3.min.js";
+document.body.write(script);
+}
+</script>
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+    </div>
+    <nav id="mobile-nav" class="mobile-nav-box">
+  <div class="mobile-nav-img mobile-nav-top"></div>
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+  <div class="mobile-nav-img  mobile-nav-bottom"></div>
+</nav>    
+  </div>
+</body>
+</html>

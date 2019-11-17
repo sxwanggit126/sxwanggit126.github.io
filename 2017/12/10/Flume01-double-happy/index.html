@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Flume01--double_happy | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="介绍我使用的是flume1.6.0-cdh5.15.1版本的，flume的agent配置 实际上就是查字典 不同的版本去不同的官网去查 那么给出flume1.6.0-cdh5.15.1的官网[flume1.6.0-cdh5.15.1](http:&#x2F;&#x2F;archive.cloudera.com&#x2F;cdh5&#x2F;cdh&#x2F;5&#x2F;flume-ng-1.6.0-cdh5.15.1&#x2F;FlumeUserGuide.htm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flume01--double_happy">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2017&#x2F;12&#x2F;10&#x2F;Flume01-double-happy&#x2F;index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="介绍我使用的是flume1.6.0-cdh5.15.1版本的，flume的agent配置 实际上就是查字典 不同的版本去不同的官网去查 那么给出flume1.6.0-cdh5.15.1的官网[flume1.6.0-cdh5.15.1](http:&#x2F;&#x2F;archive.cloudera.com&#x2F;cdh5&#x2F;cdh&#x2F;5&#x2F;flume-ng-1.6.0-cdh5.15.1&#x2F;FlumeUserGuide.htm">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20190909152131576.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20190909160931296.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70">
+<meta property="og:updated_time" content="2019-11-17T11:50:15.326Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20190909152131576.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/default-avatar.jpg">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/highlight.css">
+</head>
+
+<body>
+  <div id="fullpage" class="mobile-nav-right">
+    
+      <div id="wrapper" title="图片来自网络">
+    
+    
+      <header id="header">
+  <div id="nav-toggle" class="nav-toggle"></div>
+  <div class="head-box global-width">
+    <nav class="nav-box nav-right">
+      
+        <a class="nav-item" href="/" title
+        
+        >首页</a>
+      
+        <a class="nav-item" href="/archives" title
+        
+        >归档</a>
+      
+    </nav>
+  </div>
+</header>
+      <div id="middlecontent" title class="global-width sidebar-right">
+        <section id="main"><article id="post-Flume01-double-happy" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 class="article-title" itemprop="name">
+      Flume01--double_happy
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2017/12/10/Flume01-double-happy/" class="article-date">
+  <time datetime="2017-12-10T11:49:48.000Z" itemprop="datePublished">2017-12-10</time>
+</a>
+    
+    
+  </div>
+  
+    <span id="busuanzi_container_page_pv">
+      本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+    </span>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-cloud" itemprop="articleBody">
+      
+        <h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><pre><code>我使用的是flume1.6.0-cdh5.15.1版本的，flume的agent配置 实际上就是查字典 不同的版本去不同的官网去查
+那么给出flume1.6.0-cdh5.15.1的官网[flume1.6.0-cdh5.15.1](http://archive.cloudera.com/cdh5/cdh/5/flume-ng-1.6.0-cdh5.15.1/FlumeUserGuide.html)
+下载地址：[cdh下载地址](http://archive.cloudera.com/cdh5/cdh/5/)</code></pre><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1.搭建</span><br><span class="line">	三步：下载、解压、配置环境变量</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">2.下面基于官网进行Flume的学习</span><br><span class="line"></span><br><span class="line">Flume：</span><br><span class="line">	RDBMS ==&gt; Sqoop ==&gt; Hadoop    使用FS可以 </span><br><span class="line">	日志：分散在各个服务器上  ??? ===&gt; Hadoop    这里就引出Flume</span><br><span class="line">	</span><br><span class="line">Flume is a distributed（分布式的）, reliable（可靠）, and available service （高可用）</span><br><span class="line">for efficiently *****collecting, aggregating, and moving***** large amounts of log data. </span><br><span class="line">It has a simple and flexible architecture based on streaming data flows.</span><br><span class="line"></span><br><span class="line">collecting	   采集   source</span><br><span class="line">aggregating    聚合   channel （找个地方把采集过来的数据暂存下）</span><br><span class="line">moving         移动   sink</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Flume： 就是编写配置文件，组合source、channel、sink三者之间的关系</span><br><span class="line">Agent：就是由source、channel、sink组成</span><br><span class="line">编写flume的配置文件其实就是配置agent的构成</span><br></pre></td></tr></table></figure></div>
+<p><img src="https://img-blog.csdnimg.cn/20190909152131576.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Flume就是一个框架：针对日志数据进行采集汇总，把日志从A地方搬运到B地方去</span><br><span class="line">注意：</span><br><span class="line">	1.flume支持配置 采集的文件进行压缩 以及存储格式 </span><br><span class="line">    2.flume的监控</span><br><span class="line">flume把数据写到hdfs要注意有读写权限</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">3.如何使用Flume？</span><br><span class="line">		就是配置agent</span><br><span class="line">		flume 的agent 就是本地的一个配置文件</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">[hadoop@ruozedata001 flume]$ flume-ng</span><br><span class="line">Error: Unknown or unspecified command &apos;&apos;</span><br><span class="line"></span><br><span class="line">Usage: /home/hadoop/app/flume/bin/flume-ng &lt;command&gt; [options]...</span><br><span class="line"></span><br><span class="line">commands:</span><br><span class="line">  help                      display this help text</span><br><span class="line">  agent                     run a Flume agent</span><br><span class="line">  avro-client               run an avro Flume client</span><br><span class="line">  version                   show Flume version info</span><br><span class="line"></span><br><span class="line">global options:</span><br><span class="line">  --conf,-c &lt;conf&gt;          use configs in &lt;conf&gt; directory</span><br><span class="line">  --classpath,-C &lt;cp&gt;       append to the classpath</span><br><span class="line">  --dryrun,-d               do not actually start Flume, just print the command</span><br><span class="line">  --plugins-path &lt;dirs&gt;     colon-separated list of plugins.d directories. See the</span><br><span class="line">                            plugins.d section in the user guide for more details.</span><br><span class="line">                            Default: $FLUME_HOME/plugins.d</span><br><span class="line">  -Dproperty=value          sets a Java system property value</span><br><span class="line">  -Xproperty=value          sets a Java -X option</span><br><span class="line"></span><br><span class="line">agent options:</span><br><span class="line">  --name,-n &lt;name&gt;          the name of this agent (required)</span><br><span class="line">  --conf-file,-f &lt;file&gt;     specify a config file (required if -z missing)</span><br><span class="line">  --zkConnString,-z &lt;str&gt;   specify the ZooKeeper connection to use (required if -f missing)</span><br><span class="line">  --zkBasePath,-p &lt;path&gt;    specify the base path in ZooKeeper for agent configs</span><br><span class="line">  --no-reload-conf          do not reload config file if changed</span><br><span class="line">  --help,-h                 display help text</span><br><span class="line"></span><br><span class="line">avro-client options:</span><br><span class="line">  --rpcProps,-P &lt;file&gt;   RPC client properties file with server connection params</span><br><span class="line">  --host,-H &lt;host&gt;       hostname to which events will be sent</span><br><span class="line">  --port,-p &lt;port&gt;       port of the avro source</span><br><span class="line">  --dirname &lt;dir&gt;        directory to stream to avro source</span><br><span class="line">  --filename,-F &lt;file&gt;   text file to stream to avro source (default: std input)</span><br><span class="line">  --headerFile,-R &lt;file&gt; File containing event headers as key/value pairs on each new line</span><br><span class="line">  --help,-h              display help text</span><br><span class="line"></span><br><span class="line">  Either --rpcProps or both --host and --port must be specified.</span><br><span class="line"></span><br><span class="line">Note that if &lt;conf&gt; directory is specified, then it is always included first</span><br><span class="line">in the classpath.</span><br></pre></td></tr></table></figure></div>
+<p>尖括号是一定要有的 []可有可无的选项</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">4.实战进行简单的学习  ---引出</span><br><span class="line">	这个需求1 看不懂没有关系 下面会有具体的知识讲解  </span><br><span class="line">	</span><br><span class="line">需求1：使用Flume从指定的端口中获取数据，输出到控制台</span><br><span class="line">分析：Agent的选型问题</span><br><span class="line">	Source： nc</span><br><span class="line">	Channel: memory</span><br><span class="line">	Sink:    logger</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"># 定义Agent</span><br><span class="line">a1.sources = r1</span><br><span class="line">a1.sinks = k1</span><br><span class="line">a1.channels = c1</span><br><span class="line"></span><br><span class="line"># 定义Source</span><br><span class="line">a1.sources.r1.type = netcat</span><br><span class="line">a1.sources.r1.bind = ruozedata001</span><br><span class="line">a1.sources.r1.port = 44445</span><br><span class="line"></span><br><span class="line"># 定义Channel</span><br><span class="line">a1.channels.c1.type = memory</span><br><span class="line"></span><br><span class="line"># 定义Sink</span><br><span class="line">a1.sinks.k1.type = logger</span><br><span class="line"></span><br><span class="line"># 定义配置关系</span><br><span class="line">a1.sinks.k1.channel = c1</span><br><span class="line">a1.sources.r1.channels = c1</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">命令解释：可以再上面的flume-ng 查看具体的意思</span><br><span class="line"></span><br><span class="line">flume-ng agent \</span><br><span class="line">--name a1 \</span><br><span class="line">--conf $FLUME_HOME/conf \</span><br><span class="line">--conf-file /home/hadoop/script/flume/nc-mem-logger.conf\（就是编写agent的一个配置文件）</span><br><span class="line">-Dflume.root.logger=INFO,console \      **打印日志到控制台</span><br><span class="line">-Dflume.monitoring.type=http \</span><br><span class="line">-Dflume.monitoring.port=34343    **在本机加上这个端口号可以查看一些东西（metrics）为之后监控做准备。</span><br><span class="line"></span><br><span class="line">启动之后看生成的日志里有 reloading 它代表不需要重启（就是你改了flume的agent内容，它会重加载不需要kill掉重启flume）</span><br><span class="line"></span><br><span class="line">日志里面会有event</span><br><span class="line">Event: 就是一条数据  是数据传输的最小单元 event从source到channel到sink</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">执行顺序： 先开启flume的哈 </span><br><span class="line">1.执行命令：</span><br><span class="line">	flume-ng agent \</span><br><span class="line">	--name a1 \</span><br><span class="line">	--conf-file /home/hadoop/script/flume/nc-mem-logger.conf \</span><br><span class="line">	--conf $FLUME_HOME/conf \</span><br><span class="line">	-Dflume.root.logger=INFO,console \</span><br><span class="line">	-Dflume.monitoring.type=http \</span><br><span class="line">	-Dflume.monitoring.port=34343</span><br><span class="line">2.开启telnet </span><br><span class="line">telnet ruozedata001 44445</span><br></pre></td></tr></table></figure></div>
+<p>结果：<br><img src="https://img-blog.csdnimg.cn/20190909160931296.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTU1NzUxMg==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">eg：</span><br><span class="line">Event: &#123; headers:&#123;&#125; body: 72 75 6F 7A 65 64 61 74 61 0D                   ruozedata. &#125;</span><br><span class="line">Event：headers + body(字节数组))(存的是真正的数据）</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">未完待续。。。下一节介绍Flume的使用</span><br></pre></td></tr></table></figure></div>
+      
+    </div>
+    
+      <footer class="article-footer">
+        完
+      </footer>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  <div class="article-nav-block">
+    
+      <a href="/2017/12/11/Flume02-double-happy/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption"></strong>
+        <div class="article-nav-title">
+          
+            Flume02--double_happy
+          
+        </div>
+      </a>
+    
+  </div>
+  <div class="article-nav-block">
+    
+      <a href="/2017/12/08/Scala%E8%AF%AD%E6%B3%95%E7%BB%86%E8%8A%8205-double-happy/" id="article-nav-older" class="article-nav-link-wrap">
+        <div class="article-nav-title">Scala语法细节05--double_happy</div>
+        <strong class="article-nav-caption"></strong>
+      </a>
+    
+  </div>
+</nav>
+
+    <link rel="stylesheet" href="/css/gitment.css"> 
+<script src="/js/gitment.js"></script>
+
+<div id="gitmentContainer"></div>
+
+<script>
+var gitment = new Gitment({
+  owner: '',
+  repo: '',
+  oauth: {
+    client_id: '',
+    client_secret: '',
+  },
+})
+gitment.render('gitmentContainer')
+</script>
+
+  
+  
+</article>
+</section>
+        <aside id="sidebar">
+  
+    <div class="widget-box">
+  <div class="avatar-box">
+    <img class="avatar" src="/images/default-avatar.jpg" title="图片来自网络"></img>
+    <h3 class="avatar-name">
+      
+        DoubleHappy
+      
+    </h3>
+    <p class="avatar-slogan">
+      特别耐撕的大数据，资深的打酱油攻城狮。
+    </p>
+  </div>
+</div>
+
+
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/01/05/Azkaban%E8%B0%83%E5%BA%A6-double-happy/">Azkaban调度--double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2019/01/04/Zookeeper%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E4%B8%8E%E7%9B%91%E6%8E%A7-Curator/">Zookeeper基本使用与监控(Curator)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/04/17/SparkSQL-TextFile%E8%BE%93%E5%87%BA%E5%A4%9A%E5%88%97/">SparkSQL--TextFile输出多列</a>
+          </li>
+        
+          <li>
+            <a href="/2018/03/17/%E9%9B%85%E6%81%A9%E8%B5%84%E6%BA%90%E8%B0%83%E4%BC%98-double-happy/">雅恩资源调优---double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/22/SS04/">SS04</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+      <div class="widget-box">
+    <h3 class="widget-title">友链</h3>
+    <div class="widget">
+      
+        <a style="display: block;" href="https://sxwanggit126.github.io/" title target='_blank'
+        >一路眼瞎</a>
+      
+    </div>
+  </div>
+
+  
+</aside>
+      </div>
+      <footer id="footer">
+  <div class="foot-box global-width">
+    &copy; 2019 DoubleHappy &nbsp;&nbsp;
+    Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    &nbsp;|&nbsp;主题 <a href="https://github.com/yiluyanxia/hexo-theme-antiquity" target="_blank" rel="noopener">antiquity</a>
+    <br>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv">不蒜子告之   阁下是第<span id="busuanzi_value_site_pv"></span>个访客</span>
+  </div>
+</footer>
+      <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script>
+if (!window.jQuery) {
+var script = document.createElement('script');
+script.src = "/js/jquery-2.0.3.min.js";
+document.body.write(script);
+}
+</script>
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+    </div>
+    <nav id="mobile-nav" class="mobile-nav-box">
+  <div class="mobile-nav-img mobile-nav-top"></div>
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+  <div class="mobile-nav-img  mobile-nav-bottom"></div>
+</nav>    
+  </div>
+</body>
+</html>

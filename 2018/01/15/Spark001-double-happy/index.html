@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Spark001--double_happy | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="SpeedSpark是支持pipline操作的，根据Shufle进行切分的，中间的过程是不落地的。运行的角度来说：    线程的    mapreduce是进程的   map task 、reduce task RDD1.Represents an immutable,   partitioned collection of elements that can be operated on in">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spark001--double_happy">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2018&#x2F;01&#x2F;15&#x2F;Spark001-double-happy&#x2F;index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="SpeedSpark是支持pipline操作的，根据Shufle进行切分的，中间的过程是不落地的。运行的角度来说：    线程的    mapreduce是进程的   map task 、reduce task RDD1.Represents an immutable,   partitioned collection of elements that can be operated on in">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;2019092812275919.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20190928122827724.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20190928124416679.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20190928124821226.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;2019092812500940.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20190928125348377.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+<meta property="og:updated_time" content="2019-11-17T11:58:36.428Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;2019092812275919.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/default-avatar.jpg">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/highlight.css">
+</head>
+
+<body>
+  <div id="fullpage" class="mobile-nav-right">
+    
+      <div id="wrapper" title="图片来自网络">
+    
+    
+      <header id="header">
+  <div id="nav-toggle" class="nav-toggle"></div>
+  <div class="head-box global-width">
+    <nav class="nav-box nav-right">
+      
+        <a class="nav-item" href="/" title
+        
+        >首页</a>
+      
+        <a class="nav-item" href="/archives" title
+        
+        >归档</a>
+      
+    </nav>
+  </div>
+</header>
+      <div id="middlecontent" title class="global-width sidebar-right">
+        <section id="main"><article id="post-Spark001-double-happy" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 class="article-title" itemprop="name">
+      Spark001--double_happy
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2018/01/15/Spark001-double-happy/" class="article-date">
+  <time datetime="2018-01-15T11:57:42.000Z" itemprop="datePublished">2018-01-15</time>
+</a>
+    
+    
+  </div>
+  
+    <span id="busuanzi_container_page_pv">
+      本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+    </span>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-cloud" itemprop="articleBody">
+      
+        <h2 id="Speed"><a href="#Speed" class="headerlink" title="Speed"></a>Speed</h2><p>Spark是支持pipline操作的，根据Shufle进行切分的，中间的过程是不落地的。<br>运行的角度来说：<br>    线程的<br>    mapreduce是进程的   map task 、reduce task</p>
+<h2 id="RDD"><a href="#RDD" class="headerlink" title="RDD"></a>RDD</h2><p>1.Represents an immutable,<br>   partitioned collection of elements that can be operated on in parallel.<br>2. </p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">5大特性： 弹性分布式数据集</span><br><span class="line">	1）一系列的partition     分区里是有index的</span><br><span class="line">      protected def getPartitions: Array[Partition]</span><br><span class="line"></span><br><span class="line">解释：</span><br><span class="line">	 *  - A list of partitions</span><br><span class="line">	 *  - A function for computing each split</span><br><span class="line"> scala中 List（1，2，3，4).map(_*2)   scala中的list是单机的</span><br><span class="line"> 而RDD中 数据是分区的，如果rdd.map(_*2)是对每个分区里的元素做计算 是 分布式的</span><br><span class="line"></span><br><span class="line">    2）针对RDD做操作其实就是针对RDD底层的partition进行操作</span><br><span class="line">    rdd.map(_*2)</span><br><span class="line">    def compute(split: Partition, context: TaskContext): Iterator[T]</span><br><span class="line"></span><br><span class="line">	3）rdd之间的依赖（血缘关系）</span><br><span class="line">      protected def getDependencies: Seq[Dependency[_]] = deps</span><br><span class="line"></span><br><span class="line">	4）partitioner（针对 kv类型的rdd）</span><br><span class="line">      @transient val partitioner: Option[Partitioner] = None</span><br><span class="line"></span><br><span class="line">	5）locations （优先把作业调度到数据所在节点）</span><br><span class="line">      protected def getPreferredLocations(split: Partition): Seq[String] = Nil</span><br><span class="line">	好处是 如果你的数据不在这个节点上 优先把作业调度到数据所在节点 好处是 直接本地读数据就可以了</span><br><span class="line">	理想化状态。</span><br><span class="line">	 也有 作业调度在别的节点上 数据在另一台节点上，那么 只能把数据通过网络把数据传到 作业调度的节点上去，进行计算。那么5这个特性就是减少网络数据传输。</span><br></pre></td></tr></table></figure></div>
+<h2 id="程序开发入口"><a href="#程序开发入口" class="headerlink" title="程序开发入口"></a>程序开发入口</h2><p>开发Spark应用程序<br>    1）SparkConf<br>        appName<br>        master<br>    2）SparkContext(sparkConf)<br>    3）spark-shell –master local[2] 底层自动为我们创建了SparkContext sc</p>
+<p><img src="https://img-blog.csdnimg.cn/2019092812275919.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20190928122827724.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="算子"><a href="#算子" class="headerlink" title="算子"></a>算子</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">RDD:创建</span><br><span class="line"> parallelize :</span><br><span class="line"> 	sc.parallelize(List(1,2,3,4))</span><br><span class="line"> textFile:</span><br><span class="line"> 	sc.textFile(path)</span><br><span class="line"> 通过RDD转换生成的</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; val rdd = sc.parallelize(List(1,2,3,4))</span><br><span class="line">rdd: org.apache.spark.rdd.RDD[Int] = ParallelCollectionRDD[0] at parallelize at &lt;console&gt;:24</span><br><span class="line"></span><br><span class="line">scala&gt; rdd.collect</span><br><span class="line">collect   collectAsync</span><br><span class="line"></span><br><span class="line">scala&gt; rdd.collect</span><br><span class="line">res0: Array[Int] = Array(1, 2, 3, 4)                                            </span><br><span class="line"></span><br><span class="line">scala&gt; val rdd1 = sc.textFile(&quot;file:///home/sxwang/data&quot;)</span><br><span class="line">rdd1: org.apache.spark.rdd.RDD[String] = file:///home/sxwang/data MapPartitionsRDD[2] at textFile at &lt;console&gt;:24</span><br><span class="line"></span><br><span class="line">scala&gt; rdd1.collect</span><br><span class="line">res1: Array[String] = Array(spark       flink   hadoop, spark   kafka   scala)</span><br><span class="line"></span><br><span class="line">scala&gt; val rdd2 = rdd.map(_*2)</span><br><span class="line">rdd2: org.apache.spark.rdd.RDD[Int] = MapPartitionsRDD[3] at map at &lt;console&gt;:26</span><br><span class="line"></span><br><span class="line">scala&gt; rdd2.collect</span><br><span class="line">collect   collectAsync</span><br><span class="line"></span><br><span class="line">scala&gt; rdd2.collect</span><br><span class="line">res2: Array[Int] = Array(2, 4, 6, 8)</span><br><span class="line"></span><br><span class="line">scala&gt; rdd2.toDebugString</span><br><span class="line">res3: String =</span><br><span class="line">(2) MapPartitionsRDD[3] at map at &lt;console&gt;:26 []</span><br><span class="line"> |  ParallelCollectionRDD[0] at parallelize at &lt;console&gt;:24 []</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="并行度-–简单版"><a href="#并行度-–简单版" class="headerlink" title="并行度 –简单版"></a>并行度 –简单版</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">scala&gt; rdd</span><br><span class="line">res7: org.apache.spark.rdd.RDD[Int] = ParallelCollectionRDD[0] at parallelize at &lt;console&gt;:24</span><br><span class="line"></span><br><span class="line">scala&gt; rdd.collect</span><br><span class="line">res8: Array[Int] = Array(1, 2, 3, 4)</span><br></pre></td></tr></table></figure></div>
+<p>产看ui界面：<br><img src="https://img-blog.csdnimg.cn/20190928124416679.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>为什么是2呢？<br>查看源码：</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">def parallelize[T: ClassTag](</span><br><span class="line">    seq: Seq[T],</span><br><span class="line">    numSlices: Int = defaultParallelism): RDD[T] = withScope &#123;</span><br><span class="line">  assertNotStopped()</span><br><span class="line">  new ParallelCollectionRDD[T](this, seq, numSlices, Map[Int, Seq[String]]())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">defaultParallelism：</span><br><span class="line">	</span><br><span class="line">	 /** Default level of parallelism to use when not given by user (e.g. parallelize and makeRDD). */</span><br><span class="line">  def defaultParallelism: Int = &#123;</span><br><span class="line">    assertNotStopped()</span><br><span class="line">    taskScheduler.defaultParallelism</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></div>
+<p>看他的实现的<br><img src="https://img-blog.csdnimg.cn/20190928124821226.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">taskScheduler.defaultParallelism：</span><br><span class="line">	override def defaultParallelism(): Int = backend.defaultParallelism()</span><br></pre></td></tr></table></figure></div>
+<p><img src="https://img-blog.csdnimg.cn/2019092812500940.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">查看local的点进去：</span><br><span class="line">  override def defaultParallelism(): Int =</span><br><span class="line">    scheduler.conf.getInt(&quot;spark.default.parallelism&quot;, totalCores)</span><br><span class="line">默认从配置文件里去  ，但是我们没有设置，</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Used when running a local version of Spark where the executor, backend, and master all run in</span><br><span class="line"> * the same JVM. It sits behind a [[TaskSchedulerImpl]] and handles launching tasks on a single</span><br><span class="line"> * Executor (created by the [[LocalSchedulerBackend]]) running locally.</span><br><span class="line"> */</span><br><span class="line">private[spark] class LocalSchedulerBackend(</span><br><span class="line">    conf: SparkConf,</span><br><span class="line">    scheduler: TaskSchedulerImpl,</span><br><span class="line">    val totalCores: Int)</span><br><span class="line">  extends SchedulerBackend with ExecutorBackend with Logging &#123;</span><br><span class="line"></span><br><span class="line">totalCores 说明是我们构建的时候传进来的 </span><br><span class="line"></span><br><span class="line">可以看：</span><br><span class="line">	scala&gt; sc.parallelize(List(1,2,3,4),3).collect</span><br><span class="line">res9: Array[Int] = Array(1, 2, 3, 4)</span><br></pre></td></tr></table></figure></div>
+<p><img src="https://img-blog.csdnimg.cn/20190928125348377.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+
+      
+    </div>
+    
+      <footer class="article-footer">
+        完
+      </footer>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  <div class="article-nav-block">
+    
+      <a href="/2018/01/19/Spark003-Action-%E6%8E%A5%E7%9D%80Spark002/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption"></strong>
+        <div class="article-nav-title">
+          
+            Spark003--Action  接着Spark002
+          
+        </div>
+      </a>
+    
+  </div>
+  <div class="article-nav-block">
+    
+      <a href="/2018/01/03/Hadoop%E9%A1%B9%E7%9B%AE%E6%B5%81%E7%A8%8B%EF%BC%9AHive2MySQL-double-happy/" id="article-nav-older" class="article-nav-link-wrap">
+        <div class="article-nav-title">Hadoop项目流程：Hive2MySQL--double_happy</div>
+        <strong class="article-nav-caption"></strong>
+      </a>
+    
+  </div>
+</nav>
+
+    <link rel="stylesheet" href="/css/gitment.css"> 
+<script src="/js/gitment.js"></script>
+
+<div id="gitmentContainer"></div>
+
+<script>
+var gitment = new Gitment({
+  owner: '',
+  repo: '',
+  oauth: {
+    client_id: '',
+    client_secret: '',
+  },
+})
+gitment.render('gitmentContainer')
+</script>
+
+  
+  
+</article>
+</section>
+        <aside id="sidebar">
+  
+    <div class="widget-box">
+  <div class="avatar-box">
+    <img class="avatar" src="/images/default-avatar.jpg" title="图片来自网络"></img>
+    <h3 class="avatar-name">
+      
+        DoubleHappy
+      
+    </h3>
+    <p class="avatar-slogan">
+      特别耐撕的大数据，资深的打酱油攻城狮。
+    </p>
+  </div>
+</div>
+
+
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/01/05/Azkaban%E8%B0%83%E5%BA%A6-double-happy/">Azkaban调度--double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2019/01/04/Zookeeper%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E4%B8%8E%E7%9B%91%E6%8E%A7-Curator/">Zookeeper基本使用与监控(Curator)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/04/17/SparkSQL-TextFile%E8%BE%93%E5%87%BA%E5%A4%9A%E5%88%97/">SparkSQL--TextFile输出多列</a>
+          </li>
+        
+          <li>
+            <a href="/2018/03/17/%E9%9B%85%E6%81%A9%E8%B5%84%E6%BA%90%E8%B0%83%E4%BC%98-double-happy/">雅恩资源调优---double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/22/SS04/">SS04</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+      <div class="widget-box">
+    <h3 class="widget-title">友链</h3>
+    <div class="widget">
+      
+        <a style="display: block;" href="https://sxwanggit126.github.io/" title target='_blank'
+        >一路眼瞎</a>
+      
+    </div>
+  </div>
+
+  
+</aside>
+      </div>
+      <footer id="footer">
+  <div class="foot-box global-width">
+    &copy; 2019 DoubleHappy &nbsp;&nbsp;
+    Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    &nbsp;|&nbsp;主题 <a href="https://github.com/yiluyanxia/hexo-theme-antiquity" target="_blank" rel="noopener">antiquity</a>
+    <br>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv">不蒜子告之   阁下是第<span id="busuanzi_value_site_pv"></span>个访客</span>
+  </div>
+</footer>
+      <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script>
+if (!window.jQuery) {
+var script = document.createElement('script');
+script.src = "/js/jquery-2.0.3.min.js";
+document.body.write(script);
+}
+</script>
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+    </div>
+    <nav id="mobile-nav" class="mobile-nav-box">
+  <div class="mobile-nav-img mobile-nav-top"></div>
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+  <div class="mobile-nav-img  mobile-nav-bottom"></div>
+</nav>    
+  </div>
+</body>
+</html>

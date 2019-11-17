@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Redis | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="是NoSQL的官网 12345678910111213141516171819202122Redis:	1.NoSQL的数据库	2.key-value方式存储的  内存数据库	    key ：通常是String类型	    value：strings, hashes, lists, sets, sorted sets  等 选择哪一个根据业务来定的 redis 数据存在内存里的 万一挂掉了怎么办">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2018&#x2F;02&#x2F;10&#x2F;Redis&#x2F;index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="是NoSQL的官网 12345678910111213141516171819202122Redis:	1.NoSQL的数据库	2.key-value方式存储的  内存数据库	    key ：通常是String类型	    value：strings, hashes, lists, sets, sorted sets  等 选择哪一个根据业务来定的 redis 数据存在内存里的 万一挂掉了怎么办">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20191029140404559.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20191029140735994.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20191029140944482.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;2019102914564719.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20191029151736313.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+<meta property="og:updated_time" content="2019-11-17T12:09:41.965Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20191029140404559.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/default-avatar.jpg">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/highlight.css">
+</head>
+
+<body>
+  <div id="fullpage" class="mobile-nav-right">
+    
+      <div id="wrapper" title="图片来自网络">
+    
+    
+      <header id="header">
+  <div id="nav-toggle" class="nav-toggle"></div>
+  <div class="head-box global-width">
+    <nav class="nav-box nav-right">
+      
+        <a class="nav-item" href="/" title
+        
+        >首页</a>
+      
+        <a class="nav-item" href="/archives" title
+        
+        >归档</a>
+      
+    </nav>
+  </div>
+</header>
+      <div id="middlecontent" title class="global-width sidebar-right">
+        <section id="main"><article id="post-Redis" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 class="article-title" itemprop="name">
+      Redis
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2018/02/10/Redis/" class="article-date">
+  <time datetime="2018-02-10T12:09:12.000Z" itemprop="datePublished">2018-02-10</time>
+</a>
+    
+    
+  </div>
+  
+    <span id="busuanzi_container_page_pv">
+      本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+    </span>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-cloud" itemprop="articleBody">
+      
+        <p>是NoSQL的<br><a href="https://redis.io/" target="_blank" rel="noopener">官网</a></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">Redis:</span><br><span class="line">	1.NoSQL的数据库</span><br><span class="line">	2.key-value方式存储的  内存数据库</span><br><span class="line">	    key ：通常是String类型</span><br><span class="line">	    value：strings, hashes, lists, sets, sorted sets  等 选择哪一个根据业务来定的 </span><br><span class="line">redis 数据存在内存里的 万一挂掉了怎么办？</span><br><span class="line">虽然内部有机制  ： 定时的把内存数据 刷到磁盘上面 重启之后 可以把磁盘上的数据加载进来的</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">特性：</span><br><span class="line">	1.速度快 1s 十万次  读写非常好的 </span><br><span class="line">	2. 持久化   两种 RBD(快照的方式 ) 和 AOF(记录所有操作的 写到日志文件里去的)的  </span><br><span class="line">	    重启之后优先AOF  因为 数据更加完整  RBD是定时的快照 </span><br><span class="line">	    	eg：10s 做一次快照 8s的时候挂掉了  这8s的数据就丢了 </span><br><span class="line">	3.数据类型 </span><br><span class="line">	4.多语言的  java scala 都可以</span><br><span class="line">	5.其他功能 ： 发布订阅 事务 pipeline(指的是 多条指令 可以放在一起 最后 发一条指令    代替 而不是一条数据一个指令  网络传输少很多  工作当中批量的 一定要采用pipeline的方式 发送请求)</span><br><span class="line">	6.单线程的 </span><br><span class="line">	7.有集群 有主从复制    来保证分布式和高可用</span><br><span class="line"></span><br><span class="line">国内 微博 使用redis的多</span><br></pre></td></tr></table></figure></div>
+<p><strong>操作：</strong></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">[double_happy@hadoop101 src]$ ls redis-server </span><br><span class="line">redis-server                服务端的 </span><br><span class="line">[double_happy@hadoop101 src]$ ls redis-cli</span><br><span class="line">redis-cli                         客户端的</span><br><span class="line">[double_happy@hadoop101 src]$</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[double_happy@hadoop101 redis-5.0.5]$ make  install</span><br><span class="line">cd src &amp;&amp; make install</span><br><span class="line">make[1]: Entering directory `/home/double_happy/app/redis-5.0.5/src&apos;</span><br><span class="line">    CC Makefile.dep</span><br><span class="line">make[1]: Leaving directory `/home/double_happy/app/redis-5.0.5/src&apos;</span><br><span class="line">make[1]: Entering directory `/home/double_happy/app/redis-5.0.5/src&apos;</span><br><span class="line"></span><br><span class="line">Hint: It&apos;s a good idea to run &apos;make test&apos; ;)</span><br><span class="line"></span><br><span class="line">    INSTALL install</span><br><span class="line">install: cannot create regular file ‘/usr/local/bin/redis-server’: Permission denied</span><br><span class="line">make[1]: *** [install] Error 1</span><br><span class="line">make[1]: Leaving directory `/home/double_happy/app/redis-5.0.5/src&apos;</span><br><span class="line">make: *** [install] Error 2</span><br><span class="line">[double_happy@hadoop101 redis-5.0.5]$ sudo make install</span><br><span class="line">cd src &amp;&amp; make install</span><br><span class="line">make[1]: Entering directory `/home/double_happy/app/redis-5.0.5/src&apos;</span><br><span class="line"></span><br><span class="line">Hint: It&apos;s a good idea to run &apos;make test&apos; ;)</span><br><span class="line"></span><br><span class="line">    INSTALL install</span><br><span class="line">    INSTALL install</span><br><span class="line">    INSTALL install</span><br><span class="line">    INSTALL install</span><br><span class="line">    INSTALL install</span><br><span class="line">make[1]: Leaving directory `/home/double_happy/app/redis-5.0.5/src&apos;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">注意：</span><br><span class="line">你把redis编译好了 </span><br><span class="line">‘/usr/local/bin/redis-server 这个目录下也是有 redis-server的</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">启动：</span><br><span class="line">[double_happy@hadoop101 ~]$ redis-server </span><br><span class="line">27132:C 29 Oct 2019 13:41:11.883 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo</span><br><span class="line">27132:C 29 Oct 2019 13:41:11.883 # Redis version=5.0.5, bits=64, commit=00000000, modified=0, pid=27132, just started</span><br><span class="line">27132:C 29 Oct 2019 13:41:11.883 # Warning: no config file specified, using the default config. In order to specify a config file use redis-server /path/to/redis.conf</span><br><span class="line">                _._                                                  </span><br><span class="line">           _.-``__ &apos;&apos;-._                                             </span><br><span class="line">      _.-``    `.  `_.  &apos;&apos;-._           Redis 5.0.5 (00000000/0) 64 bit</span><br><span class="line">  .-`` .-```.  ```\/    _.,_ &apos;&apos;-._                                   </span><br><span class="line"> (    &apos;      ,       .-`  | `,    )     Running in standalone mode</span><br><span class="line"> |`-._`-...-` __...-.``-._|&apos;` _.-&apos;|     Port: 6379</span><br><span class="line"> |    `-._   `._    /     _.-&apos;    |     PID: 27132</span><br><span class="line">  `-._    `-._  `-./  _.-&apos;    _.-&apos;                                   </span><br><span class="line"> |`-._`-._    `-.__.-&apos;    _.-&apos;_.-&apos;|                                  </span><br><span class="line"> |    `-._`-._        _.-&apos;_.-&apos;    |           http://redis.io        </span><br><span class="line">  `-._    `-._`-.__.-&apos;_.-&apos;    _.-&apos;                                   </span><br><span class="line"> |`-._`-._    `-.__.-&apos;    _.-&apos;_.-&apos;|                                  </span><br><span class="line"> |    `-._`-._        _.-&apos;_.-&apos;    |                                  </span><br><span class="line">  `-._    `-._`-.__.-&apos;_.-&apos;    _.-&apos;                                   </span><br><span class="line">      `-._    `-.__.-&apos;    _.-&apos;                                       </span><br><span class="line">          `-._        _.-&apos;                                           </span><br><span class="line">              `-.__.-&apos;                                               </span><br><span class="line"></span><br><span class="line">27132:M 29 Oct 2019 13:41:11.884 # WARNING: The TCP backlog setting of 511 cannot be enforced because /proc/sys/net/core/somaxconn is set to the lower value of 128.</span><br><span class="line">27132:M 29 Oct 2019 13:41:11.884 # Server initialized</span><br><span class="line">27132:M 29 Oct 2019 13:41:11.884 # WARNING overcommit_memory is set to 0! Background save may fail under low memory condition. To fix this issue add &apos;vm.overcommit_memory = 1&apos; to /etc/sysctl.conf and then reboot or run the command &apos;sysctl vm.overcommit_memory=1&apos; for this to take effect.</span><br><span class="line">27132:M 29 Oct 2019 13:41:11.884 # WARNING you have Transparent Huge Pages (THP) support enabled in your kernel. This will create latency and memory usage issues with Redis. To fix this issue run the command &apos;echo never &gt; /sys/kernel/mm/transparent_hugepage/enabled&apos; as root, and add it to your /etc/rc.local in order to retain the setting after a reboot. Redis must be restarted after THP is disabled.</span><br><span class="line">27132:M 29 Oct 2019 13:41:11.884 * Ready to accept connections</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">注意：</span><br><span class="line">6379  redis经典端口  </span><br><span class="line"></span><br><span class="line">[double_happy@hadoop101 redis-5.0.5]$ ps -ef | grep redis</span><br><span class="line">double_+ 27132 16513  0 13:41 pts/1    00:00:00 redis-server *:6379</span><br><span class="line">double_+ 27148 15274  0 13:42 pts/0    00:00:00 grep --color=auto redis</span><br><span class="line">[double_happy@hadoop101 redis-5.0.5]$ </span><br><span class="line"></span><br><span class="line">说明redis  服务端启动了 </span><br><span class="line">再启动客户端 ：</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">[double_happy@hadoop101 ~]$ redis-cli </span><br><span class="line">127.0.0.1:6379&gt; keys*</span><br><span class="line">(error) ERR unknown command `keys*`, with args beginning with: </span><br><span class="line">127.0.0.1:6379&gt; keys *</span><br><span class="line">(empty list or set)</span><br><span class="line">127.0.0.1:6379&gt; set name double_happy</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; keys *</span><br><span class="line">1) &quot;name&quot;</span><br><span class="line">127.0.0.1:6379&gt; get name</span><br><span class="line">&quot;double_happy&quot;</span><br><span class="line">127.0.0.1:6379&gt;</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">后台运行：需要对redis.conf 文件进行简单的配置 配置一下 logfile位置 </span><br><span class="line"></span><br><span class="line">[double_happy@hadoop101 redis-5.0.5]$ src/redis-server redis.conf              </span><br><span class="line">[double_happy@hadoop101 redis-5.0.5]$ tail -200f ~/tmp/redislogs/redis.log </span><br><span class="line">27337:C 29 Oct 2019 13:53:20.629 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo</span><br><span class="line">27337:C 29 Oct 2019 13:53:20.629 # Redis version=5.0.5, bits=64, commit=00000000, modified=0, pid=27337, just started</span><br><span class="line">27337:C 29 Oct 2019 13:53:20.629 # Configuration loaded</span><br><span class="line">                _._                                                  </span><br><span class="line">           _.-``__ &apos;&apos;-._                                             </span><br><span class="line">      _.-``    `.  `_.  &apos;&apos;-._           Redis 5.0.5 (00000000/0) 64 bit</span><br><span class="line">  .-`` .-```.  ```\/    _.,_ &apos;&apos;-._                                   </span><br><span class="line"> (    &apos;      ,       .-`  | `,    )     Running in standalone mode</span><br><span class="line"> |`-._`-...-` __...-.``-._|&apos;` _.-&apos;|     Port: 6379</span><br><span class="line"> |    `-._   `._    /     _.-&apos;    |     PID: 27338</span><br><span class="line">  `-._    `-._  `-./  _.-&apos;    _.-&apos;                                   </span><br><span class="line"> |`-._`-._    `-.__.-&apos;    _.-&apos;_.-&apos;|                                  </span><br><span class="line"> |    `-._`-._        _.-&apos;_.-&apos;    |           http://redis.io        </span><br><span class="line">  `-._    `-._`-.__.-&apos;_.-&apos;    _.-&apos;                                   </span><br><span class="line"> |`-._`-._    `-.__.-&apos;    _.-&apos;_.-&apos;|                                  </span><br><span class="line"> |    `-._`-._        _.-&apos;_.-&apos;    |                                  </span><br><span class="line">  `-._    `-._`-.__.-&apos;_.-&apos;    _.-&apos;                                   </span><br><span class="line">      `-._    `-.__.-&apos;    _.-&apos;                                       </span><br><span class="line">          `-._        _.-&apos;                                           </span><br><span class="line">              `-.__.-&apos;                                               </span><br><span class="line"></span><br><span class="line">27338:M 29 Oct 2019 13:53:20.632 # WARNING: The TCP backlog setting of 511 cannot be enforced because /proc/sys/net/core/somaxconn is set to the lower value of 128.</span><br><span class="line">27338:M 29 Oct 2019 13:53:20.632 # Server initialized</span><br><span class="line">27338:M 29 Oct 2019 13:53:20.632 # WARNING overcommit_memory is set to 0! Background save may fail under low memory condition. To fix this issue add &apos;vm.overcommit_memory = 1&apos; to /etc/sysctl.conf and then reboot or run the command &apos;sysctl vm.overcommit_memory=1&apos; for this to take effect.</span><br><span class="line">27338:M 29 Oct 2019 13:53:20.632 # WARNING you have Transparent Huge Pages (THP) support enabled in your kernel. This will create latency and memory usage issues with Redis. To fix this issue run the command &apos;echo never &gt; /sys/kernel/mm/transparent_hugepage/enabled&apos; as root, and add it to your /etc/rc.local in order to retain the setting after a reboot. Redis must be restarted after THP is disabled.</span><br><span class="line">27338:M 29 Oct 2019 13:53:20.632 * Ready to accept connections</span><br><span class="line">^C</span><br><span class="line">[double_happy@hadoop101 redis-5.0.5]$ ^C</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">客户端操作：  需要把redis.conf  里的 bind 去掉 或者 配置成 0.0.0.0</span><br><span class="line">[double_happy@hadoop101 redis-5.0.5]$ src/redis-cli -h hadoop101 -p 6379</span><br><span class="line">hadoop101:6379&gt; </span><br><span class="line"></span><br><span class="line">再黑窗口查看 redis还是比较麻烦的 </span><br><span class="line">https://www.jianshu.com/p/6895384d2b9e 安装一下</span><br></pre></td></tr></table></figure></div>
+<p><img src="https://img-blog.csdnimg.cn/20191029140404559.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Redis多数据库特性：</span><br><span class="line">	1.默认有16个数据库   可以改的   redis.conf       </span><br><span class="line">		通常情况下 数据库之间是 隔离的</span><br><span class="line">	2.</span><br></pre></td></tr></table></figure></div>
+<p><img src="https://img-blog.csdnimg.cn/20191029140735994.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Redis 切换库 黑窗口：</span><br><span class="line"></span><br><span class="line">hadoop101:6379&gt; select 1</span><br><span class="line">OK</span><br><span class="line">hadoop101:6379[1]&gt; select 0</span><br><span class="line">OK</span><br><span class="line">hadoop101:6379&gt; select 16</span><br><span class="line">(error) ERR DB index is out of range</span><br><span class="line">hadoop101:6379&gt;</span><br></pre></td></tr></table></figure></div>
+<p><img src="https://img-blog.csdnimg.cn/20191029140944482.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">1.	通常情况下 数据库之间是 隔离的</span><br><span class="line"></span><br><span class="line">hadoop101:6379&gt; select 1</span><br><span class="line">OK</span><br><span class="line">hadoop101:6379[1]&gt; set  bigdata spark</span><br><span class="line">OK</span><br><span class="line">hadoop101:6379[1]&gt; get  bigdata</span><br><span class="line">&quot;spark&quot;</span><br><span class="line">hadoop101:6379[1]&gt; select 0</span><br><span class="line">OK</span><br><span class="line">hadoop101:6379&gt; get bigdata</span><br><span class="line">(nil)</span><br><span class="line">hadoop101:6379&gt; </span><br><span class="line"></span><br><span class="line">注意:</span><br><span class="line">flushall   这个操作没有做隔离的 会把所有的库里的东西 全部干掉 </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">hadoop101:6379&gt; FLUSHALL</span><br><span class="line">OK</span><br><span class="line">hadoop101:6379&gt; select 1</span><br><span class="line">OK</span><br><span class="line">hadoop101:6379[1]&gt; get bigdata</span><br><span class="line">(nil)</span><br><span class="line">hadoop101:6379[1]&gt;</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">redis里的基础命令：</span><br><span class="line">	1. keys  *    查你当前库里的所有的key</span><br><span class="line">	   这个keys 是能进行匹配的 </span><br><span class="line">eg：</span><br><span class="line">hadoop101:6379&gt; set name 1</span><br><span class="line">OK</span><br><span class="line">hadoop101:6379&gt; set name2 xx</span><br><span class="line">OK</span><br><span class="line">hadoop101:6379&gt; set name3 ll</span><br><span class="line">OK</span><br><span class="line">hadoop101:6379&gt; keys *</span><br><span class="line">1) &quot;name3&quot;</span><br><span class="line">2) &quot;name2&quot;</span><br><span class="line">3) &quot;name&quot;</span><br><span class="line">hadoop101:6379&gt; keys name*</span><br><span class="line">1) &quot;name3&quot;</span><br><span class="line">2) &quot;name2&quot;</span><br><span class="line">3) &quot;name&quot;</span><br><span class="line">hadoop101:6379&gt; keys name?</span><br><span class="line">1) &quot;name3&quot;</span><br><span class="line">2) &quot;name2&quot;</span><br><span class="line">hadoop101:6379&gt; keys name[0-9]</span><br><span class="line">1) &quot;name3&quot;</span><br><span class="line">2) &quot;name2&quot;</span><br><span class="line">hadoop101:6379&gt;</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">2.判断某一个key 存不存在 </span><br><span class="line">exists  对应的key      返回1 表示存在 </span><br><span class="line">eg：</span><br><span class="line">hadoop101:6379&gt; EXISTS name</span><br><span class="line">(integer) 1</span><br><span class="line">hadoop101:6379&gt; EXISTS name10</span><br><span class="line">(integer) 0</span><br><span class="line">hadoop101:6379&gt;</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">3.删除  </span><br><span class="line">del  key </span><br><span class="line">del key1 key2</span><br><span class="line"></span><br><span class="line">hadoop101:6379&gt; DEL name </span><br><span class="line">(integer) 1</span><br><span class="line">hadoop101:6379&gt; del name1 name2</span><br><span class="line">(integer) 1</span><br><span class="line">hadoop101:6379&gt; </span><br><span class="line"></span><br><span class="line">或者 会到外面删除 </span><br><span class="line">[double_happy@hadoop101 redis-5.0.5]$ src/redis-cli keys &quot;*&quot;</span><br><span class="line">1) &quot;name1&quot;</span><br><span class="line">2) &quot;name3&quot;</span><br><span class="line">3) &quot;name2&quot;</span><br><span class="line">[double_happy@hadoop101 redis-5.0.5]$ src/redis-cli del `redis-cli keys &quot;name*&quot;`</span><br><span class="line">(integer) 3</span><br><span class="line">[double_happy@hadoop101 redis-5.0.5]$ src/redis-cli keys &quot;*&quot;</span><br><span class="line">(empty list or set)</span><br><span class="line">[double_happy@hadoop101 redis-5.0.5]$</span><br></pre></td></tr></table></figure></div>
+
+<p>命令太多了 看官网<br><a href="https://redis.io/commands#generic" target="_blank" rel="noopener">Commands</a></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">查看 key的类型：</span><br><span class="line">hadoop101:6379&gt; type name</span><br><span class="line">string</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">但是真的记不住怎么办？</span><br><span class="line">help</span><br><span class="line"></span><br><span class="line">hadoop101:6379&gt; help</span><br><span class="line">redis-cli 5.0.5</span><br><span class="line">To get help about Redis commands type:</span><br><span class="line">      &quot;help @&lt;group&gt;&quot; to get a list of commands in &lt;group&gt;</span><br><span class="line">      &quot;help &lt;command&gt;&quot; for help on &lt;command&gt;</span><br><span class="line">      &quot;help &lt;tab&gt;&quot; to get a list of possible help topics</span><br><span class="line">      &quot;quit&quot; to exit</span><br><span class="line"></span><br><span class="line">To set redis-cli preferences:</span><br><span class="line">      &quot;:set hints&quot; enable online hints</span><br><span class="line">      &quot;:set nohints&quot; disable online hints</span><br><span class="line">Set your preferences in ~/.redisclirc</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">注意：</span><br><span class="line">help  @&lt;group&gt;  用的最多</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br></pre></td><td class="code"><pre><span class="line">eg：</span><br><span class="line">hadoop101:6379&gt; help @string</span><br><span class="line"></span><br><span class="line">  APPEND key value</span><br><span class="line">  summary: Append a value to a key</span><br><span class="line">  since: 2.0.0</span><br><span class="line"></span><br><span class="line">  BITCOUNT key [start end]</span><br><span class="line">  summary: Count set bits in a string</span><br><span class="line">  since: 2.6.0</span><br><span class="line"></span><br><span class="line">  BITFIELD key [GET type offset] [SET type offset value] [INCRBY type offset increment] [OVERFLOW WRAP|SAT|FAIL]</span><br><span class="line">  summary: Perform arbitrary bitfield integer operations on strings</span><br><span class="line">  since: 3.2.0</span><br><span class="line"></span><br><span class="line">  BITOP operation destkey key [key ...]</span><br><span class="line">  summary: Perform bitwise operations between strings</span><br><span class="line">  since: 2.6.0</span><br><span class="line"></span><br><span class="line">  BITPOS key bit [start] [end]</span><br><span class="line">  summary: Find first bit set or clear in a string</span><br><span class="line">  since: 2.8.7</span><br><span class="line"></span><br><span class="line">  DECR key</span><br><span class="line">  summary: Decrement the integer value of a key by one</span><br><span class="line">  since: 1.0.0</span><br><span class="line"></span><br><span class="line">  DECRBY key decrement</span><br><span class="line">  summary: Decrement the integer value of a key by the given number</span><br><span class="line">  since: 1.0.0</span><br><span class="line"></span><br><span class="line">  GET key</span><br><span class="line">  summary: Get the value of a key</span><br><span class="line">  since: 1.0.0</span><br><span class="line"></span><br><span class="line">  GETBIT key offset</span><br><span class="line">  summary: Returns the bit value at offset in the string value stored at key</span><br><span class="line">  since: 2.2.0</span><br><span class="line"></span><br><span class="line">  GETRANGE key start end</span><br><span class="line">  summary: Get a substring of the string stored at a key</span><br><span class="line">  since: 2.4.0</span><br><span class="line"></span><br><span class="line">  GETSET key value</span><br><span class="line">  summary: Set the string value of a key and return its old value</span><br><span class="line">  since: 1.0.0</span><br><span class="line"></span><br><span class="line">  INCR key</span><br><span class="line">  summary: Increment the integer value of a key by one</span><br><span class="line">  since: 1.0.0</span><br><span class="line"></span><br><span class="line">  INCRBY key increment</span><br><span class="line">  summary: Increment the integer value of a key by the given amount</span><br><span class="line">  since: 1.0.0</span><br><span class="line"></span><br><span class="line">  INCRBYFLOAT key increment</span><br><span class="line">  summary: Increment the float value of a key by the given amount</span><br><span class="line">  since: 2.6.0</span><br><span class="line"></span><br><span class="line">  MGET key [key ...]</span><br><span class="line">  summary: Get the values of all the given keys</span><br><span class="line">  since: 1.0.0</span><br><span class="line"></span><br><span class="line">  MSET key value [key value ...]</span><br><span class="line">  summary: Set multiple keys to multiple values</span><br><span class="line">  since: 1.0.1</span><br><span class="line"></span><br><span class="line">  MSETNX key value [key value ...]</span><br><span class="line">  summary: Set multiple keys to multiple values, only if none of the keys exist</span><br><span class="line">  since: 1.0.1</span><br><span class="line"></span><br><span class="line">  PSETEX key milliseconds value</span><br><span class="line">  summary: Set the value and expiration in milliseconds of a key</span><br><span class="line">  since: 2.6.0</span><br><span class="line"></span><br><span class="line">  SET key value [expiration EX seconds|PX milliseconds] [NX|XX]</span><br><span class="line">  summary: Set the string value of a key</span><br><span class="line">  since: 1.0.0</span><br><span class="line"></span><br><span class="line">  SETBIT key offset value</span><br><span class="line">  summary: Sets or clears the bit at offset in the string value stored at key</span><br><span class="line">  since: 2.2.0</span><br><span class="line"></span><br><span class="line">  SETEX key seconds value</span><br><span class="line">  summary: Set the value and expiration of a key</span><br><span class="line">  since: 2.0.0</span><br><span class="line"></span><br><span class="line">  SETNX key value</span><br><span class="line">  summary: Set the value of a key, only if the key does not exist</span><br><span class="line">  since: 1.0.0</span><br><span class="line"></span><br><span class="line">  SETRANGE key offset value</span><br><span class="line">  summary: Overwrite part of a string at key starting at the specified offset</span><br><span class="line">  since: 2.2.0</span><br><span class="line"></span><br><span class="line">  STRLEN key</span><br><span class="line">  summary: Get the length of the value stored in a key</span><br><span class="line">  since: 2.2.0</span><br><span class="line"></span><br><span class="line">hadoop101:6379&gt;</span><br></pre></td></tr></table></figure></div>
+
+<p><strong>数据类型：</strong><br>这个需要掌握的 </p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">String类型：</span><br><span class="line">setnx ：</span><br><span class="line">SETNX key value</span><br><span class="line">  summary: Set the value of a key, only if the key does not exist</span><br><span class="line">  since: 1.0.0</span><br><span class="line"></span><br><span class="line">很多 incr可以用来统计在线人数</span><br><span class="line"></span><br><span class="line">Hash类型： ***</span><br><span class="line">场景 多了一个字段  假如 100行数据只有一条记录  多了这个字段</span><br><span class="line">大数据里 偏移量使用它 来存储的 </span><br><span class="line"></span><br><span class="line">hmset:</span><br><span class="line">对已有的会修改 对没有的会加上去</span><br></pre></td></tr></table></figure></div>
+<p><img src="https://img-blog.csdnimg.cn/2019102914564719.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><strong>idea开发</strong></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">public class RedisApp &#123;</span><br><span class="line"></span><br><span class="line">    String host = &quot;hadoop101&quot;;</span><br><span class="line">    int port = 6379;</span><br><span class="line"></span><br><span class="line">    Jedis jedis ;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    public void test01() &#123;</span><br><span class="line">        jedis.set(&quot;info&quot;, &quot;double_happy&quot;);</span><br><span class="line"></span><br><span class="line">        Assert.assertEquals(&quot;double_happy&quot;,jedis.get(&quot;info&quot;));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    @Before</span><br><span class="line">    public void setUp() &#123;</span><br><span class="line">        jedis = new Jedis(host,port);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public void tearDown() &#123;</span><br><span class="line">        jedis.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">查看结果： 绿了哈    注意命令和api 一一对应的 </span><br><span class="line"></span><br><span class="line">突然想到一个梗 ：</span><br><span class="line">	异地恋最重要的是什么？</span><br><span class="line">	最重要的是 相互信任  这样对四个人都好</span><br></pre></td></tr></table></figure></div>
+<p><img src="https://img-blog.csdnimg.cn/20191029151736313.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+
+      
+    </div>
+    
+      <footer class="article-footer">
+        完
+      </footer>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  <div class="article-nav-block">
+    
+      <a href="/2018/02/15/Kafka01/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption"></strong>
+        <div class="article-nav-title">
+          
+            Kafka01
+          
+        </div>
+      </a>
+    
+  </div>
+  <div class="article-nav-block">
+    
+      <a href="/2018/02/05/SparkSQL03/" id="article-nav-older" class="article-nav-link-wrap">
+        <div class="article-nav-title">SparkSQL03</div>
+        <strong class="article-nav-caption"></strong>
+      </a>
+    
+  </div>
+</nav>
+
+    <link rel="stylesheet" href="/css/gitment.css"> 
+<script src="/js/gitment.js"></script>
+
+<div id="gitmentContainer"></div>
+
+<script>
+var gitment = new Gitment({
+  owner: '',
+  repo: '',
+  oauth: {
+    client_id: '',
+    client_secret: '',
+  },
+})
+gitment.render('gitmentContainer')
+</script>
+
+  
+  
+</article>
+</section>
+        <aside id="sidebar">
+  
+    <div class="widget-box">
+  <div class="avatar-box">
+    <img class="avatar" src="/images/default-avatar.jpg" title="图片来自网络"></img>
+    <h3 class="avatar-name">
+      
+        DoubleHappy
+      
+    </h3>
+    <p class="avatar-slogan">
+      特别耐撕的大数据，资深的打酱油攻城狮。
+    </p>
+  </div>
+</div>
+
+
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/01/05/Azkaban%E8%B0%83%E5%BA%A6-double-happy/">Azkaban调度--double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2019/01/04/Zookeeper%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E4%B8%8E%E7%9B%91%E6%8E%A7-Curator/">Zookeeper基本使用与监控(Curator)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/04/17/SparkSQL-TextFile%E8%BE%93%E5%87%BA%E5%A4%9A%E5%88%97/">SparkSQL--TextFile输出多列</a>
+          </li>
+        
+          <li>
+            <a href="/2018/03/17/%E9%9B%85%E6%81%A9%E8%B5%84%E6%BA%90%E8%B0%83%E4%BC%98-double-happy/">雅恩资源调优---double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/22/SS04/">SS04</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+      <div class="widget-box">
+    <h3 class="widget-title">友链</h3>
+    <div class="widget">
+      
+        <a style="display: block;" href="https://sxwanggit126.github.io/" title target='_blank'
+        >一路眼瞎</a>
+      
+    </div>
+  </div>
+
+  
+</aside>
+      </div>
+      <footer id="footer">
+  <div class="foot-box global-width">
+    &copy; 2019 DoubleHappy &nbsp;&nbsp;
+    Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    &nbsp;|&nbsp;主题 <a href="https://github.com/yiluyanxia/hexo-theme-antiquity" target="_blank" rel="noopener">antiquity</a>
+    <br>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv">不蒜子告之   阁下是第<span id="busuanzi_value_site_pv"></span>个访客</span>
+  </div>
+</footer>
+      <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script>
+if (!window.jQuery) {
+var script = document.createElement('script');
+script.src = "/js/jquery-2.0.3.min.js";
+document.body.write(script);
+}
+</script>
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+    </div>
+    <nav id="mobile-nav" class="mobile-nav-box">
+  <div class="mobile-nav-img mobile-nav-top"></div>
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+  <div class="mobile-nav-img  mobile-nav-bottom"></div>
+</nav>    
+  </div>
+</body>
+</html>

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Zookeeper基本使用与监控(Curator) | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="1.Zookeeper基本使用这里就不做图片展示了，因为现在在上班不方便 只贴一些上课笔记 (0)基本了解 12345678910111213141516ZK核心术语    ZK的数据模型： 树形结构        &#x2F;home&#x2F;hadoop&#x2F;app&#x2F;ruozedata.txt    ZK每个节点znode，有一个唯一的路径标识    znode        临时的 ephemeral  临时zn">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Zookeeper基本使用与监控(Curator)">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;01&#x2F;04&#x2F;Zookeeper%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E4%B8%8E%E7%9B%91%E6%8E%A7-Curator&#x2F;index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="1.Zookeeper基本使用这里就不做图片展示了，因为现在在上班不方便 只贴一些上课笔记 (0)基本了解 12345678910111213141516ZK核心术语    ZK的数据模型： 树形结构        &#x2F;home&#x2F;hadoop&#x2F;app&#x2F;ruozedata.txt    ZK每个节点znode，有一个唯一的路径标识    znode        临时的 ephemeral  临时zn">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-11-17T11:47:23.271Z">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/default-avatar.jpg">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/highlight.css">
+</head>
+
+<body>
+  <div id="fullpage" class="mobile-nav-right">
+    
+      <div id="wrapper" title="图片来自网络">
+    
+    
+      <header id="header">
+  <div id="nav-toggle" class="nav-toggle"></div>
+  <div class="head-box global-width">
+    <nav class="nav-box nav-right">
+      
+        <a class="nav-item" href="/" title
+        
+        >首页</a>
+      
+        <a class="nav-item" href="/archives" title
+        
+        >归档</a>
+      
+    </nav>
+  </div>
+</header>
+      <div id="middlecontent" title class="global-width sidebar-right">
+        <section id="main"><article id="post-Zookeeper基本使用与监控-Curator" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 class="article-title" itemprop="name">
+      Zookeeper基本使用与监控(Curator)
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2019/01/04/Zookeeper%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E4%B8%8E%E7%9B%91%E6%8E%A7-Curator/" class="article-date">
+  <time datetime="2019-01-04T11:46:26.000Z" itemprop="datePublished">2019-01-04</time>
+</a>
+    
+    
+  </div>
+  
+    <span id="busuanzi_container_page_pv">
+      本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+    </span>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-cloud" itemprop="articleBody">
+      
+        <h2 id="1-Zookeeper基本使用"><a href="#1-Zookeeper基本使用" class="headerlink" title="1.Zookeeper基本使用"></a>1.Zookeeper基本使用</h2><p>这里就不做图片展示了，因为现在在上班不方便 只贴一些上课笔记</p>
+<p>(0)基本了解</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">ZK核心术语</span><br><span class="line">    ZK的数据模型： 树形结构</span><br><span class="line">        /home/hadoop/app/ruozedata.txt</span><br><span class="line">    ZK每个节点znode，有一个唯一的路径标识</span><br><span class="line">    znode</span><br><span class="line">        临时的 ephemeral  临时znode下面不能有子节点</span><br><span class="line">            普通的</span><br><span class="line">            sequential</span><br><span class="line">        永久的 persistent</span><br><span class="line">            普通的</span><br><span class="line">            sequential  顺序编号目录节点</span><br><span class="line">    每个znode节点有各自的版本号</span><br><span class="line">    每个节点数据发生了变化，该节点的版本会加</span><br><span class="line">    ZK节点存储的数据量不宜过大，几K  *****</span><br><span class="line">    znode可以设置访问权限</span><br><span class="line">    znode可以设置watcher：当节点数据发生变化时，可以通过监视器获取</span><br></pre></td></tr></table></figure></div>
+
+<p>(1)客户端命令行操作</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"> 命令基本语法						功能描述</span><br><span class="line">help										显示所有操作命令</span><br><span class="line">ls path [watch]						使用 ls 命令来查看当前znode中所包含的内容</span><br><span class="line">ls2 path [watch]					查看当前节点数据并能看到更新次数等数据</span><br><span class="line">create									普通创建</span><br><span class="line">											-s  含有序列</span><br><span class="line">											-e  临时（重启或者超时消失）</span><br><span class="line">get path [watch]					获得节点的值</span><br><span class="line">set										设置节点的具体值</span><br><span class="line">stat										查看节点状态</span><br><span class="line">delete									删除节点</span><br><span class="line">rmr										递归删除节点</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">上面带[watch]  的是可以监控的  但是watcher zookeeper自身的api和命令都是一次性的 </span><br><span class="line">也就是用过了不能再用了（你懂的 ）</span><br><span class="line">解决办法 可以使用 curator 作为zkClient 来监控zookeeper的变化信息****</span><br><span class="line"></span><br><span class="line">eg：一些监控的种类</span><br><span class="line">watcher</span><br><span class="line">    zk中的watcher是一次性(*****)的</span><br><span class="line">    NodeCreated</span><br><span class="line">    NodeDataChanged</span><br><span class="line">    NodeDeleted</span><br><span class="line">    NodeChildrenChanged</span><br><span class="line">    </span><br><span class="line">四字命令 了解一下</span><br></pre></td></tr></table></figure></div>
+<p>(2)CuratorApi<br>Curator是Netflix公司开源的一套zookeeper客户端框架，解决了很多Zookeeper客户端非常底层的细节开发工作，包括连接重连、反复注册Watcher和NodeExistsException异常等等。</p>
+<p>版本选择：</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">这里我们的zookeeper的版本是3.4.x，所以api开发的时候 maven不同版本会用不同</span><br><span class="line">https://curator.apache.org/zk-compatibility.html      curator官网</span><br></pre></td></tr></table></figure></div>
+<p>curator api 官网 ：<a href="https://curator.apache.org/curator-framework/index.html" target="_blank" rel="noopener">https://curator.apache.org/curator-framework/index.html</a></p>
+<p>可以去官网上去学习，可以结合zookeeper api 来学习 curator api （突然手里来活了 写不了了 ）<br>这里可以借鉴：<br>    <a href="http://www.throwable.club/2018/12/16/zookeeper-curator-usage/#%E5%89%8D%E6%8F%90" target="_blank" rel="noopener">http://www.throwable.club/2018/12/16/zookeeper-curator-usage/#%E5%89%8D%E6%8F%90</a><br>英文不好的小伙伴 ，这篇文章很好的介绍Curator 使用 。</p>
+<p>还有我的小组长的博客：<br><a href="https://liverrrr.fun/archives/quickstart_zookeeper" target="_blank" rel="noopener">https://liverrrr.fun/archives/quickstart_zookeeper</a><br>可以很好的学习 。</p>
+
+      
+    </div>
+    
+      <footer class="article-footer">
+        完
+      </footer>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  <div class="article-nav-block">
+    
+      <a href="/2019/01/05/Azkaban%E8%B0%83%E5%BA%A6-double-happy/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption"></strong>
+        <div class="article-nav-title">
+          
+            Azkaban调度--double_happy
+          
+        </div>
+      </a>
+    
+  </div>
+  <div class="article-nav-block">
+    
+      <a href="/2018/04/17/SparkSQL-TextFile%E8%BE%93%E5%87%BA%E5%A4%9A%E5%88%97/" id="article-nav-older" class="article-nav-link-wrap">
+        <div class="article-nav-title">SparkSQL--TextFile输出多列</div>
+        <strong class="article-nav-caption"></strong>
+      </a>
+    
+  </div>
+</nav>
+
+    <link rel="stylesheet" href="/css/gitment.css"> 
+<script src="/js/gitment.js"></script>
+
+<div id="gitmentContainer"></div>
+
+<script>
+var gitment = new Gitment({
+  owner: '',
+  repo: '',
+  oauth: {
+    client_id: '',
+    client_secret: '',
+  },
+})
+gitment.render('gitmentContainer')
+</script>
+
+  
+  
+</article>
+</section>
+        <aside id="sidebar">
+  
+    <div class="widget-box">
+  <div class="avatar-box">
+    <img class="avatar" src="/images/default-avatar.jpg" title="图片来自网络"></img>
+    <h3 class="avatar-name">
+      
+        DoubleHappy
+      
+    </h3>
+    <p class="avatar-slogan">
+      特别耐撕的大数据，资深的打酱油攻城狮。
+    </p>
+  </div>
+</div>
+
+
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/01/05/Azkaban%E8%B0%83%E5%BA%A6-double-happy/">Azkaban调度--double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2019/01/04/Zookeeper%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E4%B8%8E%E7%9B%91%E6%8E%A7-Curator/">Zookeeper基本使用与监控(Curator)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/04/17/SparkSQL-TextFile%E8%BE%93%E5%87%BA%E5%A4%9A%E5%88%97/">SparkSQL--TextFile输出多列</a>
+          </li>
+        
+          <li>
+            <a href="/2018/03/17/%E9%9B%85%E6%81%A9%E8%B5%84%E6%BA%90%E8%B0%83%E4%BC%98-double-happy/">雅恩资源调优---double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/22/SS04/">SS04</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+      <div class="widget-box">
+    <h3 class="widget-title">友链</h3>
+    <div class="widget">
+      
+        <a style="display: block;" href="https://sxwanggit126.github.io/" title target='_blank'
+        >一路眼瞎</a>
+      
+    </div>
+  </div>
+
+  
+</aside>
+      </div>
+      <footer id="footer">
+  <div class="foot-box global-width">
+    &copy; 2019 DoubleHappy &nbsp;&nbsp;
+    Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    &nbsp;|&nbsp;主题 <a href="https://github.com/yiluyanxia/hexo-theme-antiquity" target="_blank" rel="noopener">antiquity</a>
+    <br>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv">不蒜子告之   阁下是第<span id="busuanzi_value_site_pv"></span>个访客</span>
+  </div>
+</footer>
+      <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script>
+if (!window.jQuery) {
+var script = document.createElement('script');
+script.src = "/js/jquery-2.0.3.min.js";
+document.body.write(script);
+}
+</script>
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+    </div>
+    <nav id="mobile-nav" class="mobile-nav-box">
+  <div class="mobile-nav-img mobile-nav-top"></div>
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+  <div class="mobile-nav-img  mobile-nav-bottom"></div>
+</nav>    
+  </div>
+</body>
+</html>

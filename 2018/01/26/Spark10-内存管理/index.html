@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Spark10--内存管理 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384[double_happy@hadoop101 bin]$ spark-submi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spark10--内存管理">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2018&#x2F;01&#x2F;26&#x2F;Spark10-%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86&#x2F;index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384[double_happy@hadoop101 bin]$ spark-submi">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20191025155826318.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20191025161627818.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20191025161814167.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20191025161953166.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+<meta property="og:updated_time" content="2019-11-17T12:05:54.398Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20191025155826318.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/default-avatar.jpg">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/highlight.css">
+</head>
+
+<body>
+  <div id="fullpage" class="mobile-nav-right">
+    
+      <div id="wrapper" title="图片来自网络">
+    
+    
+      <header id="header">
+  <div id="nav-toggle" class="nav-toggle"></div>
+  <div class="head-box global-width">
+    <nav class="nav-box nav-right">
+      
+        <a class="nav-item" href="/" title
+        
+        >首页</a>
+      
+        <a class="nav-item" href="/archives" title
+        
+        >归档</a>
+      
+    </nav>
+  </div>
+</header>
+      <div id="middlecontent" title class="global-width sidebar-right">
+        <section id="main"><article id="post-Spark10-内存管理" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 class="article-title" itemprop="name">
+      Spark10--内存管理
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2018/01/26/Spark10-%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" class="article-date">
+  <time datetime="2018-01-26T12:05:30.000Z" itemprop="datePublished">2018-01-26</time>
+</a>
+    
+    
+  </div>
+  
+    <span id="busuanzi_container_page_pv">
+      本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+    </span>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-cloud" itemprop="articleBody">
+      
+        <div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line">[double_happy@hadoop101 bin]$ spark-submit --help</span><br><span class="line">Usage: spark-submit [options] &lt;app jar | python file | R file&gt; [app arguments]</span><br><span class="line">Usage: spark-submit --kill [submission ID] --master [spark://...]</span><br><span class="line">Usage: spark-submit --status [submission ID] --master [spark://...]</span><br><span class="line">Usage: spark-submit run-example [options] example-class [example args]</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">  --master MASTER_URL         spark://host:port, mesos://host:port, yarn,</span><br><span class="line">                              k8s://https://host:port, or local (Default: local[*]).</span><br><span class="line">  --deploy-mode DEPLOY_MODE   Whether to launch the driver program locally (&quot;client&quot;) or</span><br><span class="line">                              on one of the worker machines inside the cluster (&quot;cluster&quot;)</span><br><span class="line">                              (Default: client).</span><br><span class="line">  --class CLASS_NAME          Your application&apos;s main class (for Java / Scala apps).</span><br><span class="line">  --name NAME                 A name of your application.</span><br><span class="line">  --jars JARS                 Comma-separated list of jars to include on the driver</span><br><span class="line">                              and executor classpaths.</span><br><span class="line">  --packages                  Comma-separated list of maven coordinates of jars to include</span><br><span class="line">                              on the driver and executor classpaths. Will search the local</span><br><span class="line">                              maven repo, then maven central and any additional remote</span><br><span class="line">                              repositories given by --repositories. The format for the</span><br><span class="line">                              coordinates should be groupId:artifactId:version.</span><br><span class="line">  --exclude-packages          Comma-separated list of groupId:artifactId, to exclude while</span><br><span class="line">                              resolving the dependencies provided in --packages to avoid</span><br><span class="line">                              dependency conflicts.</span><br><span class="line">  --repositories              Comma-separated list of additional remote repositories to</span><br><span class="line">                              search for the maven coordinates given with --packages.</span><br><span class="line">  --py-files PY_FILES         Comma-separated list of .zip, .egg, or .py files to place</span><br><span class="line">                              on the PYTHONPATH for Python apps.</span><br><span class="line">  --files FILES               Comma-separated list of files to be placed in the working</span><br><span class="line">                              directory of each executor. File paths of these files</span><br><span class="line">                              in executors can be accessed via SparkFiles.get(fileName).</span><br><span class="line"></span><br><span class="line">  --conf PROP=VALUE           Arbitrary Spark configuration property.</span><br><span class="line">  --properties-file FILE      Path to a file from which to load extra properties. If not</span><br><span class="line">                              specified, this will look for conf/spark-defaults.conf.</span><br><span class="line"></span><br><span class="line">  --driver-memory MEM         Memory for driver (e.g. 1000M, 2G) (Default: 1024M).</span><br><span class="line">  --driver-java-options       Extra Java options to pass to the driver.</span><br><span class="line">  --driver-library-path       Extra library path entries to pass to the driver.</span><br><span class="line">  --driver-class-path         Extra class path entries to pass to the driver. Note that</span><br><span class="line">                              jars added with --jars are automatically included in the</span><br><span class="line">                              classpath.</span><br><span class="line"></span><br><span class="line">  --executor-memory MEM       Memory per executor (e.g. 1000M, 2G) (Default: 1G).</span><br><span class="line"></span><br><span class="line">  --proxy-user NAME           User to impersonate when submitting the application.</span><br><span class="line">                              This argument does not work with --principal / --keytab.</span><br><span class="line"></span><br><span class="line">  --help, -h                  Show this help message and exit.</span><br><span class="line">  --verbose, -v               Print additional debug output.</span><br><span class="line">  --version,                  Print the version of current Spark.</span><br><span class="line"></span><br><span class="line"> Cluster deploy mode only:</span><br><span class="line">  --driver-cores NUM          Number of cores used by the driver, only in cluster mode</span><br><span class="line">                              (Default: 1).</span><br><span class="line"></span><br><span class="line"> Spark standalone or Mesos with cluster deploy mode only:</span><br><span class="line">  --supervise                 If given, restarts the driver on failure.</span><br><span class="line">  --kill SUBMISSION_ID        If given, kills the driver specified.</span><br><span class="line">  --status SUBMISSION_ID      If given, requests the status of the driver specified.</span><br><span class="line"></span><br><span class="line"> Spark standalone and Mesos only:</span><br><span class="line">  --total-executor-cores NUM  Total cores for all executors.</span><br><span class="line"></span><br><span class="line"> Spark standalone and YARN only:</span><br><span class="line">  --executor-cores NUM        Number of cores per executor. (Default: 1 in YARN mode,</span><br><span class="line">                              or all available cores on the worker in standalone mode)</span><br><span class="line"></span><br><span class="line"> YARN-only:</span><br><span class="line">  --queue QUEUE_NAME          The YARN queue to submit to (Default: &quot;default&quot;).</span><br><span class="line">  --num-executors NUM         Number of executors to launch (Default: 2).</span><br><span class="line">                              If dynamic allocation is enabled, the initial number of</span><br><span class="line">                              executors will be at least NUM.</span><br><span class="line">  --archives ARCHIVES         Comma separated list of archives to be extracted into the</span><br><span class="line">                              working directory of each executor.</span><br><span class="line">  --principal PRINCIPAL       Principal to be used to login to KDC, while running on</span><br><span class="line">                              secure HDFS.</span><br><span class="line">  --keytab KEYTAB             The full path to the file that contains the keytab for the</span><br><span class="line">                              principal specified above. This keytab will be copied to</span><br><span class="line">                              the node running the Application Master via the Secure</span><br><span class="line">                              Distributed Cache, for renewing the login tickets and the</span><br><span class="line">                              delegation tokens periodically.</span><br><span class="line">      </span><br><span class="line">[double_happy@hadoop101 bin]$</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">spark-submit --master yarn </span><br><span class="line">提交到yarn的时候 肯定是有一堆executor进程的对吧  那么 到底有几个呢？每个executor 多少core？每个executor 多少内存？</span><br><span class="line">这些是提交作业的时候都要配置的</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"> on yarn 模式</span><br><span class="line"> --executor-memory MEM       Memory per executor (e.g. 1000M, 2G) (Default: 1G)</span><br><span class="line">--executor-cores NUM        Number of cores per executor. (Default: 1 in YARN mode）</span><br><span class="line">                              					</span><br><span class="line"> per executor到底使用几个cpu core呢？</span><br><span class="line"></span><br><span class="line"> --num-executors NUM         Number of executors to launch (Default: 2).</span><br><span class="line"></span><br><span class="line">之前我就遇到一个问题就是 </span><br><span class="line">我的数据量 没有我给的executor内存大 为什么程序跑不出来呢？还oom呢？</span><br><span class="line"></span><br><span class="line">说明对spark内存管理不了解</span><br></pre></td></tr></table></figure></div>
+<p><a href="http://spark.apache.org/docs/latest/tuning.html" target="_blank" rel="noopener">Tuning Spark</a><br>优化章节<br><a href="http://spark.apache.org/docs/latest/tuning.html#memory-management-overview" target="_blank" rel="noopener">Memory Management Overview</a></p>
+<p>Memory usage in Spark largely falls under one of two categories: <strong>execution and storage</strong>. <strong>Execution</strong> memory refers to that used for computation in <strong>shuffles, joins, sorts and aggregations</strong>, while <strong>storage</strong> memory refers to that used for <strong>caching and propagating internal data across the cluster.</strong></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">内存分为：</span><br><span class="line">    execution ： computation in shuffles, joins, sorts and aggregations  用于计算的</span><br><span class="line">	storage ：caching and propagating internal data   用于存储</span><br><span class="line"></span><br><span class="line">所以spark的executor内存是经过划分的 你给他1G 用于计算的达不到1G</span><br><span class="line">查看源码：</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">SparkEnv类：</span><br><span class="line"></span><br><span class="line">    val useLegacyMemoryManager = conf.getBoolean(&quot;spark.memory.useLegacyMode&quot;, false)</span><br><span class="line">    val memoryManager: MemoryManager =</span><br><span class="line">      if (useLegacyMemoryManager) &#123;</span><br><span class="line">        new StaticMemoryManager(conf, numUsableCores)</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">        UnifiedMemoryManager(conf, numUsableCores)</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">spark.memory.useLegacyMode 什么意思呢？去官网找一下</span><br><span class="line"></span><br><span class="line">决定你spark采用什么样的内存管理机制</span><br><span class="line">是否使用历史遗留版本  false</span><br></pre></td></tr></table></figure></div>
+<p><a href="http://spark.apache.org/docs/latest/configuration.html" target="_blank" rel="noopener">Spark Configuration</a></p>
+<p><img src="https://img-blog.csdnimg.cn/20191025155826318.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>1.SparkEnv类 进去搜索memoryManager<br><img src="https://img-blog.csdnimg.cn/20191025161627818.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>2.点进去StaticMemoryManager    </p>
+<p><img src="https://img-blog.csdnimg.cn/20191025161814167.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>3.点进去getMaxExecutionMemory 或者getMaxStorageMemory  点不进去 说明这个方法就在这个类里面<br>搜索getMaxExecutionMemory<br><img src="https://img-blog.csdnimg.cn/20191025161953166.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">StaticMemoryManager    历史遗留版本   静态内存管理</span><br><span class="line">UnifiedMemoryManager    统一内存管理</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">静态内存管理机制： 存储和执行是单独的</span><br><span class="line">  StaticMemoryManager &#123;</span><br><span class="line">	getMaxExecutionMemory&#123;</span><br><span class="line"></span><br><span class="line">    val systemMaxMemory = conf.getLong(&quot;spark.testing.memory&quot;, Runtime.getRuntime.maxMemory)</span><br><span class="line">   ......</span><br><span class="line">	val memoryFraction = conf.getDouble(&quot;spark.shuffle.memoryFraction&quot;, 0.2) //默认0.2</span><br><span class="line">    val safetyFraction = conf.getDouble(&quot;spark.shuffle.safetyFraction&quot;, 0.8) //默认0.8</span><br><span class="line">    (systemMaxMemory * memoryFraction * safetyFraction).toLong   //1000m*0.2*0.8 = 160m</span><br><span class="line"></span><br><span class="line">  你传进来1g 真正用来计算的Execution 才 160m </span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	getMaxStorageMemory&#123;</span><br><span class="line">    val memoryFraction = conf.getDouble(&quot;spark.storage.memoryFraction&quot;, 0.6)</span><br><span class="line">    val safetyFraction = conf.getDouble(&quot;spark.storage.safetyFraction&quot;, 0.9)</span><br><span class="line">    (systemMaxMemory * memoryFraction * safetyFraction).toLong   //1000m*0.6*0.9 = 540m</span><br><span class="line"></span><br><span class="line">    你传进来1g 用来存储的的Storage 540m</span><br><span class="line">    如果你整个作业不需要 cache 不需要缓存 那么这个部分的内存就浪费掉了</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">systemMaxMemory 假设是传进来的内存 实际上比传进来的内存小一点</span><br><span class="line">所以你传进来的内存 是有个占比 有安全系数占比</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"> 统一内存管理:存储和执行内存是公用的 ==》会有相互借内存的</span><br><span class="line">UnifiedMemoryManager&#123;</span><br><span class="line">	val maxMemory = getMaxMemory(conf)&#123;</span><br><span class="line">		val systemMemory = conf.getLong(&quot;spark.testing.memory&quot;, Runtime.getRuntime.maxMemory)</span><br><span class="line">		val reservedMemory = 300m</span><br><span class="line">		。。。。。</span><br><span class="line">		//1000m - 300m </span><br><span class="line">		val usableMemory = systemMemory - reservedMemory</span><br><span class="line">   		val memoryFraction = conf.getDouble(&quot;spark.memory.fraction&quot;, 0.6)</span><br><span class="line">    	(usableMemory * memoryFraction).toLong  //(1000m - 300m)*0.6 = 420m</span><br><span class="line"></span><br><span class="line">    	你真正能使用的内存 420m 这是存储端和执行端公有的 就这么多</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	//存储的占了0.5</span><br><span class="line">	onHeapStorageRegionSize =</span><br><span class="line">        (maxMemory * conf.getDouble(&quot;spark.memory.storageFraction&quot;, 0.5)).toLong</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">getMaxMemory  :Return the total amount of memory shared between execution and storage, in bytes.</span><br><span class="line">所以最终：</span><br><span class="line">Storage ： (1000m - 300m)*0.6*0.5 = 210m</span><br><span class="line">Execution ： 210m</span><br></pre></td></tr></table></figure></div>
+<p>新版内存管理：<br>In Spark, execution and storage share a unified region (M). When <strong>no execution memory is used</strong>, <strong>storage can acquire all the available memory and vice versa.</strong> </p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">no execution memory is used 那么storage 会获取所有资源</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Spark1.0版本：</span><br><span class="line">静态资源管理：</span><br><span class="line">	execution | storage        </span><br><span class="line">	1.如果storage用来做cache的很少 storage就剩余很多内存资源</span><br><span class="line">	那么execution 做sort、join、shuffle的如果 这部分的内存资源不够 只能 spill to disk 。</span><br><span class="line">	2.反过来</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">到了Spark1.6版本：</span><br><span class="line">统一内存管理：</span><br><span class="line">	名字都变了</span><br><span class="line">	execution|storage     默认各占50%</span><br><span class="line">	这块 execution的优先级高，storage如果cache的满了 把cache的数据spill to disk，</span><br><span class="line">	如果execution的不够用，那么他会去storage拿资源，极限情况下，只会给storage留一丢丢资源，不会让storage很没面子。但是 execution就是有借无还，谁让他优先级高呢。</span><br><span class="line">	还有一点就是 execution借完了之后 storage此时也需要cache 为什么execution不能还给storage内存呢？</span><br><span class="line">	如果此时execution 正在shuffle 还了内存 execution 会出现问题的 所以不能还</span><br></pre></td></tr></table></figure></div>
+
+      
+    </div>
+    
+      <footer class="article-footer">
+        完
+      </footer>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  <div class="article-nav-block">
+    
+      <a href="/2018/01/28/Spark11-shuffle/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption"></strong>
+        <div class="article-nav-title">
+          
+            Spark11-shuffle
+          
+        </div>
+      </a>
+    
+  </div>
+  <div class="article-nav-block">
+    
+      <a href="/2018/01/26/Spark009-spark-shell%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B/" id="article-nav-older" class="article-nav-link-wrap">
+        <div class="article-nav-title">Spark009--spark-shell执行流程</div>
+        <strong class="article-nav-caption"></strong>
+      </a>
+    
+  </div>
+</nav>
+
+    <link rel="stylesheet" href="/css/gitment.css"> 
+<script src="/js/gitment.js"></script>
+
+<div id="gitmentContainer"></div>
+
+<script>
+var gitment = new Gitment({
+  owner: '',
+  repo: '',
+  oauth: {
+    client_id: '',
+    client_secret: '',
+  },
+})
+gitment.render('gitmentContainer')
+</script>
+
+  
+  
+</article>
+</section>
+        <aside id="sidebar">
+  
+    <div class="widget-box">
+  <div class="avatar-box">
+    <img class="avatar" src="/images/default-avatar.jpg" title="图片来自网络"></img>
+    <h3 class="avatar-name">
+      
+        DoubleHappy
+      
+    </h3>
+    <p class="avatar-slogan">
+      特别耐撕的大数据，资深的打酱油攻城狮。
+    </p>
+  </div>
+</div>
+
+
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/01/05/Azkaban%E8%B0%83%E5%BA%A6-double-happy/">Azkaban调度--double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2019/01/04/Zookeeper%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E4%B8%8E%E7%9B%91%E6%8E%A7-Curator/">Zookeeper基本使用与监控(Curator)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/04/17/SparkSQL-TextFile%E8%BE%93%E5%87%BA%E5%A4%9A%E5%88%97/">SparkSQL--TextFile输出多列</a>
+          </li>
+        
+          <li>
+            <a href="/2018/03/17/%E9%9B%85%E6%81%A9%E8%B5%84%E6%BA%90%E8%B0%83%E4%BC%98-double-happy/">雅恩资源调优---double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/22/SS04/">SS04</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+      <div class="widget-box">
+    <h3 class="widget-title">友链</h3>
+    <div class="widget">
+      
+        <a style="display: block;" href="https://sxwanggit126.github.io/" title target='_blank'
+        >一路眼瞎</a>
+      
+    </div>
+  </div>
+
+  
+</aside>
+      </div>
+      <footer id="footer">
+  <div class="foot-box global-width">
+    &copy; 2019 DoubleHappy &nbsp;&nbsp;
+    Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    &nbsp;|&nbsp;主题 <a href="https://github.com/yiluyanxia/hexo-theme-antiquity" target="_blank" rel="noopener">antiquity</a>
+    <br>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv">不蒜子告之   阁下是第<span id="busuanzi_value_site_pv"></span>个访客</span>
+  </div>
+</footer>
+      <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script>
+if (!window.jQuery) {
+var script = document.createElement('script');
+script.src = "/js/jquery-2.0.3.min.js";
+document.body.write(script);
+}
+</script>
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+    </div>
+    <nav id="mobile-nav" class="mobile-nav-box">
+  <div class="mobile-nav-img mobile-nav-top"></div>
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+  <div class="mobile-nav-img  mobile-nav-bottom"></div>
+</nav>    
+  </div>
+</body>
+</html>

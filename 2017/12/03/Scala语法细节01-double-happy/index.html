@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Scala语法细节01--double_happy | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="1.注意细节为了便于scala语言的理解下面总结常用的语法、数据结构、方法与函数、数据结构、主构造器与附属构造器、高阶函数 （1）基本语法 123456789101112131415161718191. 值与变量    值： val        val 名称:数据类型 = 值    变量：var        var 名称:数据类型 = 值2.数据类型	a.常用数据类型：	    String">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Scala语法细节01--double_happy">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2017&#x2F;12&#x2F;03&#x2F;Scala%E8%AF%AD%E6%B3%95%E7%BB%86%E8%8A%8201-double-happy&#x2F;index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="1.注意细节为了便于scala语言的理解下面总结常用的语法、数据结构、方法与函数、数据结构、主构造器与附属构造器、高阶函数 （1）基本语法 123456789101112131415161718191. 值与变量    值： val        val 名称:数据类型 = 值    变量：var        var 名称:数据类型 = 值2.数据类型	a.常用数据类型：	    String">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2019-11-17T11:44:27.001Z">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/default-avatar.jpg">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/highlight.css">
+</head>
+
+<body>
+  <div id="fullpage" class="mobile-nav-right">
+    
+      <div id="wrapper" title="图片来自网络">
+    
+    
+      <header id="header">
+  <div id="nav-toggle" class="nav-toggle"></div>
+  <div class="head-box global-width">
+    <nav class="nav-box nav-right">
+      
+        <a class="nav-item" href="/" title
+        
+        >首页</a>
+      
+        <a class="nav-item" href="/archives" title
+        
+        >归档</a>
+      
+    </nav>
+  </div>
+</header>
+      <div id="middlecontent" title class="global-width sidebar-right">
+        <section id="main"><article id="post-Scala语法细节01-double-happy" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 class="article-title" itemprop="name">
+      Scala语法细节01--double_happy
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2017/12/03/Scala%E8%AF%AD%E6%B3%95%E7%BB%86%E8%8A%8201-double-happy/" class="article-date">
+  <time datetime="2017-12-03T11:44:00.000Z" itemprop="datePublished">2017-12-03</time>
+</a>
+    
+    
+  </div>
+  
+    <span id="busuanzi_container_page_pv">
+      本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+    </span>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-cloud" itemprop="articleBody">
+      
+        <h1 id="1-注意细节"><a href="#1-注意细节" class="headerlink" title="1.注意细节"></a>1.注意细节</h1><p>为了便于scala语言的理解下面总结常用的语法、数据结构、方法与函数、数据结构、主构造器与附属构造器、高阶函数</p>
+<p>（1）基本语法</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">1. 值与变量</span><br><span class="line">    值： val</span><br><span class="line">        val 名称:数据类型 = 值</span><br><span class="line">    变量：var</span><br><span class="line">        var 名称:数据类型 = 值</span><br><span class="line">2.数据类型</span><br><span class="line">	a.常用数据类型：</span><br><span class="line">	    String</span><br><span class="line">	    Int/Long/Float/Double</span><br><span class="line">	    Boolean</span><br><span class="line">	 b.数据类型转换与判断</span><br><span class="line">	     asInstanceOf[T]  数据类型转换</span><br><span class="line">	     isInstanceOf[T]  判断是否是某种数据类型</span><br><span class="line">3.顶层接口：Any</span><br><span class="line">    AnyVal： 值类型 （下面列出的需要注意）</span><br><span class="line">        数值</span><br><span class="line">        Boolean</span><br><span class="line">        Unit</span><br><span class="line">    AnyRef：引用类型</span><br></pre></td></tr></table></figure></div>
+<p>（2）方法与函数</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">最简单的理解是：</span><br><span class="line">	def   ----&gt;  方法</span><br><span class="line">	val f1 = (a:Int,b:Int) =&gt; a+b   ----&gt; 函数(h=高阶函数里 传入的参数 几乎全是 匿名函数)</span><br><span class="line">  </span><br><span class="line">    方法的本质上就是一种特殊的函数</span><br><span class="line">    </span><br><span class="line">    方法用def定义，函数的标识=&gt;</span><br><span class="line">    </span><br><span class="line">	因为函数 官方定义的格式有很多  真的很多 这里最好的区别 方法与函数 就是 看 def 还是 val </span><br><span class="line"></span><br><span class="line">eg：定义function（这里应该确切说 是方法）</span><br><span class="line">def sum(x:Int, y:Int):Int = &#123;</span><br><span class="line">    // function体</span><br><span class="line">&#125;</span><br><span class="line">def: 定义的关键字</span><br><span class="line">sum：function的名字</span><br><span class="line">x:Int,y:Int  : function的入参</span><br><span class="line">Int :  返回值类型</span><br></pre></td></tr></table></figure></div>
+<p>（3）循环</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">    to []</span><br><span class="line">    until [)</span><br><span class="line">    Range [)</span><br><span class="line">   </span><br><span class="line">  eg: 常用的遍历</span><br><span class="line">  val arr = Array(1,2,3,4,5)</span><br><span class="line">  for( elm &lt;- arr)&#123;</span><br><span class="line">  &#125;</span><br><span class="line">  for(index &lt;- 1 unitl arr.size)&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">注意： 1 unil 10  by 1    是可以指定步长的呦</span><br></pre></td></tr></table></figure></div>
+<p>（4）变长参数与默认参数</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">eg：</span><br><span class="line">def  sum( number : Int*)&#123; //变长参数  （相当于一个数组 ）</span><br><span class="line">     </span><br><span class="line">&#125;</span><br><span class="line">def sum ( number : Int =3)&#123;  //默认参数</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">那么调用带有变长参数的方法 如何传参呢？</span><br><span class="line">val  numbers = Array(1,2,3,4,5)</span><br><span class="line">sum(numbers :_*)</span><br></pre></td></tr></table></figure></div>
+
+      
+    </div>
+    
+      <footer class="article-footer">
+        完
+      </footer>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  <div class="article-nav-block">
+    
+      <a href="/2017/12/04/Scala%E8%AF%AD%E6%B3%95%E7%BB%86%E8%8A%8202-double-happy/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption"></strong>
+        <div class="article-nav-title">
+          
+            Scala语法细节02--double_happy
+          
+        </div>
+      </a>
+    
+  </div>
+  <div class="article-nav-block">
+    
+      <a href="/2017/12/02/mapreduce%E5%8E%9F%E7%90%8602/" id="article-nav-older" class="article-nav-link-wrap">
+        <div class="article-nav-title">mapreduce原理02</div>
+        <strong class="article-nav-caption"></strong>
+      </a>
+    
+  </div>
+</nav>
+
+    <link rel="stylesheet" href="/css/gitment.css"> 
+<script src="/js/gitment.js"></script>
+
+<div id="gitmentContainer"></div>
+
+<script>
+var gitment = new Gitment({
+  owner: '',
+  repo: '',
+  oauth: {
+    client_id: '',
+    client_secret: '',
+  },
+})
+gitment.render('gitmentContainer')
+</script>
+
+  
+  
+</article>
+</section>
+        <aside id="sidebar">
+  
+    <div class="widget-box">
+  <div class="avatar-box">
+    <img class="avatar" src="/images/default-avatar.jpg" title="图片来自网络"></img>
+    <h3 class="avatar-name">
+      
+        DoubleHappy
+      
+    </h3>
+    <p class="avatar-slogan">
+      特别耐撕的大数据，资深的打酱油攻城狮。
+    </p>
+  </div>
+</div>
+
+
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/01/05/Azkaban%E8%B0%83%E5%BA%A6-double-happy/">Azkaban调度--double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2019/01/04/Zookeeper%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E4%B8%8E%E7%9B%91%E6%8E%A7-Curator/">Zookeeper基本使用与监控(Curator)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/04/17/SparkSQL-TextFile%E8%BE%93%E5%87%BA%E5%A4%9A%E5%88%97/">SparkSQL--TextFile输出多列</a>
+          </li>
+        
+          <li>
+            <a href="/2018/03/17/%E9%9B%85%E6%81%A9%E8%B5%84%E6%BA%90%E8%B0%83%E4%BC%98-double-happy/">雅恩资源调优---double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2018/02/22/SS04/">SS04</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+      <div class="widget-box">
+    <h3 class="widget-title">友链</h3>
+    <div class="widget">
+      
+        <a style="display: block;" href="https://sxwanggit126.github.io/" title target='_blank'
+        >一路眼瞎</a>
+      
+    </div>
+  </div>
+
+  
+</aside>
+      </div>
+      <footer id="footer">
+  <div class="foot-box global-width">
+    &copy; 2019 DoubleHappy &nbsp;&nbsp;
+    Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    &nbsp;|&nbsp;主题 <a href="https://github.com/yiluyanxia/hexo-theme-antiquity" target="_blank" rel="noopener">antiquity</a>
+    <br>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv">不蒜子告之   阁下是第<span id="busuanzi_value_site_pv"></span>个访客</span>
+  </div>
+</footer>
+      <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script>
+if (!window.jQuery) {
+var script = document.createElement('script');
+script.src = "/js/jquery-2.0.3.min.js";
+document.body.write(script);
+}
+</script>
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+    </div>
+    <nav id="mobile-nav" class="mobile-nav-box">
+  <div class="mobile-nav-img mobile-nav-top"></div>
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+  <div class="mobile-nav-img  mobile-nav-bottom"></div>
+</nav>    
+  </div>
+</body>
+</html>
