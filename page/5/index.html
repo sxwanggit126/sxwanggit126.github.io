@@ -54,6 +54,141 @@
       <div id="middlecontent" title class="global-width sidebar-right">
         <section id="main">
   
+    <article id="post-Scala语法细节02-double-happy" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/12/04/Scala%E8%AF%AD%E6%B3%95%E7%BB%86%E8%8A%8202-double-happy/">Scala语法细节02--double_happy</a>
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2017/12/04/Scala%E8%AF%AD%E6%B3%95%E7%BB%86%E8%8A%8202-double-happy/" class="article-date">
+  <time datetime="2017-12-04T11:44:49.000Z" itemprop="datePublished">2017-12-04</time>
+</a>
+    
+    
+  </div>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-cloud" itemprop="articleBody">
+      
+        <h2 id="续集-细节2"><a href="#续集-细节2" class="headerlink" title="续集-细节2"></a>续集-细节2</h2><p>（5）简单类的定义与使用</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">object SimpleClassApp &#123;</span><br><span class="line"></span><br><span class="line">  def main(args: Array[String]): Unit = &#123;</span><br><span class="line">    val people = new People   // 实例化一个Class对象</span><br><span class="line">    people.name = &quot;周琦&quot;  // 为对象赋值</span><br><span class="line">    people.age = 30</span><br><span class="line"></span><br><span class="line">//    people.gender</span><br><span class="line"></span><br><span class="line">    println(people.name + &quot; : &quot; + people.age )</span><br><span class="line"></span><br><span class="line">    people.playBasketball(&quot;China&quot;)</span><br><span class="line">    println(people.drink())  //白斩鸡</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">  * Scala中定义类：class 类名</span><br><span class="line">  * 类中有属性 有方法</span><br><span class="line">  */</span><br><span class="line">class People &#123;</span><br><span class="line"></span><br><span class="line">  // 属性的定义： val/var 名称:类型 =  值</span><br><span class="line">  var name:String = _  // _ 占位符  前提是一定要明确是什么数据类型</span><br><span class="line">  var age:Int = 3</span><br><span class="line"></span><br><span class="line">  // 私有</span><br><span class="line">  private var gender = &quot;M&quot;       //也是就外部不能访问  （也就是这个属性是见不得人的 只能在本类内使用）</span><br><span class="line"></span><br><span class="line">  // 定义方法</span><br><span class="line">  def playBasketball(team:String) = &#123;</span><br><span class="line">    println(name + &quot; is playing basketball of &quot; + team)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  def drink() = &#123;</span><br><span class="line">    name + &quot; is drinking...&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>（6）伴生类与伴生对象（非常有用 注意apply() 方法的使用 往往里面是new 一个伴生类 **）</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">object ApplyApp &#123;</span><br><span class="line"></span><br><span class="line">  def main(args: Array[String]): Unit = &#123;</span><br><span class="line"></span><br><span class="line">//    ApplyTest.static</span><br><span class="line"></span><br><span class="line">//    val applyTest = new ApplyTest</span><br><span class="line">//    println(applyTest)</span><br><span class="line"></span><br><span class="line">//    val test = ApplyTest() // 类名() ==&gt; object apply</span><br><span class="line">//    println(test)</span><br><span class="line"></span><br><span class="line">    val applyTest = new ApplyTest</span><br><span class="line">    applyTest() // 对象() ==&gt; Class apply</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">      * 类名() ==&gt; 调用的是  Object apply   *****</span><br><span class="line">      * new出来的对象() ==&gt;  调用的是  Class apply *</span><br><span class="line">      */</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">  * class是object伴生类</span><br><span class="line">  * object是class的伴生对象</span><br><span class="line">  *</span><br><span class="line">  * object里面的方法直接通过  object.方法名   调用，不需要new</span><br><span class="line">  */</span><br><span class="line">class ApplyTest &#123;</span><br><span class="line"></span><br><span class="line">  def apply(): Unit =&#123;</span><br><span class="line">    println(&quot;class apply....&quot;)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">object ApplyTest &#123;</span><br><span class="line">  println(&quot;进入ApplyTest object&quot;)</span><br><span class="line"></span><br><span class="line">  def static: Unit = &#123;</span><br><span class="line">    println(&quot;我是static方法&quot;)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // 一般情况下object的apply方法的作用是完成new class</span><br><span class="line">  def apply() =&#123;</span><br><span class="line">    println(&quot;object apply....&quot;)</span><br><span class="line">    new ApplyTest</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  println(&quot;执行完ApplyTest object&quot;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+<p>（7）主构造器和附属构造器（非常重要 五星级别  spark源码里使用超多）</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">object ConstructorApp &#123;</span><br><span class="line"></span><br><span class="line">  def main(args: Array[String]): Unit = &#123;</span><br><span class="line">//    val person = new Person(&quot;穆里尼奥&quot;, 50)</span><br><span class="line">//    println(person.name + &quot; : &quot; + person.age + &quot; : &quot; + person.job)</span><br><span class="line">//</span><br><span class="line">//    val person2 = new Person(&quot;穆里尼奥&quot;, 50, &quot;皇家马德里&quot;)</span><br><span class="line">//    println(person2.name + &quot; : &quot; + person2.age + &quot; : &quot; + person2.job + &quot; : &quot; + person2.team)</span><br><span class="line">//    val sc = new SparkContext(&quot;&quot;,&quot;&quot;,null)</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">      * 子类构造方法/构造器执行之前一定要先执行父类的构造器</span><br><span class="line">      * 对于父类中没有的字段，要使用var/val修饰，否则访问不到</span><br><span class="line">      */</span><br><span class="line">    val student = new Student(&quot;穆里尼奥&quot;,50,&quot;翻译&quot;)</span><br><span class="line">//    println(student.job)</span><br><span class="line">    println(student)</span><br><span class="line">  &#125;&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">  * 类名(......)   主构造器 构造器里面的 也是属性呦</span><br><span class="line">  */</span><br><span class="line">class Person(val name:String, val age:Int) &#123;</span><br><span class="line"></span><br><span class="line">  println(&quot;进入Person构造器...&quot;)</span><br><span class="line">  val job = &quot;解说员&quot;</span><br><span class="line">  var team = &quot;&quot;</span><br><span class="line"></span><br><span class="line">  /**</span><br><span class="line">    * 附属构造器的名称 this</span><br><span class="line">    * 每个附属构造器的第一行必须调用主构造器或者其他的附属构造器</span><br><span class="line">    */</span><br><span class="line">  def this(name:String, age:Int, team:String) &#123;</span><br><span class="line">    this(name, age)</span><br><span class="line">    this.team = team</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  println(&quot;执行完Person构造器...&quot;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Student(name:String,age:Int,val major:String) extends Person(name, age) &#123;</span><br><span class="line">  println(&quot;进入Student构造器...&quot;)</span><br><span class="line"></span><br><span class="line">  // 子类重写父类中的属性或者方法的修饰符</span><br><span class="line">  override val job: String = &quot;钟馗&quot;</span><br><span class="line"></span><br><span class="line">  /**</span><br><span class="line">    * 如果 你想重写父类中的属性或者方法，需要使用override关键字来修饰</span><br><span class="line">    */</span><br><span class="line">  override def toString = name + &quot;    &quot; + job</span><br><span class="line"></span><br><span class="line">  println(&quot;执行完Student构造器...&quot;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+      
+    </div>
+    
+  </div>
+  
+  
+</article>
+
+  
+    <article id="post-Scala语法细节01-double-happy" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/12/03/Scala%E8%AF%AD%E6%B3%95%E7%BB%86%E8%8A%8201-double-happy/">Scala语法细节01--double_happy</a>
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2017/12/03/Scala%E8%AF%AD%E6%B3%95%E7%BB%86%E8%8A%8201-double-happy/" class="article-date">
+  <time datetime="2017-12-03T11:44:00.000Z" itemprop="datePublished">2017-12-03</time>
+</a>
+    
+    
+  </div>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-cloud" itemprop="articleBody">
+      
+        <h1 id="1-注意细节"><a href="#1-注意细节" class="headerlink" title="1.注意细节"></a>1.注意细节</h1><p>为了便于scala语言的理解下面总结常用的语法、数据结构、方法与函数、数据结构、主构造器与附属构造器、高阶函数</p>
+<p>（1）基本语法</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">1. 值与变量</span><br><span class="line">    值： val</span><br><span class="line">        val 名称:数据类型 = 值</span><br><span class="line">    变量：var</span><br><span class="line">        var 名称:数据类型 = 值</span><br><span class="line">2.数据类型</span><br><span class="line">	a.常用数据类型：</span><br><span class="line">	    String</span><br><span class="line">	    Int/Long/Float/Double</span><br><span class="line">	    Boolean</span><br><span class="line">	 b.数据类型转换与判断</span><br><span class="line">	     asInstanceOf[T]  数据类型转换</span><br><span class="line">	     isInstanceOf[T]  判断是否是某种数据类型</span><br><span class="line">3.顶层接口：Any</span><br><span class="line">    AnyVal： 值类型 （下面列出的需要注意）</span><br><span class="line">        数值</span><br><span class="line">        Boolean</span><br><span class="line">        Unit</span><br><span class="line">    AnyRef：引用类型</span><br></pre></td></tr></table></figure></div>
+<p>（2）方法与函数</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">最简单的理解是：</span><br><span class="line">	def   ----&gt;  方法</span><br><span class="line">	val f1 = (a:Int,b:Int) =&gt; a+b   ----&gt; 函数(h=高阶函数里 传入的参数 几乎全是 匿名函数)</span><br><span class="line">  </span><br><span class="line">    方法的本质上就是一种特殊的函数</span><br><span class="line">    </span><br><span class="line">    方法用def定义，函数的标识=&gt;</span><br><span class="line">    </span><br><span class="line">	因为函数 官方定义的格式有很多  真的很多 这里最好的区别 方法与函数 就是 看 def 还是 val </span><br><span class="line"></span><br><span class="line">eg：定义function（这里应该确切说 是方法）</span><br><span class="line">def sum(x:Int, y:Int):Int = &#123;</span><br><span class="line">    // function体</span><br><span class="line">&#125;</span><br><span class="line">def: 定义的关键字</span><br><span class="line">sum：function的名字</span><br><span class="line">x:Int,y:Int  : function的入参</span><br><span class="line">Int :  返回值类型</span><br></pre></td></tr></table></figure></div>
+<p>（3）循环</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">    to []</span><br><span class="line">    until [)</span><br><span class="line">    Range [)</span><br><span class="line">   </span><br><span class="line">  eg: 常用的遍历</span><br><span class="line">  val arr = Array(1,2,3,4,5)</span><br><span class="line">  for( elm &lt;- arr)&#123;</span><br><span class="line">  &#125;</span><br><span class="line">  for(index &lt;- 1 unitl arr.size)&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">注意： 1 unil 10  by 1    是可以指定步长的呦</span><br></pre></td></tr></table></figure></div>
+<p>（4）变长参数与默认参数</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">eg：</span><br><span class="line">def  sum( number : Int*)&#123; //变长参数  （相当于一个数组 ）</span><br><span class="line">     </span><br><span class="line">&#125;</span><br><span class="line">def sum ( number : Int =3)&#123;  //默认参数</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">那么调用带有变长参数的方法 如何传参呢？</span><br><span class="line">val  numbers = Array(1,2,3,4,5)</span><br><span class="line">sum(numbers :_*)</span><br></pre></td></tr></table></figure></div>
+
+      
+    </div>
+    
+  </div>
+  
+  
+</article>
+
+  
+    <article id="post-mapreduce原理02" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/12/02/mapreduce%E5%8E%9F%E7%90%8602/">mapreduce原理02</a>
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2017/12/02/mapreduce%E5%8E%9F%E7%90%8602/" class="article-date">
+  <time datetime="2017-12-02T11:43:10.000Z" itemprop="datePublished">2017-12-02</time>
+</a>
+    
+    
+  </div>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-cloud" itemprop="articleBody">
+      
+        <h1 id="1-combiner"><a href="#1-combiner" class="headerlink" title="1.combiner"></a>1.combiner</h1><p>map<br>partition<br>reduce<br>combiner</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">combiner :</span><br><span class="line">前提：</span><br><span class="line">正常模式下：</span><br><span class="line">InputSplit:</span><br><span class="line">   map:</span><br><span class="line">    (ruoze,1)</span><br><span class="line">    (ruoze,1)</span><br><span class="line">    (ruoze,1)</span><br><span class="line">    (jepson,1)</span><br><span class="line">    (jepson,1)</span><br><span class="line">    (xingxing,1)</span><br><span class="line"></span><br><span class="line">   reduce:</span><br><span class="line">    (ruoze,&lt;1,1,1&gt;)</span><br><span class="line">    </span><br><span class="line">combiner ：目的是解决map结束后本地预聚合（实际上是运行在map task 里的）</span><br><span class="line">Combiner: 就是一个本地化的Reduce，局部的聚合  Ruducer是全局的聚合</span><br><span class="line">    运行在MapTask</span><br><span class="line">    (ruoze,3)</span><br><span class="line">    (jepson,2)</span><br><span class="line">    (xingxing,1)</span><br><span class="line"></span><br><span class="line">好处是 shuffle时候map输出 到reduce  传输的数据量 会减少很多 减少io</span><br><span class="line"></span><br><span class="line">前提是  使用场景 不影响业务本身！！！</span><br></pre></td></tr></table></figure></div>
+<h1 id="2-TopN（全局）"><a href="#2-TopN（全局）" class="headerlink" title="2.TopN（全局）"></a>2.TopN（全局）</h1><p>两个思路：假设有100个map，那么在map输出的时候</p>
+<ol>
+<li>是要输出map里所有的（利用reduce input时候 key排序 来设计 map端输出到reduce   在reduce端进行topn）</li>
+<li>map输出的时候只需要输出map里的topn就可以呢（在map 方法里写 topn   最后使用clean up 输出 reduecer 那边和mapper类似）</li>
+</ol>
+<p>最好是现在map里处理好再输出。</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">1，2 都有这个问题 ： 会把重复的key覆盖掉，注意不是treemap的问题 treemap是用来排序的 是key的类型的问题 key的类型的comparable方法的问题，所以这里你要自定义一个key的数据类型</span><br><span class="line"></span><br><span class="line">1方法. 不使用treemap mapper里全部输出 在reducer里做topn</span><br><span class="line"></span><br><span class="line">2方法.map里使用treemap   （会把重复的key覆盖掉，注意不是treemap的问题 treemap是用来排序的 是key的类型的问题 key的类型的comparable方法的问题，所以这里你要自定义一个key的数据类型 ）这个不用写reducer</span><br><span class="line"></span><br><span class="line">总结 ： 那么分区的topn 应该也会了吧</span><br></pre></td></tr></table></figure></div>
+<h1 id="3-ArrayList"><a href="#3-ArrayList" class="headerlink" title="3.ArrayList"></a>3.ArrayList</h1><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">1.底层是一个object类型的数组</span><br><span class="line">2.线程不安全的   多线程情况下使用 Collections.synchronizedList(传一个list)</span><br><span class="line">    主要的属性</span><br><span class="line">        DEFAULT_CAPACITY = 10;</span><br><span class="line">        Object[] EMPTY_ELEMENTDATA = &#123;&#125;;</span><br><span class="line">        Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = &#123;&#125;;</span><br><span class="line">        Object[] elementData;</span><br><span class="line">        int size;</span><br><span class="line">注意：</span><br><span class="line">1.问 new ArrayList() 它的数组size是多少 ？ 很多人认为是10   ，不是的 是空  </span><br><span class="line"></span><br><span class="line">方法</span><br><span class="line">        构造函数</span><br><span class="line">        add</span><br><span class="line">            是否扩容</span><br><span class="line">            添加</span><br><span class="line">            扩容：</span><br><span class="line">                原来是elementdata.length</span><br><span class="line">                原来的1.5倍   &gt;&gt; 1</span><br><span class="line">                Integer.MAX_VALUE</span><br><span class="line">        remove</span><br><span class="line"></span><br><span class="line">        特点：适合快速查找  inde</span><br><span class="line">        缺点：删除 指定index插入  性能很低 因为涉及到数组后续元素的移动</span><br><span class="line"></span><br><span class="line">注意：</span><br><span class="line">List&lt;String&gt; list = new ArrayList&lt;.();</span><br><span class="line"> list.add(&quot;ruoze&quot;);</span><br><span class="line"> list.add(&quot;double_hadppy&quot;);</span><br><span class="line"> list.add(&quot;double_hadppy&quot;);</span><br><span class="line"> list.add(&quot;double_hadppy&quot;);</span><br><span class="line"> list.add(&quot;kairis&quot;);</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">*ruoze    double_hadppy  double_hadppy  double_hadppy   kairis</span><br><span class="line">*ruoze    do`在这里插入代码片`uble_hadppy  double_hadppy    kairis</span><br><span class="line">* ruoze    double_hadppy   kairis</span><br><span class="line">*/</span><br><span class="line">//删除</span><br><span class="line">for(int i = 0 ; i&lt; list.size(); i++)&#123;</span><br><span class="line">	if(list.get(i).equals(&quot;double_happy&quot;))&#123;</span><br><span class="line">	 	list.remove(i);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">System.out.println(list.size());</span><br><span class="line">//这个结果是什么呢？  ruoze    double_hadppy   kairis</span><br><span class="line">这个题很经典</span><br><span class="line">那么如何把 double_hadppy 全删掉呢？</span><br></pre></td></tr></table></figure></div>
+<h1 id="4-outputformat"><a href="#4-outputformat" class="headerlink" title="4.outputformat"></a>4.outputformat</h1><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1.自定义outputformat</span><br><span class="line">    a.实先Fileoutputformat</span><br><span class="line">    b.实现里面的recordwriter 方法</span><br><span class="line">    c.定义recordwriter类  带有构造方法（job）   通过输出流把数据写出去</span><br></pre></td></tr></table></figure></div>
+<h1 id="5-把不同数据分类写入不同的文件（两种方法）"><a href="#5-把不同数据分类写入不同的文件（两种方法）" class="headerlink" title="5.把不同数据分类写入不同的文件（两种方法）"></a>5.把不同数据分类写入不同的文件（两种方法）</h1><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1.自定义分区</span><br><span class="line">2.自定义outputformat</span><br></pre></td></tr></table></figure></div>
+
+<h1 id="6-join"><a href="#6-join" class="headerlink" title="6.join"></a>6.join</h1><p>reducer join<br>map join</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">流程：</span><br><span class="line">emp</span><br><span class="line">    &lt;deptno, emp_value&gt;</span><br><span class="line">dept</span><br><span class="line">    &lt;deptno, dept_value&gt;</span><br><span class="line"></span><br><span class="line">==&gt; shuffle</span><br><span class="line">    &lt;deptno, &lt;emp_value,dept_value&gt;&gt;</span><br><span class="line"></span><br><span class="line">reduce join的原理：区分出来哪个数据来自于哪里 flag</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">reducer join：</span><br><span class="line">	1.自定义类型</span><br><span class="line">	2.mapper里 setup方法 context获取分片强转成FileSplit  获取文件名  在map方法里把不同表数据（这块写数据 可以使用 set方法 / 构造器 / 反射 ）写出去（设置flag）</span><br><span class="line">	3.reducer里   数据拆分</span><br></pre></td></tr></table></figure></div>
+      
+    </div>
+    
+  </div>
+  
+  
+</article>
+
+  
     <article id="post-MapReduce原理01" class="article global-container article-type-post" itemscope itemprop="blogPost">
   
     <header class="article-header">
@@ -569,23 +704,23 @@
       <ul>
         
           <li>
+            <a href="/2020/01/05/Kudu-Impala%E6%95%85%E9%9A%9C%E6%A1%88%E4%BE%8B01-double-happy/">Kudu+Impala故障案例01--double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/05/Flink04-double-happy/">Flink04--double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/05/Flink03-double-happy/">Flink03--double_happy</a>
+          </li>
+        
+          <li>
             <a href="/2020/01/05/Flink02-double-happy/">Flink02--double_happy</a>
           </li>
         
           <li>
             <a href="/2020/01/05/Flink01-double-happy/">Flink01-double_happy</a>
-          </li>
-        
-          <li>
-            <a href="/2019/11/20/tmp/">tmp</a>
-          </li>
-        
-          <li>
-            <a href="/2019/01/05/Azkaban%E8%B0%83%E5%BA%A6-double-happy/">Azkaban调度--double_happy</a>
-          </li>
-        
-          <li>
-            <a href="/2019/01/04/Zookeeper%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E4%B8%8E%E7%9B%91%E6%8E%A7-Curator/">Zookeeper基本使用与监控(Curator)</a>
           </li>
         
       </ul>

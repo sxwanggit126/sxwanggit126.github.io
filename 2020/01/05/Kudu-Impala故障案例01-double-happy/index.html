@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Kudu+Impala故障案例01--double_happy | DoubleHappy or Jepson</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="背景 123456Flink消费数据 最终写入Kudu里面进行存储，impala通过创建外部表的方式，关联kudu里的数据 进行后续的指标计算注意：   1.Flink -&amp;gt;Sink kudu    2.Impala -&amp;gt;关联kudu 故障 12345678910111.Flink sink kudu  表的名字  eg： kudu01.test01  这个表  Impala关联 ku">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kudu+Impala故障案例01--double_happy">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;01&#x2F;05&#x2F;Kudu-Impala%E6%95%85%E9%9A%9C%E6%A1%88%E4%BE%8B01-double-happy&#x2F;index.html">
+<meta property="og:site_name" content="DoubleHappy or Jepson">
+<meta property="og:description" content="背景 123456Flink消费数据 最终写入Kudu里面进行存储，impala通过创建外部表的方式，关联kudu里的数据 进行后续的指标计算注意：   1.Flink -&amp;gt;Sink kudu    2.Impala -&amp;gt;关联kudu 故障 12345678910111.Flink sink kudu  表的名字  eg： kudu01.test01  这个表  Impala关联 ku">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2020-01-05T15:49:07.266Z">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="DoubleHappy or Jepson" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/default-avatar.jpg">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/highlight.css">
+</head>
+
+<body>
+  <div id="fullpage" class="mobile-nav-right">
+    
+      <div id="wrapper" title="图片来自网络">
+    
+    
+      <header id="header">
+  <div id="nav-toggle" class="nav-toggle"></div>
+  <div class="head-box global-width">
+    <nav class="nav-box nav-right">
+      
+        <a class="nav-item" href="/archives" title
+        
+        >首页</a>
+      
+        <a class="nav-item" href="/archives" title
+        
+        >归档</a>
+      
+    </nav>
+  </div>
+</header>
+      <div id="middlecontent" title class="global-width sidebar-right">
+        <section id="main"><article id="post-Kudu-Impala故障案例01-double-happy" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 class="article-title" itemprop="name">
+      Kudu+Impala故障案例01--double_happy
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2020/01/05/Kudu-Impala%E6%95%85%E9%9A%9C%E6%A1%88%E4%BE%8B01-double-happy/" class="article-date">
+  <time datetime="2020-01-05T15:47:59.000Z" itemprop="datePublished">2020-01-05</time>
+</a>
+    
+    
+  </div>
+  
+    <span id="busuanzi_container_page_pv">
+      本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+    </span>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-cloud" itemprop="articleBody">
+      
+        <p><strong>背景</strong></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Flink消费数据 最终写入Kudu里面进行存储，</span><br><span class="line">impala通过创建外部表的方式，关联kudu里的数据 进行后续的指标计算</span><br><span class="line"></span><br><span class="line">注意：</span><br><span class="line">   1.Flink -&gt;Sink kudu </span><br><span class="line">   2.Impala -&gt;关联kudu</span><br></pre></td></tr></table></figure></div>
+<p><strong>故障</strong></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">1.Flink sink kudu  表的名字 </span><br><span class="line"> eg： kudu01.test01  这个表 </span><br><span class="line"> Impala关联 kudu 之后 impala里的表是 kudu_test01</span><br><span class="line"></span><br><span class="line">即：</span><br><span class="line">  kudu01.test01 --&gt;  kudu_test01</span><br><span class="line"></span><br><span class="line">故障：</span><br><span class="line">	当把kudu01.test01 表删掉  (通过kudu api 删掉表)  </span><br><span class="line">	重新创建的 kudu01.test01 	</span><br><span class="line">删掉kudu表直接重建 但是 impala没有重新关联 会造成 出现 null</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">[vm24:21000] &gt; select * from kudu_access08 limit 100;</span><br><span class="line">Query: select * from kudu_access08 limit 100</span><br><span class="line">Query submitted at: 2019-12-31 11:31:55 (Coordinator: http://vm24:25000)</span><br><span class="line">Query progress can be monitored at: http://vm24:25000/query_plan?query_id=f24990121ccc11cb:91d30b3d00000000</span><br><span class="line">+-------------+---------------+---------+---------------+</span><br><span class="line">| id          | domain        | traffic | time          |</span><br><span class="line">+-------------+---------------+---------+---------------+</span><br><span class="line">| 0_0_3_4_4_9 | NULL          | NULL    | NULL          |</span><br><span class="line">| 0_0_3_9_7_7 | NULL          | NULL    | 1577763046142 |</span><br><span class="line">| 0_0_5_1_2_3 | zhibo8.cc     | 632     | NULL          |</span><br><span class="line">| 0_0_8_3_3_0 | zhibo8.cc     | 349     | 1577763045141 |</span><br><span class="line">| 0_0_8_8_0_2 | NULL          | NULL    | 1577763046142 |</span><br><span class="line">| 0_1_5_8_6_8 | NULL          | 256     | NULL          |</span><br><span class="line">| 0_1_9_0_6_1 | ruozedata.com | 513     | 1577763045141 |</span><br><span class="line">| 0_1_9_3_7_8 | dongqiudi.com | NULL    | NULL          |</span><br><span class="line">| 0_2_0_0_2_1 | NULL          | 1212    | NULL          |</span><br><span class="line">| 0_2_0_7_7_8 | NULL          | 1323    | 1577763045141 |</span><br><span class="line">| 0_2_3_1_3_9 | ruozedata.com | NULL    | NULL          |</span><br><span class="line">| 0_2_6_2_9_3 | ruozedata.com | NULL    | 1577763043139 |</span><br><span class="line">| 0_2_6_8_8_9 | NULL          | 956     | 1577763046142 |</span><br><span class="line">| 0_2_7_2_2_7 | NULL          | NULL    | NULL          |</span><br><span class="line">| 0_2_7_7_4_2 | zhibo8.cc     | NULL    | 1577763046142 |</span><br><span class="line">| 0_3_2_3_2_2 | dongqiudi.com | 309     | NULL          |</span><br><span class="line">| 0_3_2_6_5_6 | NULL          | NULL    | NULL          |</span><br><span class="line">| 0_3_8_9_8_0 | NULL          | NULL    | 1577763043139 |</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">删掉kudu表直接重建 但是 impala没有重新关联 会造成 出现 null</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">目前解决办法就是 ：</span><br><span class="line">	通过impala把 impala关联的kudu表删掉  + 再把kudu里的表删掉 两个都重新创建 </span><br><span class="line"></span><br><span class="line">因为kudu+impala 刚刚接触 慢慢摸索当中</span><br></pre></td></tr></table></figure></div>
+
+      
+    </div>
+    
+      <footer class="article-footer">
+        完
+      </footer>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  <div class="article-nav-block">
+    
+  </div>
+  <div class="article-nav-block">
+    
+      <a href="/2020/01/05/Flink04-double-happy/" id="article-nav-older" class="article-nav-link-wrap">
+        <div class="article-nav-title">Flink04--double_happy</div>
+        <strong class="article-nav-caption"></strong>
+      </a>
+    
+  </div>
+</nav>
+
+    <link rel="stylesheet" href="/css/gitment.css"> 
+<script src="/js/gitment.js"></script>
+
+<div id="gitmentContainer"></div>
+
+<script>
+var gitment = new Gitment({
+  owner: '',
+  repo: '',
+  oauth: {
+    client_id: '',
+    client_secret: '',
+  },
+})
+gitment.render('gitmentContainer')
+</script>
+
+  
+  
+</article>
+</section>
+        <aside id="sidebar">
+  
+    <div class="widget-box">
+  <div class="avatar-box">
+    <img class="avatar" src="/images/default-avatar.jpg" title="图片来自网络"></img>
+    <h3 class="avatar-name">
+      
+        DoubleHappy
+      
+    </h3>
+    <p class="avatar-slogan">
+      特别耐撕的大数据，资深的打酱油攻城狮。
+    </p>
+  </div>
+</div>
+
+
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/01/05/Kudu-Impala%E6%95%85%E9%9A%9C%E6%A1%88%E4%BE%8B01-double-happy/">Kudu+Impala故障案例01--double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/05/Flink04-double-happy/">Flink04--double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/05/Flink03-double-happy/">Flink03--double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/05/Flink02-double-happy/">Flink02--double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/05/Flink01-double-happy/">Flink01-double_happy</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+      <div class="widget-box">
+    <h3 class="widget-title">友链</h3>
+    <div class="widget">
+      
+        <a style="display: block;" href="https://liverrrr.fun/archives" title target='_blank'
+        >一路眼瞎</a>
+      
+    </div>
+  </div>
+
+  
+</aside>
+      </div>
+      <footer id="footer">
+  <div class="foot-box global-width">
+    &copy; 2020 DoubleHappy &nbsp;&nbsp;
+    Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    &nbsp;|&nbsp;主题 <a href="https://github.com/yiluyanxia/hexo-theme-antiquity" target="_blank" rel="noopener">antiquity</a>
+    <br>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv">不蒜子告之   阁下是第<span id="busuanzi_value_site_pv"></span>个访客</span>
+  </div>
+</footer>
+      <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script>
+if (!window.jQuery) {
+var script = document.createElement('script');
+script.src = "/js/jquery-2.0.3.min.js";
+document.body.write(script);
+}
+</script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+    </div>
+    <nav id="mobile-nav" class="mobile-nav-box">
+  <div class="mobile-nav-img mobile-nav-top"></div>
+  
+    <a href="/archives" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+  <div class="mobile-nav-img  mobile-nav-bottom"></div>
+</nav>    
+  </div>
+</body>
+</html>

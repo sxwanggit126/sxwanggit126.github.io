@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Flink03--double_happy | DoubleHappy or Jepson</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <meta name="description" content="记录1234567891011写东西 还是要有通用的思想通用的！！！ 与底层的执行引擎是没关系的  Beam    Spark        1.6        2.x    Flink    你的API上一定不能出现底层执行引擎的API    适配 ==&amp;gt; Spark&#x2F;Flink 注意1234567891011121314151617181920212223242526272829303">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flink03--double_happy">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;01&#x2F;05&#x2F;Flink03-double-happy&#x2F;index.html">
+<meta property="og:site_name" content="DoubleHappy or Jepson">
+<meta property="og:description" content="记录1234567891011写东西 还是要有通用的思想通用的！！！ 与底层的执行引擎是没关系的  Beam    Spark        1.6        2.x    Flink    你的API上一定不能出现底层执行引擎的API    适配 ==&amp;gt; Spark&#x2F;Flink 注意1234567891011121314151617181920212223242526272829303">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20200102225345666.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20200102225516772.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+<meta property="og:updated_time" content="2020-01-05T15:48:31.442Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;20200102225345666.png?x-oss-process=image&#x2F;watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70">
+  
+    <link rel="alternate" href="/atom.xml" title="DoubleHappy or Jepson" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/images/default-avatar.jpg">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/highlight.css">
+</head>
+
+<body>
+  <div id="fullpage" class="mobile-nav-right">
+    
+      <div id="wrapper" title="图片来自网络">
+    
+    
+      <header id="header">
+  <div id="nav-toggle" class="nav-toggle"></div>
+  <div class="head-box global-width">
+    <nav class="nav-box nav-right">
+      
+        <a class="nav-item" href="/archives" title
+        
+        >首页</a>
+      
+        <a class="nav-item" href="/archives" title
+        
+        >归档</a>
+      
+    </nav>
+  </div>
+</header>
+      <div id="middlecontent" title class="global-width sidebar-right">
+        <section id="main"><article id="post-Flink03-double-happy" class="article global-container article-type-post" itemscope itemprop="blogPost">
+  
+    <header class="article-header">
+      
+  
+    <h1 class="article-title" itemprop="name">
+      Flink03--double_happy
+    </h1>
+  
+
+    </header>
+  
+  <div class="article-meta">
+    <a href="/2020/01/05/Flink03-double-happy/" class="article-date">
+  <time datetime="2020-01-05T15:47:23.000Z" itemprop="datePublished">2020-01-05</time>
+</a>
+    
+    
+  </div>
+  
+    <span id="busuanzi_container_page_pv">
+      本文总阅读量<span id="busuanzi_value_page_pv"></span>次
+    </span>
+  
+
+  <div class="article-inner">
+    
+    <div class="article-content article-content-cloud" itemprop="articleBody">
+      
+        <h2 id="记录"><a href="#记录" class="headerlink" title="记录"></a>记录</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">写东西 还是要有通用的思想</span><br><span class="line"></span><br><span class="line">通用的！！！ 与底层的执行引擎是没关系的  Beam</span><br><span class="line">    Spark</span><br><span class="line">        1.6</span><br><span class="line">        2.x</span><br><span class="line">    Flink</span><br><span class="line"></span><br><span class="line">    你的API上一定不能出现底层执行引擎的API</span><br><span class="line"></span><br><span class="line">    适配 ==&gt; Spark/Flink</span><br></pre></td></tr></table></figure></div>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">上一篇文章 ：</span><br><span class="line">MySQLSource：</span><br><span class="line">class MySQLSource extends RichSourceFunction[Student]&#123;</span><br><span class="line"></span><br><span class="line">  var connection:Connection = _</span><br><span class="line">  var pstmt:PreparedStatement = _</span><br><span class="line"></span><br><span class="line">  // 在open方法中建立连接</span><br><span class="line">  override def open(parameters: Configuration): Unit = &#123;</span><br><span class="line">    super.open(parameters)</span><br><span class="line"></span><br><span class="line">    connection = MySQLUtils.getConnection(&quot;hadoop101&quot;,&quot;3306&quot;,&quot;test&quot;,&quot;root&quot;, &quot;wsx123$%^&quot;)</span><br><span class="line">    pstmt = connection.prepareStatement(&quot;select * from student&quot;)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // 释放</span><br><span class="line">  override def close(): Unit = &#123;</span><br><span class="line">    super.close()</span><br><span class="line">    MySQLUtils.closeConnection(connection, pstmt)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  override def cancel(): Unit = &#123;</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  override def run(ctx: SourceFunction.SourceContext[Student]): Unit = &#123;</span><br><span class="line"></span><br><span class="line">    println(&quot;~~~~run~~~~~~&quot;)</span><br><span class="line">    val rs = pstmt.executeQuery()</span><br><span class="line">    while(rs.next())&#123;</span><br><span class="line">      val student = Student(rs.getInt(&quot;id&quot;), rs.getString(&quot;name&quot;), rs.getString(&quot;password&quot;),rs.getInt(&quot;age&quot;))</span><br><span class="line">      ctx.collect(student)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">注意：</span><br><span class="line">class MySQLSource extends RichSourceFunction[Student]</span><br><span class="line"></span><br><span class="line">RichSourceFunction：</span><br><span class="line">这个东西 并不是 上一篇文章的三个Function 中的一个 </span><br><span class="line"></span><br><span class="line">那么 RichSourceFunction 的并行度是多少？</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">源码：</span><br><span class="line">public abstract class RichSourceFunction&lt;OUT&gt; extends AbstractRichFunction implements SourceFunction&lt;OUT&gt; &#123;</span><br><span class="line"></span><br><span class="line">	private static final long serialVersionUID = 1L;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">我当时测试的时候 设置并行度为3的时候 报错的 </span><br><span class="line"></span><br><span class="line">源码里是继承SourceFunction的 </span><br><span class="line">所以并行度是1</span><br><span class="line"></span><br><span class="line">那么就有一个问题？</span><br><span class="line"> 有两个流：</span><br><span class="line"> </span><br><span class="line">	stream1  4并行度  emp表  log里      domain</span><br><span class="line">	stream2  1并行度  dept表  MySQL里    user_id</span><br><span class="line">这两个流进行 </span><br><span class="line">stream1.connect(stream2).map(x=&gt;&#123;&#125;)</span><br><span class="line"></span><br><span class="line">即：</span><br><span class="line">	logStream emp: deptno empno ename</span><br><span class="line">	mysqlStream dept: deptno dname</span><br><span class="line">	</span><br><span class="line">	outputStream empno,ename,deptno,dname</span><br><span class="line">	</span><br><span class="line">	数据清洗/ETL</span><br><span class="line">	outputStream = stream1.connect(stream2).map(x=&gt;&#123;</span><br><span class="line">	    ....</span><br><span class="line">	&#125;)</span><br><span class="line"></span><br><span class="line">那么connect会成功么？？</span><br><span class="line">	4并行度的流 里面有写task 的deptno 关联 </span><br><span class="line">	1并行度的流 拿取dname 是拿不到的 </span><br><span class="line">那么这个问题该怎么解决呢？之后再说</span><br><span class="line"></span><br><span class="line">先解决并行度为1的问题 下面</span><br><span class="line"> 变为：RichParallelSourceFunction</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">class ScalikeJDBCMySQLSource extends RichParallelSourceFunction[Student]&#123;</span><br><span class="line"></span><br><span class="line">  override def cancel(): Unit = &#123;</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  override def run(ctx: SourceFunction.SourceContext[Student]): Unit = &#123;</span><br><span class="line">    println(&quot;~~~run~~~~&quot;)</span><br><span class="line">    DBs.setupAll()  // parse configuration file</span><br><span class="line"></span><br><span class="line">    DB.readOnly&#123; implicit session =&gt; &#123;</span><br><span class="line">      SQL(&quot;select * from student&quot;).map(rs =&gt; &#123;</span><br><span class="line">        val student = Student(rs.int(&quot;id&quot;),rs.string(&quot;name&quot;),rs.string(&quot;password&quot;),rs.int(&quot;age&quot;))</span><br><span class="line">        ctx.collect(student)</span><br><span class="line">      &#125;).list().apply()</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">object SourceApp &#123;</span><br><span class="line"></span><br><span class="line">  def main(args: Array[String]): Unit = &#123;</span><br><span class="line">    val env = StreamExecutionEnvironment.getExecutionEnvironment</span><br><span class="line"></span><br><span class="line">     env.addSource(new ScalikeJDBCMySQLSource).setParallelism(2).print()</span><br><span class="line"></span><br><span class="line">    env.execute(this.getClass.getSimpleName)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">结果是：</span><br><span class="line">~~~run~~~~</span><br><span class="line">~~~run~~~~</span><br><span class="line">6&gt; Student(1,kairis,wsx111,17)</span><br><span class="line">1&gt; Student(4,happy,11,48)</span><br><span class="line">8&gt; Student(3,double,44,12)</span><br><span class="line">7&gt; Student(2,dbh,11,90)</span><br><span class="line">7&gt; Student(3,double,44,12)</span><br><span class="line">5&gt; Student(1,kairis,wsx111,17)</span><br><span class="line">6&gt; Student(2,dbh,11,90)</span><br><span class="line">8&gt; Student(4,happy,11,48)</span><br><span class="line"></span><br><span class="line">2并行度 也就是结果会拿取两份</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">第二个问题：</span><br><span class="line">接着最开始流connect的问题 </span><br><span class="line"></span><br><span class="line">1.log流 的并行度是4   （100w条）</span><br><span class="line">那么 MySQL里的并行度是否有必要也是4呢？ （MySQl 1w条）</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">结果：</span><br><span class="line"> 是不是 没有这个必要呀 </span><br><span class="line"> 1个并行度能处理过来的 就可以了 </span><br><span class="line"> 但是1个并行度 也log流4个并行度 connect的时候还会出问题</span><br><span class="line">那么该怎么办呢？之后说</span><br></pre></td></tr></table></figure></div>
+<h2 id="Data-Sinks"><a href="#Data-Sinks" class="headerlink" title="Data Sinks"></a>Data Sinks</h2><p><a href="https://ci.apache.org/projects/flink/flink-docs-release-1.9/dev/datastream_api.html#data-sinks" target="_blank" rel="noopener">Data Sinks</a></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">输出对比：</span><br><span class="line">Spark读写：外部数据源</span><br><span class="line">    spark.read.format(&quot;&quot;).option(&quot;&quot;,&quot;).load</span><br><span class="line">    spark.write.format(&quot;&quot;)....save</span><br><span class="line"></span><br><span class="line">Flink读写</span><br><span class="line">    addSource(new XXXSourceFunction)</span><br><span class="line">    addSink(new XXXSinkFunction)</span><br><span class="line"></span><br><span class="line">   都是  可插拔的  Spark 自定义外部数据源 </span><br><span class="line">还是Spark好用呀</span><br></pre></td></tr></table></figure></div>
+<h2 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h2><p><strong>Sink kafka</strong></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">Flink的角色是Producer：</span><br><span class="line"></span><br><span class="line">object SinkApp &#123;</span><br><span class="line"></span><br><span class="line">  def main(args: Array[String]): Unit = &#123;</span><br><span class="line">    val env = StreamExecutionEnvironment.getExecutionEnvironment</span><br><span class="line"></span><br><span class="line">        val stream = env.readTextFile(&quot;C:\\IdeaProjects\\flink\\data\\access.log&quot;).map(x =&gt; &#123;</span><br><span class="line">          val splits = x.split(&quot;,&quot;)</span><br><span class="line">          Access(splits(0).toLong, splits(1), splits(2).toLong).toString</span><br><span class="line">        &#125;)</span><br><span class="line"></span><br><span class="line">        val producer = new FlinkKafkaProducer[String](</span><br><span class="line">          &quot;hadoop101:9092,hadoop101:9093,hadoop101:9094&quot;,         // broker list</span><br><span class="line">          &quot;double_happy_offset&quot;,               // target topic</span><br><span class="line">          new SimpleStringSchema)   // serialization schema</span><br><span class="line"></span><br><span class="line">        stream.addSink(producer)  // 2Kafka</span><br><span class="line">        stream.print() // 2Local</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    env.execute(this.getClass.getSimpleName)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">结果是：</span><br><span class="line">[double_happy@hadoop101 kafka]$ bin/kafka-console-consumer.sh \</span><br><span class="line">&gt; --bootstrap-server hadoop101:9092,hadoop101:9093,hadoop101:9094 \</span><br><span class="line">&gt; --topic double_happy_offset </span><br><span class="line">Access(201912120010,ruozedata.com,2000)</span><br><span class="line">Access(201912120010,ruozedata.com,4000)</span><br><span class="line">Access(201912120010,dongqiudi.com,1000)</span><br><span class="line">Access(201912120010,dongqiudi.com,6000)</span><br><span class="line">Access(201912120010,zhibo8.com,5000)</span><br></pre></td></tr></table></figure></div>
+<p><strong>Kafak 2 Kafka</strong></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">object SinkApp &#123;</span><br><span class="line"></span><br><span class="line">  def main(args: Array[String]): Unit = &#123;</span><br><span class="line">    val env = StreamExecutionEnvironment.getExecutionEnvironment</span><br><span class="line"></span><br><span class="line">    val properties = new Properties()</span><br><span class="line">    properties.setProperty(&quot;bootstrap.servers&quot;,  &quot;hadoop101:9092,hadoop101:9093,hadoop101:9094&quot;)</span><br><span class="line">    properties.setProperty(&quot;group.id&quot;, &quot;sxwang&quot;)</span><br><span class="line">    </span><br><span class="line">    val consumer = new FlinkKafkaConsumer[String](&quot;double_happy_offset&quot;, new SimpleStringSchema(), properties)</span><br><span class="line">    </span><br><span class="line">    val stream = env.addSource(consumer)</span><br><span class="line"></span><br><span class="line">    // TODO... Kafka2Kafka  double_happy_offset ==&gt; double_happy_offset_test</span><br><span class="line">    </span><br><span class="line">    val producer = new FlinkKafkaProducer[String](</span><br><span class="line">      &quot;hadoop101:9092,hadoop101:9093,hadoop101:9094&quot;, // broker list</span><br><span class="line">      &quot;double_happy_offset_test&quot;, // target topic</span><br><span class="line">      new SimpleStringSchema) // serialization schema</span><br><span class="line"></span><br><span class="line">    stream.addSink(producer) // 2Kafka</span><br><span class="line">    stream.print() // 2Local</span><br><span class="line">    </span><br><span class="line">    env.execute(this.getClass.getSimpleName)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">结果是：</span><br><span class="line">[double_happy@hadoop101 kafka]$ bin/kafka-console-consumer.sh \</span><br><span class="line">&gt; --bootstrap-server hadoop101:9092,hadoop101:9093,hadoop101:9094 \</span><br><span class="line">&gt; --topic double_happy_offset_test </span><br><span class="line">Access(201912120010,ruozedata.com,2000)</span><br><span class="line">Access(201912120010,dongqiudi.com,1000)</span><br><span class="line">Access(201912120010,dongqiudi.com,6000)</span><br><span class="line">e</span><br><span class="line">c</span><br><span class="line">Access(201912120010,ruozedata.com,4000)</span><br><span class="line">b</span><br><span class="line">e</span><br><span class="line">Access(201912120010,zhibo8.com,5000)</span><br><span class="line">c</span><br><span class="line">f</span><br></pre></td></tr></table></figure></div>
+<p><strong>Sink MySQL</strong></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * A &#123;@link org.apache.flink.api.common.functions.RichFunction&#125; version of &#123;@link SinkFunction&#125;.</span><br><span class="line"> */</span><br><span class="line">@Public</span><br><span class="line">public abstract class RichSinkFunction&lt;IN&gt; extends AbstractRichFunction implements SinkFunction&lt;IN&gt; &#123;</span><br><span class="line"></span><br><span class="line">	private static final long serialVersionUID = 1L;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * Interface for implementing user defined sink functionality.</span><br><span class="line"> *</span><br><span class="line"> * @param &lt;IN&gt; Input type parameter.</span><br><span class="line"> */</span><br><span class="line">@Public</span><br><span class="line">public interface SinkFunction&lt;IN&gt; extends Function, Serializable &#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">所以</span><br><span class="line">IN： 表示 Input type parameter. </span><br><span class="line"></span><br><span class="line">表示sink到的 MySQL表里的 字段类型</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">class DoubleHappyMySQLSink  extends RichSinkFunction[(String,Int)]&#123;</span><br><span class="line"></span><br><span class="line">  var connection:Connection = _</span><br><span class="line">  var insertPstmt:PreparedStatement = _</span><br><span class="line">  var updatePstmt:PreparedStatement = _</span><br><span class="line"></span><br><span class="line">  // 打开connection等</span><br><span class="line">  override def open(parameters: Configuration): Unit = &#123;</span><br><span class="line">    super.open(parameters)</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">      * 这块与Spark不一样的 Spark是一个批次往下写 </span><br><span class="line">      * </span><br><span class="line">      * 而Flink是 来一条就往下写  </span><br><span class="line">      * </span><br><span class="line">      * 所以 :</span><br><span class="line">      *   这块创建两个 PreparedStatement 也可以创建一个 需要创建表的时候指定 key 即可 </span><br><span class="line">      *   </span><br><span class="line">      *   创建 两个简单些  ： 有就更新 没有就插入 </span><br><span class="line">      */</span><br><span class="line">    connection = MySQLUtils.getConnection()</span><br><span class="line">    insertPstmt = connection.prepareStatement(&quot;insert into domain(domain,traffic) values (?,?)&quot;)</span><br><span class="line">    updatePstmt = connection.prepareStatement(&quot;update domain set traffic=? where domain=?&quot;)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  /**</span><br><span class="line">    * 写数据</span><br><span class="line">    */</span><br><span class="line">  override def invoke(value: (String, Int), context: SinkFunction.Context[_]): Unit = &#123;</span><br><span class="line">    // TODO   insert update</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">      * 这块并没有写错哦  要看 你的sql语句的 ？ 走的哦 </span><br><span class="line">      * </span><br><span class="line">      * 先更新 有就更新 无就插入</span><br><span class="line">      */</span><br><span class="line">    updatePstmt.setInt(1, value._2)</span><br><span class="line">    updatePstmt.setString(2, value._1)</span><br><span class="line">    updatePstmt.execute()</span><br><span class="line"></span><br><span class="line">    if(updatePstmt.getUpdateCount == 0) &#123;</span><br><span class="line">      insertPstmt.setString(1, value._1)</span><br><span class="line">      insertPstmt.setInt(2, value._2)</span><br><span class="line">      insertPstmt.execute()</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  // 释放资源</span><br><span class="line">  override def close(): Unit = &#123;</span><br><span class="line">    super.close()</span><br><span class="line">    if(insertPstmt != null) insertPstmt.close()</span><br><span class="line">    if(updatePstmt != null) updatePstmt.close()</span><br><span class="line">    if(connection != null) connection.close()</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">注意：</span><br><span class="line">这代码不严谨的</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">object SinkApp &#123;</span><br><span class="line"></span><br><span class="line">  def main(args: Array[String]): Unit = &#123;</span><br><span class="line">    val env = StreamExecutionEnvironment.getExecutionEnvironment</span><br><span class="line"></span><br><span class="line">    val stream = env.readTextFile(&quot;C:\\IdeaProjects\\flink\\data\\access.log&quot;).map(x =&gt; &#123;</span><br><span class="line">      val splits = x.split(&quot;,&quot;)</span><br><span class="line">      (splits(1), splits(2).toInt)</span><br><span class="line">    &#125;).keyBy(0).sum(1)</span><br><span class="line"></span><br><span class="line">    stream.addSink(new DoubleHappyMySQLSink)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    env.execute(this.getClass.getSimpleName)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">结果是： 我执行了两遍Flink程序  发现 结果幂等性 ok</span><br><span class="line">mysql&gt; select * from domain;</span><br><span class="line">+---------------+---------+</span><br><span class="line">| domain        | traffic |</span><br><span class="line">+---------------+---------+</span><br><span class="line">| dongqiudi.com |    7000 |</span><br><span class="line">| ruozedata.com |    6000 |</span><br><span class="line">| zhibo8.com    |    5000 |</span><br><span class="line">+---------------+---------+</span><br><span class="line">3 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from domain;</span><br><span class="line">+---------------+---------+</span><br><span class="line">| domain        | traffic |</span><br><span class="line">+---------------+---------+</span><br><span class="line">| dongqiudi.com |    7000 |</span><br><span class="line">| ruozedata.com |    6000 |</span><br><span class="line">| zhibo8.com    |    5000 |</span><br><span class="line">+---------------+---------+</span><br><span class="line">3 rows in set (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="Debugging"><a href="#Debugging" class="headerlink" title="Debugging  ***"></a>Debugging  ***</h2><p>调试的手段***</p>
+<p><strong>Iterator Data Sink</strong><br><a href="https://ci.apache.org/projects/flink/flink-docs-release-1.9/dev/datastream_api.html#iterator-data-sink" target="_blank" rel="noopener">Iterator Data Sink</a></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">注意：</span><br><span class="line">	你调试的时候 ：</span><br><span class="line">		1.不需要接kafka   使用 自定义Source 就可以 eg：RichParallelSourceFunction</span><br><span class="line">		2.Sink的时候 也不需要Sink 到 存储的地方去</span><br><span class="line">			eg：kudu 、Hbase等</span><br><span class="line">			这里使用 Iterator Data Sink</span><br><span class="line">这个真的很重要：</span><br><span class="line">	我封闭开发的时候 字段154个 Sink到kudu里面 </span><br><span class="line">如果使用 提供的 connecer 154个字段 你什么时候能写完 </span><br><span class="line">	一定是要写成 自动解析的 最好 </span><br><span class="line"></span><br><span class="line">注意：</span><br><span class="line">	刚好 我的业务场景 需要这个 Iterator Data Sink</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">官网：</span><br><span class="line">import org.apache.flink.streaming.experimental.DataStreamUtils</span><br><span class="line">import scala.collection.JavaConverters.asScalaIteratorConverter</span><br><span class="line"></span><br><span class="line">val myResult: DataStream[(String, Int)] = ...</span><br><span class="line">val myOutput: Iterator[(String, Int)] = DataStreamUtils.collect(myResult.javaStream).asScala</span><br></pre></td></tr></table></figure></div>
+
+<p>案例：</p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">object SourceApp &#123;</span><br><span class="line"></span><br><span class="line">  def main(args: Array[String]): Unit = &#123;</span><br><span class="line">    val env = StreamExecutionEnvironment.getExecutionEnvironment</span><br><span class="line"></span><br><span class="line">    //测试使用</span><br><span class="line"></span><br><span class="line">    val data: DataStream[Domain.Access] = env.addSource(new AccessSource03).setParallelism(1)</span><br><span class="line"></span><br><span class="line">    import scala.collection.JavaConverters.asScalaIteratorConverter</span><br><span class="line">    val output: Iterator[Domain.Access] = DataStreamUtils.collect(data.javaStream).asScala</span><br><span class="line">    </span><br><span class="line">    output.take(1).foreach(println(_))</span><br><span class="line"></span><br><span class="line">    env.execute(this.getClass.getSimpleName)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">结果：</span><br><span class="line">Access(1577975577015,zhibo8.cc,78)</span><br></pre></td></tr></table></figure></div>
+<h2 id="Sink-redis"><a href="#Sink-redis" class="headerlink" title="Sink redis"></a>Sink redis</h2><p><a href="https://ci.apache.org/projects/flink/flink-docs-release-1.9/dev/connectors/" target="_blank" rel="noopener">connector</a><br><img src="https://img-blog.csdnimg.cn/20200102225345666.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">注意：</span><br><span class="line">pom 选择的 版本;</span><br><span class="line"></span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">  &lt;groupId&gt;org.apache.bahir&lt;/groupId&gt;</span><br><span class="line">  &lt;artifactId&gt;flink-connector-redis_2.11&lt;/artifactId&gt;</span><br><span class="line">  &lt;version&gt;1.1-SNAPSHOT&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">这个版本可能下载不到 ：</span><br></pre></td></tr></table></figure></div>
+<p><img src="https://img-blog.csdnimg.cn/20200102225516772.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9kb3VibGVoYXBweS5ibG9nLmNzZG4ubmV0,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">所以下载：</span><br><span class="line">&lt;!-- https://mvnrepository.com/artifact/org.apache.bahir/flink-connector-redis --&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.apache.bahir&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;flink-connector-redis_2.11&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;1.0&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure></div>
+<p><a href="https://bahir.apache.org/docs/flink/current/flink-streaming-redis/" target="_blank" rel="noopener">Flink Redis Connector</a></p>
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">class DoubleHappyRedisSink  extends RedisMapper[(String,Int)]&#123;</span><br><span class="line">  override def getCommandDescription: RedisCommandDescription = &#123;</span><br><span class="line">    new RedisCommandDescription(RedisCommand.HSET, &quot;double_happy_traffic&quot;)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  override def getValueFromData(data: (String, Int)): String = &#123;</span><br><span class="line">    data._2 + &quot;&quot;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  override def getKeyFromData(data: (String, Int)): String = &#123;</span><br><span class="line">    data._1</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">object SinkApp &#123;</span><br><span class="line"></span><br><span class="line">  def main(args: Array[String]): Unit = &#123;</span><br><span class="line">    val env = StreamExecutionEnvironment.getExecutionEnvironment</span><br><span class="line"></span><br><span class="line">    val stream = env.readTextFile(&quot;C:\\IdeaProjects\\flink\\data\\access.log&quot;).map(x =&gt; &#123;</span><br><span class="line">      val splits = x.split(&quot;,&quot;)</span><br><span class="line">      (splits(1), splits(2).toInt)</span><br><span class="line">    &#125;).keyBy(0).sum(1)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    val conf = new FlinkJedisPoolConfig.Builder().setHost(&quot;hadoop101&quot;).build()</span><br><span class="line"></span><br><span class="line">    stream.addSink(new RedisSink[(String, Int)](conf, new DoubleHappyRedisSink))</span><br><span class="line"></span><br><span class="line">    env.execute(this.getClass.getSimpleName)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">结果是：</span><br><span class="line">hadoop101:6379&gt; HGETALL double_happy_traffic</span><br><span class="line">1) &quot;ruozedata.com&quot;</span><br><span class="line">2) &quot;6000&quot;</span><br><span class="line">3) &quot;dongqiudi.com&quot;</span><br><span class="line">4) &quot;7000&quot;</span><br><span class="line">5) &quot;zhibo8.com&quot;</span><br><span class="line">6) &quot;5000&quot;</span><br><span class="line">hadoop101:6379&gt; </span><br><span class="line"></span><br><span class="line">与前面的MySQL 结果是一样的</span><br></pre></td></tr></table></figure></div>
+<h2 id="解决前面的问题"><a href="#解决前面的问题" class="headerlink" title="***解决前面的问题"></a>***解决前面的问题</h2><div class="highlight-box"autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" contenteditable="true"data-rel="PLAIN"><figure class="iseeu highlight /plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure></div>
+
+      
+    </div>
+    
+      <footer class="article-footer">
+        完
+      </footer>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  <div class="article-nav-block">
+    
+      <a href="/2020/01/05/Flink04-double-happy/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption"></strong>
+        <div class="article-nav-title">
+          
+            Flink04--double_happy
+          
+        </div>
+      </a>
+    
+  </div>
+  <div class="article-nav-block">
+    
+      <a href="/2020/01/05/Flink02-double-happy/" id="article-nav-older" class="article-nav-link-wrap">
+        <div class="article-nav-title">Flink02--double_happy</div>
+        <strong class="article-nav-caption"></strong>
+      </a>
+    
+  </div>
+</nav>
+
+    <link rel="stylesheet" href="/css/gitment.css"> 
+<script src="/js/gitment.js"></script>
+
+<div id="gitmentContainer"></div>
+
+<script>
+var gitment = new Gitment({
+  owner: '',
+  repo: '',
+  oauth: {
+    client_id: '',
+    client_secret: '',
+  },
+})
+gitment.render('gitmentContainer')
+</script>
+
+  
+  
+</article>
+</section>
+        <aside id="sidebar">
+  
+    <div class="widget-box">
+  <div class="avatar-box">
+    <img class="avatar" src="/images/default-avatar.jpg" title="图片来自网络"></img>
+    <h3 class="avatar-name">
+      
+        DoubleHappy
+      
+    </h3>
+    <p class="avatar-slogan">
+      特别耐撕的大数据，资深的打酱油攻城狮。
+    </p>
+  </div>
+</div>
+
+
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">March 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">February 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/">January 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">December 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">November 2017</a></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-box">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/01/05/Kudu-Impala%E6%95%85%E9%9A%9C%E6%A1%88%E4%BE%8B01-double-happy/">Kudu+Impala故障案例01--double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/05/Flink04-double-happy/">Flink04--double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/05/Flink03-double-happy/">Flink03--double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/05/Flink02-double-happy/">Flink02--double_happy</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/05/Flink01-double-happy/">Flink01-double_happy</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+      <div class="widget-box">
+    <h3 class="widget-title">友链</h3>
+    <div class="widget">
+      
+        <a style="display: block;" href="https://liverrrr.fun/archives" title target='_blank'
+        >一路眼瞎</a>
+      
+    </div>
+  </div>
+
+  
+</aside>
+      </div>
+      <footer id="footer">
+  <div class="foot-box global-width">
+    &copy; 2020 DoubleHappy &nbsp;&nbsp;
+    Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    &nbsp;|&nbsp;主题 <a href="https://github.com/yiluyanxia/hexo-theme-antiquity" target="_blank" rel="noopener">antiquity</a>
+    <br>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span id="busuanzi_container_site_pv">不蒜子告之   阁下是第<span id="busuanzi_value_site_pv"></span>个访客</span>
+  </div>
+</footer>
+      <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script>
+if (!window.jQuery) {
+var script = document.createElement('script');
+script.src = "/js/jquery-2.0.3.min.js";
+document.body.write(script);
+}
+</script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+    </div>
+    <nav id="mobile-nav" class="mobile-nav-box">
+  <div class="mobile-nav-img mobile-nav-top"></div>
+  
+    <a href="/archives" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+  <div class="mobile-nav-img  mobile-nav-bottom"></div>
+</nav>    
+  </div>
+</body>
+</html>
